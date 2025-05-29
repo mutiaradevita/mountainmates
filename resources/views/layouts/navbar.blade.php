@@ -1,10 +1,10 @@
-<nav class="fixed top-0 w-full h-[80px] z-50 bg-snow shadow-md">
+<nav class="fixed top-0 w-full h-[80px] z-50 bg-snow border-b border-gray-200 shadow-sm backdrop-blur-sm">
     <div class="max-w-screen-xl mx-auto h-full px-6 flex items-center justify-between">
         
         {{-- KIRI: Logo --}}
         <div class="flex items-center">
             <a href="#">
-                <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-8 object-contain">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-16 object-contain">
             </a>
         </div>
 

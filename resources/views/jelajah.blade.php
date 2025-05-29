@@ -1,43 +1,47 @@
 <x-home-layout>
+  {{-- Hero Section --}}
 <section class="bg-pine text-snow pt-[80px] pb-12">
   <div class="px-4 md:px-6 lg:px-8 py-10 text-center">
-    <h1 class="text-2xl md:text-3xl font-bold text-pine mb-4">Cari petualangan seru?</h1>
-    <div class="max-w-xl mx-auto">
-      <input
-        type="text"
-        placeholder="Cari trip, gunung, atau lokasi"
-        class="w-full px-6 py-3 rounded-full border border-stone text-stone placeholder:text-stone focus:outline-none focus:ring-2 focus:ring-forest"
-      >
+      <h1 class="text-3xl md:text-4xl font-bold">Jelajah</h1>
+      <p class="text-lg mt-2">Dan temukan banyak <span class="font-semibold text-sunset">Event</span> seru-mu disini!</p>
+      <div class="mt-6 flex justify-center">
+        <img src="{{ asset('img/binoculars.png') }}" alt="Jelajah Icon" class="h-16">
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="bg-earth py-8">
-  <div class="max-w-screen-xl mx-auto px-4">
-    <h2 class="text-xl font-bold text-snow mb-4">Berita Pendakian</h2>
-    <div class="swiper news-swiper">
-      <div class="swiper-wrapper">
-        {{-- ITEM 1 --}}
-        <div class="swiper-slide">
-          <a href="https://www.tnbs.or.id/berita/semeru-ditutup" target="_blank"
-             class="block rounded-lg overflow-hidden shadow-md group">
-            <div class="relative h-64 md:h-72 bg-cover bg-center transition-transform group-hover:scale-[1.01]"
-                 style="background-image: url('{{ asset('img/semeru.jpg') }}')">
-              <div class="absolute inset-0 bg-black bg-opacity-50 p-4 flex flex-col justify-end">
-                <h3 class="text-snow text-lg font-semibold group-hover:underline">Gunung Semeru Ditutup Sementara</h3>
-                <p class="text-snow text-sm">Mulai 1 Juni 2025, karena aktivitas vulkanik.</p>
-              </div>
-            </div>
-          </a>
+  {{-- Search Bar --}}
+  <section class="bg-snow py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-center">
+        <div class="relative w-full max-w-2xl">
+          <input type="text" placeholder="Cari sesuatu disini"
+            class="w-full border border-stone px-6 py-3 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-forest">
+          <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-forest">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z" /></svg>
+          </button>
         </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  {{-- Filter dan Urutkan --}}
+  <section class="bg-mist py-4">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <div class="flex space-x-4">
+        <button class="bg-white px-4 py-2 rounded-md border border-stone text-pine font-medium shadow-sm">Lokasi</button>
+        <button class="bg-white px-4 py-2 rounded-md border border-stone text-pine font-medium shadow-sm">Kategori</button>
+      </div>
+      <div>
+        <button class="bg-sunset text-white px-4 py-2 rounded-md shadow-sm hover:bg-forest transition">Terbaru</button>
+      </div>
+    </div>
+  </section>
 
-
-<!-- Trip Cards -->
-<section class="bg-snow py-12">
+ <!-- Trip Cards -->
+<section class="bg-snow py-12 mb-12">
   <div class="max-w-screen-xl mx-auto px-4">
     <h2 class="text-white text-xl font-bold mb-6">TRIP PALING LARIS</h2>
     <div class="flex space-x-4 gap-4 overflow-x-auto pb-2">
@@ -89,29 +93,5 @@
   </div>
 </div>
     </div>
-</section>
-
-
-<!-- Join Section -->
-<section class="bg-pine text-snow py-8">
-  <div class="max-w-screen-xl mx-auto px-6 md:px-10 flex flex-col md:flex-row items-center justify-between gap-8">
-    
-    <!-- Teks -->
-    <div class="md:w-1/2">
-      <h2 class="text-xl md:text-2xl font-bold mb-3">BERGABUNGLAH</h2>
-      <p class="text-sm md:text-base mb-4 leading-relaxed">
-        Daftarkan tripmu dan jadikan eventmu semakin seru bersama sahabat baru!
-      </p>
-      <a href="#" class="inline-block bg-snow text-forest px-5 py-2 rounded-full text-sm font-semibold shadow hover:bg-mist transition">
-        Daftar Sekarang
-      </a>
-    </div>
-
-    <!-- Gambar -->
-    <div class="md:w-1/2">
-      <img src="{{ asset('img/join.png') }}" alt="Ilustrasi Join" class="w-full max-w-[280px] mx-auto md:mx-0" />
-    </div>
-
-  </div>
 </section>
 </x-home-layout>
