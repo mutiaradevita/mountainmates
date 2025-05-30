@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function indexAdmin()
+    public function index()
     {
-        return view('admin.index');
+        return view('admin.dashboard');
+    }
+
+     public function indexAdmin()
+    {
+        return view('admin.index'); // opsional, sesuai view yang kamu buat
     }
     
     public function indexEo()
