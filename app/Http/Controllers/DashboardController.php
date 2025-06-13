@@ -13,12 +13,12 @@ class DashboardController extends Controller
 
      public function indexAdmin()
     {
-        return view('admin.index'); // opsional, sesuai view yang kamu buat
+        return view('dashboard'); 
     }
     
-    public function indexEo()
+    public function indexOrganizer()
     {
-        return view('eo.index');
+        return view('pages.organizer.dashboard');
     }
     
     public function indexUser()
