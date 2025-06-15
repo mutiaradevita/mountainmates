@@ -17,8 +17,9 @@ return new class extends Migration
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_tiket');
             $table->foreign('id_tiket')->references('id')->on('tikets')->onDelete('cascade');
+            $table->string('status')->default('menunggu');
             $table->integer('jumlah');
-            $table->decimal('total', 5, 2);
+            $table->decimal('total', 10, 2);
             $table->timestamps();
         });
     }

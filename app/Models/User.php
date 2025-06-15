@@ -12,6 +12,8 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $guard = 'web';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -48,5 +50,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+     public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function joinedTrips()
+    {
+        return $this->hasMany(TripUser::class);
     }
 }

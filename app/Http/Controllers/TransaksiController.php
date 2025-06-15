@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Tiket;
 use App\Models\User;
 use App\Models\Transaksi;
+use App\Models\Trip;
 
 class TransaksiController extends Controller
 {
@@ -16,7 +17,8 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        return view('riwayat');
+        $transaksis = Transaksi::with('tiket')->where('id_user', auth()->id())->get();
+            return view('riwayat', compact('transaksis'));
     }
 
     /**
@@ -38,25 +40,29 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_tiket' => 'required|integer',
-            'id_user' => 'required|integer',
-            'total' => 'required|numeric|min:0',
+            'nama' => 'required|string|max:255',
+            'nomor_telepon' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'jumlah_peserta' => 'required|integer|min:1',
+            'paket' => 'required|string',
+            'trip_id' => 'required|exists:trips,id', // Asumsi trip_id yang dipilih ada
         ]);
 
-        // Simpan data transaksi ke dalam tabel transaksi
-        Transaksi::create([
-            'id_tiket' => $request->id_tiket,
-            'id_user' => $request->id_user,
-            'jumlah' => $request->jumlah,
-            'total' => $request->total,
-        ]);
+        // Ambil data trip berdasarkan trip_id
+        $trip = Trip::findOrFail($request->trip_id);
 
-        $tiket = Tiket::find($request->id_tiket);
-            $tiket->update([
-                'jumlah_tiket' => $tiket->jumlah_tiket - $request->jumlah,
-            ]);
+        // Hitung total harga berdasarkan jumlah peserta
+        $total = $trip->harga * $request->jumlah_peserta;
 
-        return redirect()->back()->with('success', 'Pembayaran Berhasil');
+        // Menyimpan transaksi ke tabel 'transaksis'
+        $transaksi = new Transaksi();
+        $transaksi->id_user = auth()->id(); // ID pengguna yang login
+        $transaksi->id_tiket = $trip->id; // ID trip
+        $transaksi->jumlah = $request->jumlah_peserta; // Jumlah peserta
+        $transaksi->total = $total; // Total harga
+        $transaksi->save();
+
+        return redirect()->route('trips.index')->with('success', 'Transaksi berhasil dilakukan');
     }
 
     /**

@@ -2,12 +2,6 @@
   <form method="POST" action="{{ route('register') }}">
     @csrf
     <div class="mb-4">
-      <x-input-label for="name" :value="__('Nama')" />
-      <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus placeholder="Nama Lengkap" />
-      <x-input-error :messages="$errors->get('name')" class="mt-2" />
-    </div>
-
-    <div class="mb-4">
       <x-input-label for="email" :value="__('Email')" />
       <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Email" />
       <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -27,11 +21,21 @@
 
     <div class="mb-4">
       <x-input-label for="role" :value="__('Role')"  />
-      <select name="role" id="role" class="block mt-1 w-full" required>
+      <select name="role" id="role" required class="block w-full mt-1  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+        <option value="" disabled selected>Pilih Role</option>
         <option value="pendaki">Pendaki</option>
         <option value="pengelola">Pengelola</option>
       </select>
       <x-input-error :messages="$errors->get('role')" class="mt-2" />
+    </div>
+
+    <!-- Fields for Pendaki only -->
+    <div id="pendaki_fields" style="display: none;">
+      <div class="mb-4">
+        <x-input-label for="name" :value="__('Nama')" />
+        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" placeholder="Nama Lengkap" />
+        <x-input-error :messages="$errors->get('name')" class="mt-2" />
+      </div>
     </div>
 
     <!-- Fields for Pengelola only -->
@@ -59,13 +63,24 @@
   <p class="mt-8 text-xs text-center text-stone">Copyright © Mountain Mates {{ date('Y') }}</p>
 
   <script>
-    // Menampilkan atau menyembunyikan fields 'company_name' dan 'pic_name' berdasarkan role
+    // Menampilkan atau menyembunyikan fields 'company_name', 'pic_name', dan 'name' berdasarkan role
     document.getElementById('role').addEventListener('change', function() {
       var pengelolaFields = document.getElementById('pengelola_fields');
+      var pendakiFields = document.getElementById('pendaki_fields');
+      var nameField = document.getElementById('name');
+
+      // Jika role pengelola, tampilkan pengelola fields dan sembunyikan pendaki fields
       if (this.value == 'pengelola') {
         pengelolaFields.style.display = 'block';
+        pendakiFields.style.display = 'none';
+        nameField.required = false; // Tidak perlu isi nama jika pengelola
+      } else if (this.value == 'pendaki') {
+        pengelolaFields.style.display = 'none';
+        pendakiFields.style.display = 'block';
+        nameField.required = true; // Wajib isi nama jika pendaki
       } else {
         pengelolaFields.style.display = 'none';
+        pendakiFields.style.display = 'none';
       }
     });
   </script>

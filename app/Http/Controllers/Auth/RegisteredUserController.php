@@ -30,7 +30,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required_if:role,pendaki|string|max:255|nullable',
             'email' => 'required|string|lowercase|email|max:255|unique:users',
             'phone' => 'required|string',
             'password' => 'required',
@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
 
         // Menyimpan data user baru ke database
         $user = new User();
-        $user->name = $request->name;
+        $user->name = $request->role == 'pendaki' ? $request->name : null;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->password = Hash::make($request->password);
@@ -52,11 +52,17 @@ class RegisteredUserController extends Controller
         if ($request->role == 'pengelola') {
             $user->company_name = $request->company_name;
             $user->pic_name = $request->pic_name;
+        } else {
+            $user->company_name = null;
+            $user->pic_name = null;
         }
 
         $user->save();
 
-        // Redirect atau sukses setelah registrasi
-        Auth::login($user);return redirect('/home');
+        if ($user->role === 'pengelola') {
+            return redirect()->route('pengelola.dashboard');
+        } else {
+            return redirect()->route('home');
+        }
     }
 }

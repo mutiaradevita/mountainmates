@@ -10,14 +10,13 @@ class Authenticate extends Middleware
     {
         if (! $request->expectsJson()) {
         if ($request->is('admin') || $request->is('admin/*')) {
-            return route('admin.login');
+            return route('login');
         }
 
-        if ($request->is('organizer') || $request->is('organizer/*')) {
-            return route('organizer.login');
+        if ($request->is('pengelola') || $request->is('pengelola/*')) {
+            return route('login');
         }
 
-        // default: user/peserta
         return route('login'); 
         }
 
