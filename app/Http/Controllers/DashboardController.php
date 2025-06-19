@@ -3,37 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Transaksi;
+use App\Models\User;
 use App\Models\Trip;
-use App\Models\TripUser;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    // public function index()
-    // {
-    //     return view('admin.dashboard');
-    // }
-
-     public function indexAdmin()
+    public function adminDashboard()
     {
-        return view('dashboard'); 
+        $totalUser = User::count();
+        $totalTrip = Trip::count();
+        $orderPending = Transaksi::where('status', 'menunggu')->count();
+        $orderSelesai = Transaksi::where('status', 'selesai')->count();
+
+        return view('admin.dashboard', [
+            'orderPending' => Transaksi::where('status', 'menunggu')->count(),
+            'orderSelesai' => Transaksi::where('status', 'confirmed')->count(),
+            'totalTrip' => Trip::count(),
+            'totalUser' => User::count(),
+        ]);
     }
     
-    public function index()
+    public function indexPengelola()
     {
-        $pengelolaId = Auth::id();
+        $userId = Auth::id();
 
-        $activeTripsCount = Trip::where('created_by', $pengelolaId)->where('status', 'aktif')->count();
-        $completedTripsCount = Trip::where('created_by', $pengelolaId)->where('status', 'selesai')->count();
-        $participantsCount = TripUser::whereHas('trip', function($query) use ($pengelolaId) {
-            $query->where('created_by', $pengelolaId);
-        })->count();
+        return view('pengelola.dashboard', [
+            'pesertaAktif' => Transaksi::where('status', 'confirmed')
+                ->whereHas('trip', function ($query) {
+                    $query->where('created_by', Auth::id());
+                })
+                ->count(),
 
-        $latestTrips = Trip::where('created_by', $pengelolaId)
-            ->latest()
-            ->take(5)
-            ->get();
-
-        return view('pengelola.dashboard', compact('activeTripsCount', 'completedTripsCount', 'participantsCount', 'latestTrips'));
+            'belumVerifikasi' => Transaksi::where('status', 'pending')
+                ->whereHas('trip', function ($query) use ($userId) {
+                    $query->where('created_by', Auth::id());
+                })->count(),
+        ]);
     }
 }

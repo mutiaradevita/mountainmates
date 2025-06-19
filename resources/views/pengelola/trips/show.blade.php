@@ -38,6 +38,33 @@
                 </div>
             </div>
     </section>
+
+    <section class="bg-mist py-12">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-2xl font-bold text-center text-pine mb-8">Ulasan dari Peserta</h2>
+
+            @if($trip->pengelola && $trip->pengelola->ulasanMasuk->count())
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @foreach($trip->pengelola->ulasanMasuk as $ulasan)
+                        <div class="bg-white p-6 rounded-xl shadow">
+                            <p class="text-gray-700 italic mb-3">“{{ $ulasan->komentar }}”</p>
+                            <div class="text-sm text-gray-600">
+                                <strong>{{ $ulasan->peserta->user->name ?? 'Anonim' }}</strong>
+                                <div class="text-yellow-500">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        {{ $i <= $ulasan->rating ? '★' : '☆' }}
+                                    @endfor
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-center text-gray-600 italic">Belum ada ulasan untuk pengelola ini.</p>
+            @endif
+        </div>
+    </section>
+
     <script>
         document.getElementById('jadwalButton').addEventListener('click', function() {
             document.getElementById('jadwalContainer').classList.toggle('hidden');

@@ -56,8 +56,20 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function joinedTrips()
+    public function ulasan()
     {
-        return $this->hasMany(TripUser::class);
+        return $this->hasMany(Ulasan::class);
+    }
+    public function ulasanMasuk()
+    {
+        return $this->hasMany(Ulasan::class, 'user_id');
+    }
+    public function ulasanTerkirim()
+    {
+        return $this->hasMany(Ulasan::class, 'peserta_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

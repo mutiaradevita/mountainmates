@@ -4,7 +4,7 @@
             <h1 class="text-2xl font-bold text-center text-pine">Riwayat Trip</h1>
 
             <!-- Filter Status Trip -->
-            <form method="GET" action="{{ route('trips.history') }}" class="mb-6">
+            <form method="GET" action="{{ route('pengelola.trips.history') }}" class="mb-6">
                 <div class="flex justify-between">
                     <div class="w-1/3">
                         <label class="block text-sm font-medium mb-1">Filter Berdasarkan Status</label>
@@ -32,7 +32,7 @@
                         <p class="text-gray-700">{{ \Carbon\Carbon::parse($trip->tanggal_trip)->translatedFormat('l, d M Y') }}</p>
                         <p class="text-gray-700">{{ $trip->lokasi }}</p>
                         <p class="text-gray-700">Status: {{ ucfirst($trip->status) }}</p> <!-- Status Trip -->
-                        <a href="{{ route('trips.show', $trip->id) }}" class="block text-center bg-pine text-white py-2 rounded-md mt-4">Lihat Detail</a>
+                        <a href="{{ route('pengelola.trips.show', $trip->id) }}" class="block text-center bg-pine text-white py-2 rounded-md mt-4">Lihat Detail</a>
                     </div>
                 @endforeach
             </div>

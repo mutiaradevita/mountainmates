@@ -3,38 +3,56 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        "./node_modules/flowbite/**/*.js"
-    ],
+  content: [
+    './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+    './storage/framework/views/*.php',
+    './resources/views/**/*.blade.php',
+    './node_modules/flowbite/**/*.js',
+  ],
 
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
-                heading: ['Anton', 'sans-serif'],
-                body: ['Nunito', 'sans-serif'],
-            },
-            colors: {
-                'pine': '#2F4F4F',         // hijau pinus gelap
-                'forest': '#228B22',       // hijau hutan
-                'sky': '#87CEEB',          // biru langit
-                'stone': '#A9A9A9',        // abu batu
-                'earth': '#8B4513',        // coklat tanah
-                'snow': '#F8FAFC',         // putih salju
-                'moss': '#6B8E23',         // hijau lumut
-                'sunset': '#FFB347',       // oranye lembut
-                'lake': '#4682B4',         // biru danau
-                'mist': '#E0F2F1',         // abu muda berkabut
-            },
-        },
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        heading: ['Anton', 'sans-serif'],
+        body: ['Nunito', 'sans-serif'],
+      },
+      colors: {
+        pine: '#2F4F4F',
+        forest: '#228B22',
+        sky: '#87CEEB',
+        stone: '#A9A9A9',
+        earth: '#8B4513',
+        snow: '#F8FAFC',
+        moss: '#6B8E23',
+        sunset: '#FFB347',
+        lake: '#4682B4',
+        mist: '#E0F2F1',
+      },
     },
+  },
 
-    plugins: [
-        require('flowbite/plugin'),
-        require("daisyui")
+  plugins: [
+    forms,
+    require('flowbite/plugin'),
+    require('daisyui'),
+  ],
+
+  daisyui: {
+    themes: [
+      {
+        mountainmates: {
+          primary: "#228B22",      // forest
+          secondary: "#6B8E23",    // moss
+          accent: "#87CEEB",       // sky
+          neutral: "#2F4F4F",      // pine
+          "base-100": "#F8FAFC",   // snow
+          info: "#4682B4",         // lake
+          success: "#228B22",      // forest
+          warning: "#FFB347",      // sunset
+          error: "#8B0000",        // red dark
+        },
+      },
     ],
+  },
 };
-

@@ -1,6 +1,10 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('title', 'Edit Trip')
+
+@section('content')
     <div class="mb-6">
-        <a href="{{ route('trips.create') }}"
+        <a href="{{ route('pengelola.trips.create') }}"
            class="bg-forest text-white px-4 py-2 rounded-xl hover:bg-pine transition">
             + Tambah Trip
         </a>
@@ -25,15 +29,19 @@
                         <td class="px-6 py-4">{{ $trip->tanggal_mulai }} - {{ $trip->tanggal_selesai }}</td>
                         <td class="px-6 py-4">Rp {{ number_format($trip->harga, 0, ',', '.') }}</td>
                         <td class="px-6 py-4 flex space-x-2">
-                            <a href="{{ route('trips.show', $trip->id) }}"
+                            <a href="{{ route('pengelola.trips.show', $trip->id) }}"
                                class="bg-lake text-white px-3 py-1 rounded-lg hover:bg-sky transition">
                                 Detail
                             </a>
-                            <a href="{{ route('trips.edit', $trip->id) }}"
+                            <a href="{{ route('pengelola.trips.edit', $trip->id) }}"
                                class="bg-sunset text-white px-3 py-1 rounded-lg hover:bg-orange-400 transition">
                                 Edit
                             </a>
-                            <form action="{{ route('trips.destroy', $trip->id) }}"
+                            <a href="{{ route('pengelola.trips.peserta', $trip->id) }}"
+                                class="bg-emerald-600 text-white px-3 py-1 rounded-lg hover:bg-emerald-700 transition">
+                                Peserta
+                            </a>
+                            <form action="{{ route('pengelola.trips.destroy', $trip->id) }}"
                                   method="POST" onsubmit="return confirm('Yakin ingin hapus trip ini?')">
                                 @csrf
                                 @method('DELETE')
@@ -52,4 +60,4 @@
             </tbody>
         </table>
     </div>
-</x-app-layout>
+@endsection

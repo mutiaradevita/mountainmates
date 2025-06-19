@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TripUser extends Model
+class Ulasan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'trip_id',
-        'user_id',
-        'status',
+        'peserta_id',
+        'rating',
+        'komentar',
     ];
 
     public function trip()
@@ -20,9 +21,13 @@ class TripUser extends Model
         return $this->belongsTo(Trip::class);
     }
 
-    public function user()
+    public function peserta()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'peserta_id');
+    }
+
+    public function pengelola()
+    {
+        return $this->belongsTo(User::class, 'pengelola_id');
     }
 }
-

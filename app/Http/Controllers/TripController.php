@@ -61,7 +61,8 @@ class TripController extends Controller
 
     public function show($id)
     {
-        $trip = Trip::findOrFail($id);
+       
+        $trip = Trip::with('pengelola.ulasanMasuk.peserta.user')->findOrFail($id);
 
         return view('pengelola.trips.show', compact('trip'));
     }
@@ -117,19 +118,15 @@ class TripController extends Controller
         return redirect()->route('trips.index')->with('success', 'Trip berhasil diperbarui');
     }
 
-    public function history(Request $request)
+   public function history(Request $request)
     {
         $status = $request->get('status');
 
-        if ($status) {
-            $trips = Trip::where('created_by', Auth::id())
-             ->when($status, fn($q) => $q->where('status', $status))
-             ->get();
-        } else {
-            $trips = Trip::all(); 
-        }
+        $trips = Trip::where('created_by', Auth::id())
+                    ->when($status, fn($q) => $q->where('status', $status))
+                    ->get();
 
-        return view('trips.history', compact('trips'));
+        return view('pengelola.trips.history', compact('trips'));
     }
 
     public function destroy($id)
@@ -138,5 +135,32 @@ class TripController extends Controller
         $trip->delete();
 
         return redirect()->route('trips.index')->with('success', 'Trip berhasil dihapus');
+    }
+    public function transaksiIndex()
+    {
+        $userId = Auth::user()->id;
+
+        $transaksis = \App\Models\Transaksi::with(['trip', 'user'])
+            ->whereHas('trip', function ($query) use ($userId) {
+                $query->where('created_by', $userId);
+            })
+            ->latest()
+            ->get();
+
+        return view('pengelola.transaksi.index', compact('transaksis'));
+    }
+
+    public function peserta($id)
+    {
+        $trip = Trip::with('transaksis.user')->findOrFail($id);
+
+        if ((int) $trip->created_by !== (int) Auth::id()) 
+        {
+            abort(403, 'Kamu tidak berhak melihat peserta trip ini.');
+        }
+
+        $pesertas = $trip->transaksis()->with('user')->get();
+
+        return view('pengelola.trips.peserta', compact('trip', 'pesertas'));
     }
 }

@@ -16,8 +16,8 @@
         {{-- Dropdown Menu --}}
         <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-opacity duration-150 z-50">
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">My Tiket</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Rating & Reviews</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Riwayat</a>
+            <a href="{{ route('peserta.ulasan') }}" class="block px-4 py-2 hover:bg-gray-100">Ulasan</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="block">
                 @csrf
                 <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>

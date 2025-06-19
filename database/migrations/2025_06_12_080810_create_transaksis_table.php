@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_user');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('id_tiket');
-            $table->foreign('id_tiket')->references('id')->on('tikets')->onDelete('cascade');
+            $table->unsignedBigInteger('id_trip');
+            $table->foreign('id_trip')->references('id')->on('trips')->onDelete('cascade');
             $table->string('status')->default('menunggu');
             $table->integer('jumlah');
             $table->decimal('total', 10, 2);

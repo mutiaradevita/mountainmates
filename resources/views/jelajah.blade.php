@@ -41,11 +41,10 @@
     </section>
 
     <!-- Trip Cards -->
-    <section class="bg-snow py-12 mb-12">
+    <section id="trip" class="bg-snow py-12 mb-12">
       <div class="max-w-screen-xl mx-auto px-4">
         <h2 class="text-pine text-xl font-bold mb-6">TRIP PALING LARIS</h2>
         <div class="flex space-x-4 gap-4 overflow-x-auto pb-2">
-
           @forelse ($trips as $trip)
             <a href="{{ route('jelajah.detail', $trip->id) }}" class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
               <img src="{{ asset('storage/' . $trip->flyer) }}" alt="Trip {{ $trip->nama_trip }}" class="w-full h-48 object-cover">

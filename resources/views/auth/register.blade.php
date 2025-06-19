@@ -23,7 +23,7 @@
       <x-input-label for="role" :value="__('Role')"  />
       <select name="role" id="role" required class="block w-full mt-1  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
         <option value="" disabled selected>Pilih Role</option>
-        <option value="pendaki">Pendaki</option>
+        <option value="pendaki">Peserta</option>
         <option value="pengelola">Pengelola</option>
       </select>
       <x-input-error :messages="$errors->get('role')" class="mt-2" />
@@ -66,21 +66,21 @@
     // Menampilkan atau menyembunyikan fields 'company_name', 'pic_name', dan 'name' berdasarkan role
     document.getElementById('role').addEventListener('change', function() {
       var pengelolaFields = document.getElementById('pengelola_fields');
-      var pendakiFields = document.getElementById('pendaki_fields');
+      var pesertaFields = document.getElementById('peserta_fields');
       var nameField = document.getElementById('name');
 
       // Jika role pengelola, tampilkan pengelola fields dan sembunyikan pendaki fields
       if (this.value == 'pengelola') {
         pengelolaFields.style.display = 'block';
-        pendakiFields.style.display = 'none';
-        nameField.required = false; // Tidak perlu isi nama jika pengelola
-      } else if (this.value == 'pendaki') {
+        pesertaFields.style.display = 'none';
+        nameField.required = false; 
+      } else if (this.value == 'peserta') {
         pengelolaFields.style.display = 'none';
-        pendakiFields.style.display = 'block';
-        nameField.required = true; // Wajib isi nama jika pendaki
+        pesertaFields.style.display = 'block';
+        nameField.required = true; 
       } else {
         pengelolaFields.style.display = 'none';
-        pendakiFields.style.display = 'none';
+        pesertaFields.style.display = 'none';
       }
     });
   </script>

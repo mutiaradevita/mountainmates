@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
         } elseif ($user->role == 'pengelola') {
             return redirect()->route('pengelola.dashboard');
         } else {
-            return redirect()->route('home');
+            return redirect()->route('jelajah');
         }
     }
 
@@ -46,9 +46,8 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect('/home');
+        return redirect('/');
     }
 }

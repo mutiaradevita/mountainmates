@@ -23,7 +23,7 @@
                 <a href="{{ $dashboardRoute }}" class="text-sm font-medium text-gray-600 hover:text-pine transition">Dashboard</a>
 
                 @if ($user->role === 'pengelola')
-                    <a href="{{ route('trips.index') }}" class="text-sm font-medium text-gray-600 hover:text-pine transition">Trip Saya</a>
+                    <a href="{{ route('pengelola.trips.index') }}" class="text-sm font-medium text-gray-600 hover:text-pine transition">Trip Saya</a>
                 @endif
 
                 <a href="{{ route('profile.edit') }}" class="text-sm font-medium text-gray-600 hover:text-pine transition">Profil</a>

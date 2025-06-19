@@ -3,33 +3,42 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DetailController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\TripPublicController;
+use App\Http\Controllers\UlasanController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DataController;
 use App\Http\Controllers\DashboardController;
-// use App\Http\Controllers\ParticipantController;
 
-// Redirect root ke halaman home
-Route::get('/', fn () => redirect()->route('home'))->name('home');
-Route::get('/jelajah', fn () => redirect()->route('jelajah'))->name('jelajah');
+// ======================== GUEST ========================
+Route::get('/', [HomeController::class, 'landing'])->middleware('guest')->name('landing');
 
+// Redirect setelah login
+Route::get('/home', fn () => redirect()->route('jelajah'))->middleware('auth')->name('home');
 
-// Halaman utama / landing page
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-// Halaman jelajah (semua user bisa lihat)
+// ======================== PUBLIK ========================
 Route::get('/jelajah', [TripPublicController::class, 'index'])->name('jelajah');
 Route::get('/jelajah-trip', [TripPublicController::class, 'index'])->name('pendaki.index');
 Route::get('/jelajah/{id}', [TripPublicController::class, 'show'])->name('jelajah.detail');
 
-// Halaman Transaksi (sementara tanpa auth, nanti bisa dibatasi role:pendaki)
-Route::get('/riwayat', [TransaksiController::class, 'index'])->name('transaksi.index');
+// ======================== TRANSAKSI ========================
 Route::post('/transaksi', [TransaksiController::class, 'store'])->middleware('auth')->name('transaksi.store');
 
+// ======================== PESERTA ========================
+Route::prefix('peserta')->middleware(['auth', 'role:peserta'])->name('peserta.')->group(function () {
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
+    // Route::get('/ulasan/{trip}/buat', [\App\Http\Controllers\Peserta\UlasanController::class, 'create'])->name('ulasan.create');
+    // Route::post('/ulasan/{trip}', [\App\Http\Controllers\Peserta\UlasanController::class, 'store'])->name('ulasan.store');
+    Route::get('/riwayat', [TransaksiController::class, 'index'])->name('peserta.transaksi.index');
+    Route::get('/riwayat/{id}', [TransaksiController::class, 'show'])->name('peserta.transaksi.show');
 
+});
 
-// Auth & Profile
+// ======================== PROFILE ========================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -37,18 +46,25 @@ Route::middleware('auth')->group(function () {
 });
 
 // ========================== ADMIN ==========================
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('admin.dashboard');
-    // Tambahkan route admin lainnya di sini
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () { 
+    Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+    Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita']);
+    Route::resource('user', UserController::class);
+    Route::get('trip', [DataController::class, 'tripIndex'])->name('trip.index');
+    Route::get('trip/{trip}', [DataController::class, 'tripShow'])->name('trip.show');
+    Route::delete('trip/{trip}', [DataController::class, 'tripDestroy'])->name('trip.destroy');
+    Route::get('transaksi', [DataController::class, 'transaksiIndex'])->name('transaksi.index');
+    Route::get('transaksi/{transaksi}', [DataController::class, 'transaksiShow'])->name('transaksi.show');
+    Route::delete('transaksi/{transaksi}', [DataController::class, 'transaksiDestroy'])->name('transaksi.destroy');
 });
 
 // ======================== PENGELOLA ========================
-Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('pengelola.dashboard');
+Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->name('pengelola.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'indexPengelola'])->name('dashboard');
     Route::resource('trips', TripController::class);
-    Route::get('/trip-history', [TripController::class, 'history'])->name('pengelola.trips.history');
+    Route::get('/trip-history', [TripController::class, 'history'])->name('trips.history');
     Route::get('/trip-detail/{id}', [TripController::class, 'show'])->name('trips.show');
+    Route::get('/trips/{trip}/peserta', [TripController::class, 'peserta'])->name('trips.peserta');
 });
-
 
 require __DIR__.'/auth.php';

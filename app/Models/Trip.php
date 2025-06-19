@@ -22,14 +22,21 @@ class Trip extends Model
         'created_by',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function pengelola()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
-    public function participants()
+    public function ulasans()
     {
-        return $this->belongsToMany(User::class, 'trip_user', 'trip_id', 'user_id')
-            ->withTimestamps();
+        return $this->hasMany(Ulasan::class, 'user_id');
+    }
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class, 'id_trip');
     }
 }

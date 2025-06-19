@@ -49,7 +49,7 @@
                                         </div>
                                         <div>
                                             <h3 class="font-semibold text-gray-900">
-                                                {{ $transaksi->tiket->nama ?? '-' }}
+                                                {{ $transaksi->trip->nama_trip ?? '-' }}
                                             </h3>
                                             <p class="text-sm">
                                                 <span class="inline-block px-2 py-1 text-sm rounded text-forest">
@@ -59,14 +59,16 @@
                                         </div>
                                     </div>
                                     <button class="text-gray-400 hover:text-gray-600 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
+                                        <a href="{{ route('peserta.transaksi.show', $transaksi->id) }}" class="text-gray-400 hover:text-gray-600 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </a>
                                     </button>
                                 </div>
                                 <div class="text-sm text-gray-600 space-y-1">
                                     <p>{{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('D, d M Y • H:i') }}</p>
-                                    <p>Jalur Pendakian: {{ $transaksi->tiket->jalur ?? '-' }} • {{ $transaksi->nama }}</p>
+                                    <p>Jalur Pendakian: {{ $transaksi->trip->jalur ?? '-' }} • {{ $transaksi->nama }}</p>
                                 </div>
                             </div>
                         @empty

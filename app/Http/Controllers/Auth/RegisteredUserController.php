@@ -30,11 +30,11 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required_if:role,pendaki|string|max:255|nullable',
+            'name' => 'required_if:role,peserta|string|max:255|nullable',
             'email' => 'required|string|lowercase|email|max:255|unique:users',
             'phone' => 'required|string',
             'password' => 'required',
-            'role' => 'required|in:pendaki,pengelola',
+            'role' => 'required|in:peserta,pengelola',
             'company_name' => 'required_if:role,pengelola|nullable|string|max:255',
             'pic_name' => 'required_if:role,pengelola|nullable|string|max:255',
 
@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
 
         // Menyimpan data user baru ke database
         $user = new User();
-        $user->name = $request->role == 'pendaki' ? $request->name : null;
+        $user->name = $request->role == 'peserta' ? $request->name : null;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->password = Hash::make($request->password);
@@ -62,7 +62,7 @@ class RegisteredUserController extends Controller
         if ($user->role === 'pengelola') {
             return redirect()->route('pengelola.dashboard');
         } else {
-            return redirect()->route('home');
+            return redirect()->route('jelajah');
         }
     }
 }

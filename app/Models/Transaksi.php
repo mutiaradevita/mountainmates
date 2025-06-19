@@ -9,15 +9,18 @@ class Transaksi extends Model
 {
      use HasFactory;
 
-    // Relasi dengan pengguna (User)
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    // Relasi dengan tiket (Trip)
-    public function tiket()
+    public function trip() 
     {
-        return $this->belongsTo(Tiket::class, 'id_tiket');
+        return $this->belongsTo(Trip::class, 'id_trip');
+    }
+
+    public function ulasan()
+    {
+        return $this->hasOne(Ulasan::class);
     }
 }
