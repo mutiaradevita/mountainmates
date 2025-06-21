@@ -29,8 +29,8 @@
       <x-input-error :messages="$errors->get('role')" class="mt-2" />
     </div>
 
-    <!-- Fields for Pendaki only -->
-    <div id="pendaki_fields" style="display: none;">
+    <!-- Fields for Peserta only -->
+    <div id="peserta_fields" style="display: none;">
       <div class="mb-4">
         <x-input-label for="name" :value="__('Nama')" />
         <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" placeholder="Nama Lengkap" />

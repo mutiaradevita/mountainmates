@@ -15,9 +15,9 @@ class HomeController extends Controller
     {
         $trips = Trip::all();
         $ulasans = Ulasan::latest()->with(['peserta.user', 'trip.pengelola'])->take(5)->get();
-        $beritas = Berita::latest()->take(5)->get();
+        $berita = Berita::latest()->take(5)->get();
 
-        return view('home', ['user' => null, 'trips' => $trips, 'ulasans' => $ulasans, 'beritas' => $beritas,]);
+        return view('home', ['user' => null, 'trips' => $trips, 'ulasans' => $ulasans, 'berita' => $berita,]);
     }
 
     public function index()

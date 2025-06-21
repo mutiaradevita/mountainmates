@@ -99,7 +99,7 @@
         <div class="max-w-screen-xl mx-auto px-4">
             <h2 class="text-center text-xl font-bold text-pine mb-6">Berita Pendakian</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                @foreach ($beritas as $berita)
+                @foreach ($berita as $berita)
                     <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
                         @if ($berita->gambar)
                             <img src="{{ asset('storage/' . $berita->gambar) }}" class="w-full h-48 object-cover" alt="{{ $berita->judul }}">

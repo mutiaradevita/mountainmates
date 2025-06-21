@@ -9,6 +9,22 @@ class Transaksi extends Model
 {
      use HasFactory;
 
+        protected $fillable = [
+        'id_user',
+        'id_trip',
+        'jumlah_peserta',
+        'total',
+        'status',
+        'nama',
+        'nomor_telepon',
+        'email',
+        'bulan',
+        'jadwal',
+        'catatan_khusus',
+        'metode_pembayaran',
+        'paket',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');

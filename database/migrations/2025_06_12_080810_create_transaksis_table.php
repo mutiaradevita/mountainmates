@@ -17,9 +17,18 @@ return new class extends Migration
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_trip');
             $table->foreign('id_trip')->references('id')->on('trips')->onDelete('cascade');
-            $table->string('status')->default('menunggu');
-            $table->integer('jumlah');
             $table->decimal('total', 10, 2);
+            $table->string('status')->default('menunggu');
+            $table->string('nama');
+            $table->string('nomor_telepon', 20);
+            $table->string('email');
+            $table->string('paket'); 
+            $table->string('bulan', 50);
+            $table->string('jadwal')->nullable();
+            $table->text('catatan_khusus')->nullable();
+            $table->string('metode_pembayaran', 100);
+            $table->string('payment_order_id');
+            $table->string('payment_token');
             $table->timestamps();
         });
     }

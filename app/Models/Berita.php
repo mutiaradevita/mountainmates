@@ -17,7 +17,7 @@ class Berita extends Model
 
     public function index()
     {
-        $beritas = Berita::latest()->take(6)->get();
+        $berita = Berita::latest()->take(6)->get();
     
         return view('home', compact('berita', 'trips', 'ulasans'));
     }
