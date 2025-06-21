@@ -5,7 +5,7 @@
 @section('content')
 <h1 class="text-2xl font-bold mb-6">Tambah User (Peserta/Pengelola)</h1>
 
-<form action="{{ route('superadmin.user.store') }}" method="POST" class="space-y-4 max-w-lg">
+<form action="{{ route('admin.user.store') }}" method="POST" class="space-y-4 max-w-lg">
   @csrf
   <div>
     <label class="block mb-1">Role</label>

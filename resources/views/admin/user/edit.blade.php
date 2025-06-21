@@ -5,7 +5,7 @@
 @section('content')
 <h1 class="text-2xl font-bold mb-6">Edit User</h1>
 
-<form action="{{ route('superadmin.user.update', $user->id) }}" method="POST" class="space-y-4 max-w-lg">
+<form action="{{ route('admin.user.update', $user->id) }}" method="POST" class="space-y-4 max-w-lg">
   @csrf @method('PUT')
   <div>
     <label class="block mb-1">Nama</label>

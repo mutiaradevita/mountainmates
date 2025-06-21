@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Tiket;
-use App\Models\User;
+// use App\Models\Tiket;
+// use App\Models\User;
 use App\Models\Transaksi;
 use App\Models\Trip;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
@@ -17,7 +18,7 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        $transaksis = Transaksi::with('trip')->where('id_user', auth()->id())->get();
+        $transaksis = Transaksi::with('trip')->where('id_user', Auth::id())->get();
             return view('riwayat', compact('transaksis'));
     }
 
@@ -42,7 +43,7 @@ class TransaksiController extends Controller
         $total = $trip->harga * $request->jumlah_peserta;
 
         $transaksi = new Transaksi();
-        $transaksi->id_user = auth()->id(); 
+        $transaksi->id_user = Auth::id(); 
         $transaksi->id_trip = $trip->id; 
         $transaksi->jumlah = $request->jumlah_peserta;
         $transaksi->total = $total; 
@@ -60,7 +61,7 @@ class TransaksiController extends Controller
      */
     public function show($id)
     {
-        $transaksi = Transaksi::with('trip')->where('id_user', auth()->id())->findOrFail($id);
+        $transaksi = Transaksi::with('trip')->where('id_user', Auth::id())->findOrFail($id);
 
         return view('transaksi.detail-transaksi', compact('transaksi'));
     }

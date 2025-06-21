@@ -95,7 +95,7 @@
                         <label class="block text-sm font-medium mb-1">Metode Pembayaran</label>
                         <select name="metode_pembayaran" class="w-full border border-gray-300 rounded-md p-2">
                             <option value="bank_transfer">Transfer Bank</option>
-                            <option value="e_wallet">E-Wallet</option>
+                            <option value="e_wallet">Qris</option>
                         </select>
                     </div>
 

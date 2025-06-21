@@ -21,10 +21,10 @@
 
     <div class="mb-4">
       <x-input-label for="role" :value="__('Role')"  />
-      <select name="role" id="role" required class="block w-full mt-1  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-        <option value="" disabled selected>Pilih Role</option>
-        <option value="pendaki">Peserta</option>
-        <option value="pengelola">Pengelola</option>
+      <select name="role" id="role" required class="block w-full p-2 border rounded dark:border-gray-300 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm">
+        <option value="">Pilih Role</option>
+        <option value="peserta" {{ old('role') == 'peserta' ? 'selected' : '' }}>Peserta</option>
+        <option value="pengelola" {{ old('role') == 'pengelola' ? 'selected' : '' }}>Pengelola</option>
       </select>
       <x-input-error :messages="$errors->get('role')" class="mt-2" />
     </div>

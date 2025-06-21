@@ -70,7 +70,7 @@
     <!-- Trip Cards Section -->
     <section id="trip-populer" class="bg-snow py-12 min-h-screen flex items-center">
         <div class="max-w-screen-xl mx-auto px-4">
-            <h2 class="text-pine text-xl font-bold mb-6">TRIP PALING LARIS</h2>
+            <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @forelse ($trips as $trip)
                     <a href="{{ route('jelajah.detail', $trip->id) }}" class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">

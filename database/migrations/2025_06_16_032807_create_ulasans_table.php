@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ulasans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pengelola_id')->constrained('users'); 
-            $table->foreignId('peserta_id')->constrained(); 
+            $table->foreignId('peserta_id')->constrained('users'); 
             $table->tinyInteger('rating')->default(5);
             $table->text('komentar')->nullable();
             $table->timestamps();
