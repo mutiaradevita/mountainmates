@@ -27,8 +27,8 @@ return new class extends Migration
             $table->string('jadwal')->nullable();
             $table->text('catatan_khusus')->nullable();
             $table->string('metode_pembayaran', 100);
-            $table->string('payment_order_id');
-            $table->string('payment_token');
+            $table->string('payment_order_id')->nullable();
+            $table->string('payment_token')->nullable();
             $table->timestamps();
         });
     }

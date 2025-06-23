@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
-use App\Models\DetailTransaksi;
+use App\Models\PesertaTransaksi;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +12,11 @@ class TransaksiController extends Controller
 {
     public function index()
     {
-        $transaksis = Transaksi::with('trip')->where('id_user', Auth::id())->get();
+        $transaksis = Transaksi::with('trip')
+        ->where('id_user', Auth::id())
+        ->orderBy('created_at', 'desc')
+        ->get();
+
         return view('riwayat', compact('transaksis'));
     }
 
@@ -50,19 +54,34 @@ class TransaksiController extends Controller
 
             $transaksi->save();
 
-            // // Simpan peserta jika ada
-            // if ($request->has('peserta')) {
-            //     foreach ($request->peserta as $data) {
-            //         $transaksi->pesertas()->create($data);
-            //     }
-            // }
+            if ($request->has('peserta')) {
+                foreach ($request->peserta as $peserta) {
+                    if (!empty($peserta['nama'])) {
+                        PesertaTransaksi::create([
+                            'id_transaksi' => $transaksi->id,
+                            'id_trip' => $transaksi->id_trip,
+                            'nama' => $peserta['nama'],
+                            'nomor_telepon' => $peserta['telepon'],
+                            'email' => $peserta['email'],
+                        ]);
+                    }
+                }
+            }
 
         return redirect()->route('peserta.transaksi.index')->with('success', 'Transaksi berhasil dilakukan');
     }
 
     public function show($id)
     {
-        $transaksi = Transaksi::with('trip')->where('id_user', Auth::id())->findOrFail($id);
+        $transaksi = Transaksi::with('trip', 'peserta', 'ulasan')->where('id_user', Auth::id())->findOrFail($id);
+
         return view('transaksi.detail-transaksi', compact('transaksi'));
     }
+
+    public function bayar($id)
+    {
+        $transaksi = Transaksi::where('id_user', Auth::id())->findOrFail($id);
+        return view('transaksi.pembayaran', compact('transaksi'));
+    }
+
 }

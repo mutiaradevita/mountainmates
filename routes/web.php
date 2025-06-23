@@ -35,6 +35,7 @@ Route::prefix('peserta')->middleware(['auth', 'role:peserta'])->name('peserta.')
     // Route::post('/ulasan/{trip}', [\App\Http\Controllers\Peserta\UlasanController::class, 'store'])->name('ulasan.store');
     Route::get('/riwayat', [TransaksiController::class, 'index'])->name('peserta.transaksi.index');
     Route::get('/riwayat/{id}', [TransaksiController::class, 'show'])->name('peserta.transaksi.show');
+    Route::get('/transaksi/{id}/bayar', [TransaksiController::class, 'bayar'])->name('transaksi.bayar');
 
 });
 

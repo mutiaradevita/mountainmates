@@ -1,16 +1,16 @@
 <x-home-layout>
-    <div class="pt-[80px] pb-12 bg-snow min-h-screen">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h2 class="text-2xl font-bold text-forest mb-6 border-b pb-3">Detail Riwayat Pemesanan</h2>
+     <div class="pt-[80px] pb-12 bg-snow min-h-screen">
+        <div class="max-w-xl mx-auto px-4 py-8 bg-white shadow rounded-xl">
+            <h2 class="text-center text-2xl font-bold text-forest mb-6 border-b pb-3">Detail Riwayat Pemesanan</h2>
 
             <div class="mb-6 bg-white rounded-xl shadow border border-mist p-6 space-y-4 text-gray-800">
                 <p>
                     <strong class="text-gray-600 w-40 inline-block">Trip:</strong>
-                    <span class="font-medium">{{ $transaksi->trip->nama }}</span>
+                    <span class="font-medium">{{ $transaksi->trip->nama_trip ?? '-' }}</span>
                 </p>
                 <p>
                     <strong class="text-gray-600 w-40 inline-block">Jumlah Peserta:</strong>
-                    <span class="font-medium">{{ $transaksi->jumlah }}</span>
+                    <span class="font-medium">{{ $transaksi->jumlah_peserta }}</span>
                 </p>
                 <p>
                     <strong class="text-gray-600 w-40 inline-block">Total:</strong>
@@ -24,8 +24,32 @@
                 </p>
                 <p>
                     <strong class="text-gray-600 w-40 inline-block">Tanggal Pesan:</strong>
-                    <span>{{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d M Y, H:i') }}</span>
+                    <span>{{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Jakarta')->translatedFormat('D, d M Y • H:i') }}</span>
                 </p>
+
+                @if ($transaksi->peserta->count())
+                    <div class="pt-4 border-t mt-6">
+                        <p class="font-semibold text-forest mb-2">Daftar Peserta:</p>
+                        <ol class="list-decimal list-inside text-gray-700 space-y-2">
+                            @foreach ($transaksi->peserta as $p)
+                                <li>
+                                    <div class="font-medium">{{ $p->nama }}</div>
+                                    @if($p->nomor_telepon) <div class="text-sm text-gray-500">HP: {{ $p->nomor_telepon }}</div> @endif
+                                    @if($p->email) <div class="text-sm text-gray-500">Email: {{ $p->email }}</div> @endif
+                                </li>
+                            @endforeach
+                        </ol>
+                    </div>
+                @endif
+
+                 @if ($transaksi->status === 'menunggu' || $transaksi->status === 'belum bayar')
+                    <div class="mt-4 text-right " >
+                        <a href="{{ route('peserta.transaksi.bayar', $transaksi->id) }}"
+                            class="inline-block bg-forest text-white px-4 py-2 rounded hover:bg-pine transition">
+                            Bayar Sekarang
+                        </a>
+                    </div>
+                @endif
             </div>
 
             @if ($transaksi->status === 'selesai')

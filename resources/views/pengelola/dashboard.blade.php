@@ -47,4 +47,11 @@
         <p class="text-xs text-gray-400 mt-1">Pembayaran berhasil</p>
     </div>
 </div>
+
+    @foreach ($pengelola->ulasanDiterima as $ulasan)
+        <div class="p-4 bg-white shadow mb-2">
+            <p class="text-gray-800 font-semibold">"{{ $ulasan->komentar }}"</p>
+            <div class="text-sm text-gray-500">Dari: {{ $ulasan->pemberi->name }}</div>
+        </div>
+    @endforeach
 @endsection

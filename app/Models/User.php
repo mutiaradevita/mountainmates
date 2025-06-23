@@ -60,14 +60,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ulasan::class);
     }
-    public function ulasanMasuk()
+
+    public function ulasanDiberikan()
     {
-        return $this->hasMany(Ulasan::class, 'user_id');
+        return $this->hasMany(Ulasan::class, 'id_user');
     }
-    public function ulasanTerkirim()
+
+    public function ulasanDiterima()
     {
-        return $this->hasMany(Ulasan::class, 'peserta_id');
+        return $this->hasMany(Ulasan::class, 'id_pengelola');
     }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

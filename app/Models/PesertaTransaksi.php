@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DetailTransaksi extends Model
+class PesertaTransaksi extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'id_transaksi',
-        'id_trip',
-        'nama',
-        'email',
-        'nomor_telepon',
+        'id_trip', 
+        'nama', 
+        'nomor_telepon', 
+        'email'
     ];
 
     public function transaksi()

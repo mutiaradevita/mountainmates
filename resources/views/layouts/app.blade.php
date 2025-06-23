@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title', 'Dashboard')</title>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
+  data-client-key="{{ config('midtrans.client_key') }}"></script>
 </head>
 <body class="bg-gray-100 text-gray-800" x-data="{ sidebarOpen: true }">
   <div class="flex flex-col min-h-screen lg:ml-64">

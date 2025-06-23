@@ -3,7 +3,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
             <!-- Main Content -->
-            <div class="lg:w-3/4">
+            <div class="lg:w-3/4 mx-auto">
                 <div class="bg-white rounded-lg shadow-sm border">
                     <div class="border-b px-6 py-4">
                         <h2 class="text-center text-xl font-semibold text-gray-900">Riwayat Pemesanan</h2>
@@ -67,8 +67,7 @@
                                     </button>
                                 </div>
                                 <div class="text-sm text-gray-600 space-y-1">
-                                    <p>{{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('D, d M Y • H:i') }}</p>
-                                    <p>Jalur Pendakian: {{ $transaksi->trip->jalur ?? '-' }} • {{ $transaksi->nama }}</p>
+                                    <p>{{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Jakarta')->translatedFormat('D, d M Y • H:i') }}</p>
                                 </div>
                             </div>
                         @empty
