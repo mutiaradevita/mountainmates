@@ -43,14 +43,13 @@
                 @endif
 
                  @if ($transaksi->status === 'menunggu' || $transaksi->status === 'belum bayar')
-                    <div class="mt-4 text-right " >
-                        <a href="{{ route('peserta.transaksi.bayar', $transaksi->id) }}"
-                            class="inline-block bg-forest text-white px-4 py-2 rounded hover:bg-pine transition">
+                    <div class="mt-4 text-right">
+                        <button id="pay-button"
+                            class="bg-forest text-white px-4 py-2 rounded hover:bg-pine transition">
                             Bayar Sekarang
-                        </a>
+                        </button>
                     </div>
                 @endif
-            </div>
 
             @if ($transaksi->status === 'selesai')
                 @if (!$transaksi->ulasan)
@@ -78,3 +77,35 @@
         </div>
     </div>
 </x-home-layout>
+
+@if(isset($snapToken) && ($transaksi->status === 'menunggu' || $transaksi->status === 'belum bayar'))
+    {{-- Midtrans Script --}}
+    <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const payBtn = document.getElementById("pay-button");
+            if (payBtn) {
+                payBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    window.snap.pay('{{ $snapToken }}', {
+                        onSuccess: function (result) {
+                            alert("Pembayaran berhasil!");
+                            location.reload();
+                        },
+                        onPending: function (result) {
+                            alert("Pembayaran tertunda.");
+                        },
+                        onError: function (result) {
+                            alert("Pembayaran gagal.");
+                        },
+                        onClose: function () {
+                            alert("Anda menutup popup pembayaran.");
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+@endif

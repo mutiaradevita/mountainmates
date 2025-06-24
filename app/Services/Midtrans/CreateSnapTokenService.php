@@ -49,7 +49,7 @@ class CreateSnapTokenService
                 'email' => $this->request->email,
                 'phone' => $this->request->phone,
             ],
-            'item_details' => $itemDetails,
+            // 'item_details' => $itemDetails,
             'expiry' => [
                 'start_time' => $startTime->format('Y-m-d H:i:s O'),
                 'unit' => 'day',

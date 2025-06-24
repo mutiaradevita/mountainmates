@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
 
         // Menyimpan data user baru ke database
         $user = new User();
-        $user->name = $request->role == 'peserta' ? $request->name : null;
+        $user->name = $request->role == 'peserta' ? $request->name : $request->company_name;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->password = Hash::make($request->password);
@@ -52,7 +52,6 @@ class RegisteredUserController extends Controller
         if ($request->role == 'pengelola') {
             $user->company_name = $request->company_name;
             $user->pic_name = $request->pic_name;
-            $user->name = $request->name;
         } else {
             $user->company_name = null;
             $user->pic_name = null;
