@@ -5,6 +5,16 @@
 @section('content')
 <div class="max-w-6xl mx-auto py-8">
     <h1 class="text-3xl font-bold mb-6">Tambah Trip</h1>
+    @if ($errors->any())
+    <div class="mb-4 text-red-600">
+        <ul class="list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 
     <form action="{{ route('pengelola.trips.store') }}" method="POST" enctype="multipart/form-data">
         @csrf

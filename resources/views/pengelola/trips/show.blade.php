@@ -5,7 +5,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Kolom 1: Gambar + Nama + Deskripsi -->
                 <div class="w-full max-w-md mx-auto overflow-hidden rounded-xl mb-4">
-                    <img src="http://localhost/storage/flyers/{{ $trip->flyer }}" alt="{{ $trip->nama_trip }}" class="w-full max-h-[150px] object-cover">
+                    <img src="{{ asset('storage/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}" class="w-full max-h-[150px] object-cover">
                     <h1 class="text-center text-2xl font-bold text-pine mb-2 mt-4">{{ $trip->nama_trip }}</h1>
                     <p class="text-gray-700">{{ $trip->deskripsi_trip }}</p>
                 </div>
@@ -43,9 +43,9 @@
         <div class="max-w-5xl mx-auto px-6">
             <h2 class="text-2xl font-bold text-center text-pine mb-8">Ulasan dari Peserta</h2>
 
-            @if($trip->pengelola && $trip->pengelola->ulasanMasuk->count())
+            @if($trip->pengelola && $trip->pengelola->ulasanDiberikan->count())
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @foreach($trip->pengelola->ulasanMasuk as $ulasan)
+                    @foreach($trip->pengelola->ulasanDiberikan as $ulasan)
                         <div class="bg-white p-6 rounded-xl shadow">
                             <p class="text-gray-700 italic mb-3">“{{ $ulasan->komentar }}”</p>
                             <div class="text-sm text-gray-600">

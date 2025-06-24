@@ -1,9 +1,9 @@
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
     RewriteEngine On
+
+    # Allow access to storage (if needed)
+    RewriteCond %{REQUEST_URI} ^/storage/
+    RewriteRule ^storage/(.*)$ /storage/$1 [L,NC]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -17,6 +17,9 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
+
+    # Allow access to storage
+    RewriteRule ^storage/(.*)$ storage/$1 [L,NC]
 
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d

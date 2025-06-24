@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\PesertaTransaksi;
 use App\Models\Trip;
+use App\Services\Midtrans\CreateSnapTokenService;
 use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
@@ -78,10 +79,40 @@ class TransaksiController extends Controller
         return view('transaksi.detail-transaksi', compact('transaksi'));
     }
 
+    // public function pembayaran($id)
+    // {
+    //     $transaksi = Transaksi::where('id_user', Auth::id())->findOrFail($id);
+    //     return view('transaksi.pembayaran', compact('transaksi'));
+    // }
+
+    public function form($id)
+    {
+        $trip = Trip::findOrFail($id);
+        return view('peserta.form', compact('trip'));
+    }
     public function bayar($id)
     {
-        $transaksi = Transaksi::where('id_user', Auth::id())->findOrFail($id);
-        return view('transaksi.pembayaran', compact('transaksi'));
-    }
+        $transaksi = Transaksi::with('trip')->findOrFail($id);
 
+        $requestData = (object)[
+            'order_id' => 'ORDER-' . $transaksi->id,
+            'gross_amount' => (float) $transaksi->total ?? 10000, 
+            'first_name' => $transaksi->nama,
+            'email' => $transaksi->email,
+            'phone' => $transaksi->nomor_telepon ?? '081234567890',
+            'items' => [
+                [
+                    'id' => $transaksi->id,
+                    'name' => $transaksi->trip->nama_trip ?? 'Trip',
+                    'price' => $transaksi->total,
+                    'quantity' => 1,
+                ]
+            ]
+        ];
+    
+        $midtrans = new CreateSnapTokenService($requestData);
+        $snapToken = $midtrans->getSnapToken();
+
+        return view('peserta.transaksi.bayar', compact('transaksi', 'snapToken'));
+    }
 }

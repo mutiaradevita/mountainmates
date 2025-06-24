@@ -48,10 +48,8 @@
     </div>
 </div>
 
-    @foreach ($pengelola->ulasanDiterima as $ulasan)
-        <div class="p-4 bg-white shadow mb-2">
-            <p class="text-gray-800 font-semibold">"{{ $ulasan->komentar }}"</p>
-            <div class="text-sm text-gray-500">Dari: {{ $ulasan->pemberi->name }}</div>
-        </div>
-    @endforeach
+        @foreach ($ulasanDiterima as $ulasan)
+            <p>{{ $ulasan->komentar }}</p>
+            <p>Dari: {{ $ulasan->pemberi->name ?? '-' }}</p>
+        @endforeach
 @endsection

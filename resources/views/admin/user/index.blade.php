@@ -53,7 +53,7 @@
       @foreach($peserta as $user)
       <tr class="border-t">
         <td class="px-4 py-2">{{ $user->name }}</td>
-        <td class="px-4 py-2">{{ $user->email }}</td>
+        <td class="px-4 py-2">{{ $user->email }}</td> 
         <td class="px-4 py-2">
           <a href="{{ route('admin.user.edit', $user->id) }}" class="text-blue-600">Edit</a>
           <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST" class="inline">

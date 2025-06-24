@@ -20,8 +20,10 @@ Route::get('/home', fn () => redirect()->route('jelajah'))->middleware('auth')->
 
 // ======================== PUBLIK ========================
 Route::get('/jelajah', [TripPublicController::class, 'index'])->name('jelajah');
-Route::get('/jelajah-trip', [TripPublicController::class, 'index'])->name('pendaki.index');
+// Route::get('/jelajah-trip', [TripPublicController::class, 'index'])->name('pendaki.index');
 Route::get('/jelajah/{id}', [TripPublicController::class, 'show'])->name('jelajah.detail');
+// Route::get('/trip/{id}/form', [TripPublicController::class, 'form'])->name('pemesanan.form');
+Route::get('/trip/{id}/pesan', [TransaksiController::class, 'form'])->name('peserta.form');
 
 // ======================== TRANSAKSI ========================
 Route::post('/transaksi', [TransaksiController::class, 'store'])->middleware('auth')->name('transaksi.store');

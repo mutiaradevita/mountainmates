@@ -3,27 +3,32 @@
 namespace App\Services\Midtrans;
 
 use Midtrans\Snap;
+use Midtrans\Config;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Log;
 
-class CreateSnapTokenService extends Midtrans
+class CreateSnapTokenService
 {
     protected $request;
 
     public function __construct($request)
     {
-        parent::__construct();
-
         $this->request = $request;
+
+        Config::$serverKey    = config('midtrans.serverKey');
+        Config::$isProduction = config('midtrans.isProduction');
+        Config::$isSanitized  = config('midtrans.isSanitized');
+        Config::$is3ds        = config('midtrans.is3ds');
     }
 
     public function getSnapToken()
     {
         // Ambil order dari DB jika ada, untuk payment_token_created_at dan payment_token_expired_at
+        
         $transaksi = Transaksi::where('payment_order_id', $this->request->order_id)->first();
 
         $itemDetails = [];
-        foreach ($this->request->items as $item) {
+        foreach ($request->items ?? [] as $item) {
             $itemDetails[] = [
                 'id' => $item['id'],
                 'name' => $item['name'],
@@ -31,6 +36,9 @@ class CreateSnapTokenService extends Midtrans
                 'quantity' => $item['quantity'],
             ];
         }
+        
+        $startTime = now();
+
         $params = [
             'transaction_details' => [
                 'order_id' => $this->request->order_id,
@@ -49,6 +57,7 @@ class CreateSnapTokenService extends Midtrans
             ],
         ];
 
+        // dd($params);
         try {
             $snapToken = Snap::getSnapToken($params);
         } catch (\Throwable $e) {
@@ -60,4 +69,5 @@ class CreateSnapTokenService extends Midtrans
         }
 
         return $snapToken;
-    }
+    } 
+}

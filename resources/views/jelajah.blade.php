@@ -40,30 +40,45 @@
       </div>
     </section>
 
-    <!-- Trip Cards -->
-    <section id="trip" class="bg-snow py-12 mb-12">
-      <div class="max-w-screen-xl mx-auto px-4">
+   <!-- Trip Cards -->
+<section id="trip" class="bg-snow py-12 mb-24">
+    <div class="max-w-screen-xl mx-auto px-4">
         <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
+        
         <div class="flex space-x-4 gap-4 overflow-x-auto pb-2">
-          @forelse ($trips as $trip)
-            <a href="{{ route('jelajah.detail', $trip->id) }}" class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-              <img src="{{ asset('storage/' . $trip->flyer) }}" alt="Trip {{ $trip->nama_trip }}" class="w-full h-48 object-cover">
-              <div class="p-4">
-                <h3 class="text-pine text-base font-semibold">{{ strtoupper($trip->nama_trip) }}</h3>
-                <div class="text-sm text-stone mt-1 flex items-center gap-2">
-                  <svg class="w-4 h-4 text-stone" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M6 2a2 2 0 00-2 2v1H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v1a2 2 0 002 2h8a2 2 0 002-2v-1h1a1 1 0 100-2h-1v-2h1a1 1 0 100-2h-1V7h1a1 1 0 100-2h-1V4a2 2 0 00-2-2H6z" />
-                  </svg>
-                  {{ \Carbon\Carbon::parse($trip->tanggal_trip)->format('d M Y') }} · {{ $trip->lokasi }}
-                </div>
-                <p class="text-earth font-bold mt-2">Rp {{ number_format($trip->harga, 0, ',', '.') }}</p>
-                <p class="text-sm text-moss mt-1">{{ $trip->pengelola->name ?? 'Mountain Mates' }}</p>
-              </div>
-            </a>
-          @empty
-            <p class="text-sm text-stone">Belum ada trip tersedia.</p>
-          @endforelse
+            @forelse ($trips as $trip)
+                <a href="{{ route('jelajah.detail', $trip->id) }}" 
+                   class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    
+                    <img src="{{ asset('storage/' . $trip->flyer) }}" 
+                         alt="Trip {{ $trip->nama_trip }}" 
+                         class="w-full h-48 object-cover">
+                    
+                    <div class="p-4">
+                        <h3 class="text-pine text-base font-semibold">
+                            {{ strtoupper($trip->nama_trip) }}
+                        </h3>
+                        
+                        <div class="text-sm text-stone mt-1 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-stone" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6 2a2 2 0 00-2 2v1H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v1a2 2 0 002 2h8a2 2 0 002-2v-1h1a1 1 0 100-2h-1v-2h1a1 1 0 100-2h-1V7h1a1 1 0 100-2h-1V4a2 2 0 00-2-2H6z" />
+                            </svg>
+                            {{ \Carbon\Carbon::parse($trip->tanggal_trip)->format('d M Y') }} · {{ $trip->lokasi }}
+                        </div>
+
+                        <p class="text-earth font-bold mt-2">
+                            Rp {{ number_format($trip->harga, 0, ',', '.') }}
+                        </p>
+
+                        <p class="text-sm text-moss mt-1">
+                            {{ $trip->pengelola->name ?? 'Mountain Mates' }}
+                        </p>
+                    </div>
+                </a>
+            @empty
+                <p class="text-sm text-stone">Belum ada trip tersedia.</p>
+            @endforelse
         </div>
-      </div>
-    </section>
+    </div>
+</section>
 </x-home-layout>

@@ -27,7 +27,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 @foreach($trips as $trip)
                     <div class="w-full max-w-md mx-auto overflow-hidden rounded-xl mb-4 bg-white shadow-md">
-                        <img src="{{ asset('storage/flyers/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}" class="w-full h-[150px] object-cover">
+                        <img src="{{ asset('storage/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}" class="w-full h-[150px] object-cover">
                         <h2 class="text-center text-xl font-bold text-pine mb-2">{{ $trip->nama_trip }}</h2>
                         <p class="text-gray-700">{{ \Carbon\Carbon::parse($trip->tanggal_trip)->translatedFormat('l, d M Y') }}</p>
                         <p class="text-gray-700">{{ $trip->lokasi }}</p>

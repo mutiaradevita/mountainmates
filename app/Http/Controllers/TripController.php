@@ -10,8 +10,9 @@ class TripController extends Controller
 {
     public function index()
     {
-        //$trips = Trip::all();
-        $trips = Trip::where('created_by', Auth::id())->where('status', 'aktif')->get();
+        $trips = Trip::where('status', 'aktif')
+             ->orderBy('tanggal_trip', 'desc')
+             ->get();
 
         return view('pengelola.trips.index', compact('trips'));
     }
@@ -56,13 +57,13 @@ class TripController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        return redirect()->route('trips.index')->with('success', 'Trip berhasil ditambahkan');
+        return redirect()->route('pengelola.trips.index')->with('success', 'Trip berhasil ditambahkan');
     }
 
     public function show($id)
     {
        
-        $trip = Trip::with('pengelola.ulasanMasuk.peserta.user')->findOrFail($id);
+        $trip = Trip::with('pengelola.ulasanDiberikan.peserta.user')->findOrFail($id);
 
         return view('pengelola.trips.show', compact('trip'));
     }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Trip;
+use App\Models\Ulasan;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -29,17 +30,22 @@ class DashboardController extends Controller
     {
         $userId = Auth::id();
 
-        return view('pengelola.dashboard', [
-            'pesertaAktif' => Transaksi::where('status', 'confirmed')
-                ->whereHas('trip', function ($query) {
-                    $query->where('created_by', Auth::id());
-                })
-                ->count(),
+        $ulasanDiterima = Ulasan::whereHas('trip', function ($query) use ($userId) {
+            $query->where('created_by', $userId);
+        })->latest()->get();
 
+          $transaksiTripSaya = Transaksi::with(['trip', 'peserta'])
+        ->whereHas('trip', fn($q) => $q->where('created_by', $userId))
+        ->latest()
+        ->get();
+
+        return view('pengelola.dashboard', [
+            'ulasanDiterima' => $ulasanDiterima,
+            'pesertaAktif' => Transaksi::where('status', 'confirmed')
+                ->whereHas('trip', fn($q) => $q->where('created_by', $userId))->count(),
             'belumVerifikasi' => Transaksi::where('status', 'pending')
-                ->whereHas('trip', function ($query) use ($userId) {
-                    $query->where('created_by', Auth::id());
-                })->count(),
+                ->whereHas('trip', fn($q) => $q->where('created_by', $userId))->count(),
+            'transaksiTripSaya' => $transaksiTripSaya,
         ]);
     }
 }

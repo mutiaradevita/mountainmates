@@ -18,5 +18,10 @@ class TripPublicController extends Controller
         $trip = Trip::where('status', 'aktif')->findOrFail($id);
         return view('peserta.detail', compact('trip'));
     }
+    public function form($id)
+    {
+        $trip = Trip::findOrFail($id);
+        return view('peserta.form', compact('trip'));
+    }
 }
 

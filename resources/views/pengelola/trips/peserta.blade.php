@@ -26,7 +26,7 @@
                     <tr>
                         <td class="px-4 py-2">{{ $peserta->user->name }}</td>
                         <td class="px-4 py-2">{{ $peserta->user->email }}</td>
-                        <td class="px-4 py-2">{{ $peserta->user->no_hp }}</td>
+                        <td class="px-4 py-2">{{ $peserta->user->nomor_telepon }}</td>
                         <td class="px-4 py-2">
                             <span class="px-2 py-1 rounded text-xs {{ $peserta->status == 'selesai' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
                                 {{ ucfirst($peserta->status) }}
