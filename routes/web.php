@@ -11,6 +11,8 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DataController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Pengelola\TransaksiController as PengelolaTransaksiController;
+
 
 // ======================== GUEST ========================
 Route::get('/', [HomeController::class, 'landing'])->middleware('guest')->name('landing');
@@ -64,6 +66,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // ======================== PENGELOLA ========================
 Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->name('pengelola.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'indexPengelola'])->name('dashboard');
+    Route::get('/transaksi', [PengelolaTransaksiController::class, 'index'])->name('transaksi.index');
+    Route::post('/transaksi/{id}/konfirmasi', [PengelolaTransaksiController::class, 'konfirmasi'])->name('transaksi.konfirmasi');
     Route::resource('trips', TripController::class);
     Route::get('/trip-history', [TripController::class, 'history'])->name('trips.history');
     Route::get('/trip-detail/{id}', [TripController::class, 'show'])->name('trips.show');

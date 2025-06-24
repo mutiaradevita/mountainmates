@@ -52,6 +52,7 @@ class RegisteredUserController extends Controller
         if ($request->role == 'pengelola') {
             $user->company_name = $request->company_name;
             $user->pic_name = $request->pic_name;
+            $user->name = $request->name;
         } else {
             $user->company_name = null;
             $user->pic_name = null;
