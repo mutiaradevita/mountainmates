@@ -111,4 +111,10 @@ class TransaksiController extends Controller
 
         return view('transaksi.detail-transaksi', compact('transaksi', 'snapToken'));
     }
+    public function form($id)
+    {
+        $trip = Trip::findOrFail($id);
+
+        return view('peserta.form', compact('trip'));
+    }
 }

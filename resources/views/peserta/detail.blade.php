@@ -1,72 +1,88 @@
-<x-home-layout>
-    <section class="pt-[80px] pb-16 bg-snow">
-        <div class="max-w-3xl mx-auto px-6 space-y-6 animate-fade-in">
+@extends('layouts.app')
 
-            <!-- Gambar -->
-            <div class="w-full overflow-hidden rounded-xl shadow-md">
-                <img src="{{ asset('storage/' . $trip->flyer) }}" alt="Trip {{ $trip->nama_trip }}" class="w-full max-h-[300px] object-cover">
-            </div>
+@section('content')
+<section class="pt-[80px] pb-16 bg-snow">
+    <div class="max-w-5xl mx-auto px-6 space-y-12">
 
-            <!-- Nama + Deskripsi -->
-            <div>
-                <h1 class="text-2xl font-bold text-pine mb-2">{{ $trip->nama_trip }}</h1>
-                <p class="text-gray-700">{{ $trip->deskripsi_trip }}</p>
-            </div>
-
-            <!-- Highlights -->
-            <div class="bg-mist p-4 rounded-lg shadow-sm">
-                <h2 class="font-semibold text-forest mb-2">Highlights:</h2>
-                <ul class="text-sm text-gray-700 space-y-1">
-                    <li><strong>Meeting Point:</strong> {{ $trip->lokasi }}</li>
-                    <li><strong>Jadwal:</strong> {{ \Carbon\Carbon::parse($trip->tanggal_trip)->translatedFormat('l, d M Y') }}</li>
-                    <li><strong>Start:</strong> {{ $trip->waktu }}</li>
-                    <li><strong>Tipe Trip:</strong> {{ ucfirst($trip->tipe_trip) }}</li>
-                    <li><strong>Kuota:</strong> {{ $trip->kuota }} orang</li>
-                    <li><strong>Harga:</strong> Rp{{ number_format($trip->harga, 0, ',', '.') }}</li>
-                </ul>
-            </div>
-
-            <!-- Tombol dan Konten Jadwal -->
-            <div class="bg-white border border-gray-300 p-4 rounded-lg space-y-2">
-                <button id="jadwalButton" class="bg-mist text-pine px-4 py-2 rounded-md w-full font-semibold">
-                    Lihat Jadwal
-                </button>
-                <div id="jadwalContainer" class="hidden bg-white p-4 rounded-lg shadow">
-                    <p><strong>Jadwal trip:</strong> {{ $trip->jadwal_trip }}</p>
-                </div>
-
-                <!-- Tombol dan Konten Itinerary -->
-                <button id="itineraryButton" class="bg-mist text-pine px-4 py-2 rounded-md w-full font-semibold">
-                    Lihat Itinerary
-                </button>
-                <div id="itineraryContainer" class="hidden bg-white p-4 rounded-lg shadow">
-                    <p><strong>Itinerary trip:</strong> {{ $trip->itinerary }}</p>
-                </div>
-            </div>
-
-            <!-- Tombol Pesan -->
-            <div class="text-center">
-                <a href="{{ route('peserta.form', $trip->id) }}" class="bg-forest text-white px-6 py-3 rounded-md inline-block hover:bg-pine transition font-semibold">
-                    Pesan Sekarang
-                </a>
+        {{-- Gambar + Nama + Deskripsi --}}
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+            <img src="{{ asset('storage/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}"
+                class="w-full h-48 object-cover">
+            <div class="p-6 space-y-2">
+                <h1 class="text-2xl font-bold text-pine">{{ $trip->nama_trip }}</h1>
+                <p class="text-gray-700 text-sm">{{ $trip->deskripsi_trip }}</p>
             </div>
         </div>
-    </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const jadwalBtn = document.getElementById('jadwalButton');
-            const itineraryBtn = document.getElementById('itineraryButton');
-            const jadwalBox = document.getElementById('jadwalContainer');
-            const itineraryBox = document.getElementById('itineraryContainer');
+        {{-- Highlights + Harga --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-mist p-4 rounded-lg shadow space-y-1">
+                <h2 class="text-lg font-semibold text-forest mb-2">Highlights</h2>
+                <ul class="text-sm text-gray-700 space-y-1">
+                    <li><strong>Meeting Point:</strong> {{ $trip->lokasi }}</li>
+                    <li>
+                        <strong>Tanggal Trip:</strong>
+                        {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('d M Y') }} -
+                        {{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('d M Y') }}
+                    </li>
+                    <li><strong>Waktu Mulai:</strong> {{ \Carbon\Carbon::parse($trip->waktu)->format('H:i') }} WIB</li>
+                    <li><strong>Kuota:</strong> {{ $trip->kuota }} peserta</li>
+                    <li><strong>Durasi:</strong> {{ $trip->durasi ?? '-' }}</li>
+                </ul>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow flex items-center justify-center">
+                <div class="text-center">
+                    <p class="text-sm text-gray-500 mb-1">Harga mulai dari</p>
+                    <p class="text-2xl font-bold text-pine">Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
+                </div>
+            </div>
+        </div>
 
-            jadwalBtn.addEventListener('click', function () {
-                jadwalBox.classList.toggle('hidden');
-            });
+        {{-- Termasuk & Tidak Termasuk --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- Sudah Termasuk --}}
+            @if($trip->sudah_termasuk)
+            <div class="bg-white p-4 rounded-xl shadow">
+                <h3 class="text-forest font-semibold mb-2">✅ Sudah Termasuk</h3>
+                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                    @foreach (explode("\n", $trip->sudah_termasuk) as $item)
+                        @if(trim($item) !== '')
+                            <li>{{ $item }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+            @endif
 
-            itineraryBtn.addEventListener('click', function () {
-                itineraryBox.classList.toggle('hidden');
-            });
-        });
-    </script>
-</x-home-layout>
+            {{-- Belum Termasuk --}}
+            @if($trip->belum_termasuk)
+            <div class="bg-white p-4 rounded-xl shadow">
+                <h3 class="text-forest font-semibold mb-2">❌ Belum Termasuk</h3>
+                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                    @foreach (explode("\n", $trip->belum_termasuk) as $item)
+                        @if(trim($item) !== '')
+                            <li>{{ $item }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+        </div>
+
+        {{-- Itinerary --}}
+        <div class="bg-mist p-6 rounded-xl shadow">
+            <h3 class="text-lg font-semibold text-forest mb-2">Itinerary</h3>
+            <p class="text-sm text-gray-800 whitespace-pre-line">{{ $trip->itinerary }}</p>
+        </div>
+
+
+        {{-- Tombol Pesan --}}
+        <div class="text-center">
+            <a href="{{ route('peserta.form', $trip->id) }}" class="bg-forest text-white px-6 py-3 rounded-md inline-block hover:bg-pine transition font-semibold">
+                Pesan Sekarang
+            </a>
+        </div>
+
+    </div>
+</section>
+@endsection

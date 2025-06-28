@@ -14,19 +14,17 @@ return new class extends Migration
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade'); 
             $table->unsignedBigInteger('id_trip');
             $table->foreign('id_trip')->references('id')->on('trips')->onDelete('cascade');
-            $table->decimal('total', 10, 2);
-            $table->string('status')->default('menunggu');
             $table->string('nama');
             $table->string('nomor_telepon', 20);
             $table->string('email');
-            $table->string('paket'); 
-            $table->string('bulan', 50);
-            $table->string('jadwal')->nullable();
+            $table->integer('jumlah_peserta')->default(1);
+            $table->string('paket')->nullable(); // masih dipakai
             $table->text('catatan_khusus')->nullable();
-            $table->string('metode_pembayaran', 100);
+            $table->decimal('total', 10, 2)->default(0);
+            $table->string('status')->default('menunggu');
             $table->string('payment_order_id')->nullable();
             $table->string('payment_token')->nullable();
             $table->timestamps();

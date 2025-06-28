@@ -62,7 +62,7 @@ class RegisteredUserController extends Controller
         if ($user->role === 'pengelola') {
             return redirect()->route('pengelola.dashboard');
         } else {
-            return redirect()->route('jelajah');
+            return redirect()->route('login');
         }
     }
 }

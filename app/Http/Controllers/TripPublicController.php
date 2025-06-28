@@ -2,15 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Trip;
+
 
 class TripPublicController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $trips = Trip::where('status', 'aktif')->latest()->take(10)->get(); 
+        $query = Trip::where('status', 'aktif');
 
-        return view('jelajah', compact('trips'));
+        if ($request->tanggal) {
+            $query->whereDate('tanggal_mulai', $request->tanggal);
+        }
+
+        if ($request->cari) {
+            $query->where(function($q) use ($request) {
+                $q->where('nama_trip', 'like', '%' . $request->cari . '%')
+                ->orWhere('lokasi', 'like', '%' . $request->cari . '%');
+            });
+        }
+
+        $trips = $query->latest()->take(10)->get();
+        $lokasiList = Trip::select('lokasi')->distinct()->pluck('lokasi');
+
+        return view('jelajah', compact('trips', 'lokasiList'));
     }
 
     public function show($id)

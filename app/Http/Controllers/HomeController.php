@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-
     public function landing()
     {
         $trips = Trip::all();
@@ -38,8 +37,7 @@ class HomeController extends Controller
     }
 
         public function riwayat (){
-            // $transaksi = Transaksi::all();
-            // $event = Event::all();
+            
             return view('riwayat');
         }
 }

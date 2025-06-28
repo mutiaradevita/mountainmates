@@ -1,112 +1,115 @@
-<x-home-layout>
-     <div class="pt-[80px] pb-12 bg-snow min-h-screen">
-        <div class="max-w-xl mx-auto px-4 py-8 bg-white shadow rounded-xl">
-            <h2 class="text-center text-2xl font-bold text-forest mb-6 border-b pb-3">Detail Riwayat Pemesanan</h2>
+@extends('layouts.app')
 
-            <div class="mb-6 bg-white rounded-xl shadow border border-mist p-6 space-y-4 text-gray-800">
-                <p>
-                    <strong class="text-gray-600 w-40 inline-block">Trip:</strong>
-                    <span class="font-medium">{{ $transaksi->trip->nama_trip ?? '-' }}</span>
-                </p>
-                <p>
-                    <strong class="text-gray-600 w-40 inline-block">Jumlah Peserta:</strong>
-                    <span class="font-medium">{{ $transaksi->jumlah_peserta }}</span>
-                </p>
-                <p>
-                    <strong class="text-gray-600 w-40 inline-block">Total:</strong>
-                    <span class="font-semibold text-forest">Rp {{ number_format($transaksi->total, 0, ',', '.') }}</span>
-                </p>
-                <p>
-                    <strong class="text-gray-600 w-40 inline-block">Status:</strong>
-                    <span class="px-2 py-1 rounded text-white bg-forest text-sm">
-                        {{ ucfirst($transaksi->status) }}
-                    </span>
-                </p>
-                <p>
-                    <strong class="text-gray-600 w-40 inline-block">Tanggal Pesan:</strong>
-                    <span>{{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Jakarta')->translatedFormat('D, d M Y • H:i') }}</span>
-                </p>
+@section('content')
+<div class="pt-[90px] pb-20 bg-snow min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 md:px-6">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 space-y-6">
 
-                @if ($transaksi->peserta->count())
-                    <div class="pt-4 border-t mt-6">
-                        <p class="font-semibold text-forest mb-2">Daftar Peserta:</p>
-                        <ol class="list-decimal list-inside text-gray-700 space-y-2">
-                            @foreach ($transaksi->peserta as $p)
-                                <li>
-                                    <div class="font-medium">{{ $p->nama }}</div>
-                                    @if($p->nomor_telepon) <div class="text-sm text-gray-500">HP: {{ $p->nomor_telepon }}</div> @endif
-                                    @if($p->email) <div class="text-sm text-gray-500">Email: {{ $p->email }}</div> @endif
-                                </li>
-                            @endforeach
-                        </ol>
-                    </div>
-                @endif
+            {{-- Judul --}}
+            <h2 class="text-3xl font-bold text-center text-pine mb-6">🧭 Detail Riwayat Pemesanan</h2>
 
-                  {{-- Tombol Midtrans --}}
-                @if(isset($snapToken) && $transaksi->status !== 'selesai')
-                    <button id="pay-button"
-                        class="inline-block bg-forest text-white px-4 py-2 rounded hover:bg-pine transition">
-                        Bayar Sekarang
-                    </button>
-                @endif
+            {{-- Info Trip --}}
+            <div class="grid md:grid-cols-2 gap-6 text-sm text-gray-800">
+                <div>
+                    <p class="mb-2"><span class="font-semibold text-gray-600">Trip:</span> {{ $transaksi->trip->nama_trip ?? '-' }}</p>
+                    <p class="mb-2"><span class="font-semibold text-gray-600">Jumlah Peserta:</span> {{ $transaksi->jumlah_peserta }}</p>
+                    <p class="mb-2"><span class="font-semibold text-gray-600">Total:</span> <span class="text-lg font-bold text-forest">Rp {{ number_format($transaksi->total, 0, ',', '.') }}</span></p>
+                </div>
+                <div>
+                    <p class="mb-2"><span class="font-semibold text-gray-600">Status:</span>
+                        <span class="inline-block text-xs font-medium px-3 py-1 rounded-full 
+                            {{ $transaksi->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ($transaksi->status === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700') }}">
+                            {{ ucfirst($transaksi->status) }}
+                        </span>
+                    </p>
+                    <p class="mb-2"><span class="font-semibold text-gray-600">Tanggal Pesan:</span> 
+                        {{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Jakarta')->translatedFormat('D, d M Y • H:i') }}
+                    </p>
+                </div>
+            </div>
 
-            @if ($transaksi->status === 'selesai')
-                @if (!$transaksi->ulasan)
-                    <div class="mt-6">
-                        <a href="{{ route('peserta.ulasan.create', $transaksi->id) }}"
-                        class="inline-block bg-pine text-snow px-4 py-2 rounded hover:bg-forest transition">
-                            Beri Ulasan
-                        </a>
-                    </div>
-                @else
-                    <div class="mt-6 bg-mist p-4 rounded">
-                        <h3 class="font-semibold text-pine mb-2">Ulasan Kamu:</h3>
-                        <p class="text-gray-800">"{{ $transaksi->ulasan->komentar }}"</p>
-                    </div>
-                @endif
+           {{-- Daftar Peserta --}}
+            @if ($transaksi->peserta->count())
+            <div class="border-t pt-6">
+                <h3 class="font-semibold text-pine text-lg mb-3">👥 Daftar Peserta</h3>
+
+                <div class="max-h-60 overflow-y-auto pr-2">
+                    <ol class="list-decimal list-inside space-y-2 text-sm">
+                        @foreach ($transaksi->peserta as $p)
+                        <li>
+                            <div class="font-medium">{{ $p->nama }}</div>
+                            @if($p->nomor_telepon)<div class="text-gray-500 text-sm">📞 {{ $p->nomor_telepon }}</div>@endif
+                            @if($p->email)<div class="text-gray-500 text-sm">📧 {{ $p->email }}</div>@endif
+                        </li>
+                        @endforeach
+                    </ol>
+                </div>
+            </div>
             @endif
 
-            <a href="{{ route('peserta.transaksi.index') }}"
-                class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm text-gray-700 transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Kembali ke Riwayat
-            </a>
+            {{-- Tombol Aksi --}}
+            <div class="border-t pt-6 space-y-4">
+                @if(isset($snapToken) && $transaksi->status !== 'selesai')
+                <button id="pay-button"
+                    class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold">
+                    💳 Bayar Sekarang
+                </button>
+                <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
+                @endif
+
+                @if ($transaksi->status === 'selesai')
+                    @if (!$transaksi->ulasan)
+                        <a href="{{ route('peserta.ulasan.create', $transaksi->id) }}"
+                            class="w-full inline-block text-center bg-pine text-white px-5 py-3 rounded-lg hover:bg-forest transition font-semibold">
+                            ✍️ Beri Ulasan
+                        </a>
+                    @else
+                        <div class="bg-mist text-gray-700 p-4 rounded-lg">
+                            <h3 class="font-semibold text-pine mb-2">💬 Ulasan Kamu:</h3>
+                            <p class="italic">"{{ $transaksi->ulasan->komentar }}"</p>
+                        </div>
+                    @endif
+                @endif
+
+                <a href="{{ route('peserta.transaksi.index') }}"
+                    class="w-full inline-flex items-center justify-center px-5 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium transition">
+                    ⬅️ Kembali ke Riwayat
+                </a>
+            </div>
+
         </div>
     </div>
+</div>
 
-    {{-- Midtrans Script di bagian luar layout utama --}}
-    @if(isset($snapToken) && $transaksi->status !== 'selesai')
-        <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
-            data-client-key="{{ config('midtrans.client_key') }}"></script>
+{{-- Midtrans Script --}}
+@if(isset($snapToken) && $transaksi->status !== 'selesai')
+<script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
+    data-client-key="{{ config('midtrans.client_key') }}"></script>
 
-        <script type="text/javascript">
-            document.addEventListener("DOMContentLoaded", function () {
-                const payBtn = document.getElementById("pay-button");
-                if (payBtn) {
-                    payBtn.addEventListener("click", function (e) {
-                        e.preventDefault();
-                        window.snap.pay('{{ $snapToken }}', {
-                            onSuccess: function (result) {
-                                alert("Pembayaran berhasil!");
-                                location.reload();
-                            },
-                            onPending: function (result) {
-                                alert("Pembayaran tertunda.");
-                            },
-                            onError: function (result) {
-                                alert("Pembayaran gagal.");
-                            },
-                            onClose: function () {
-                                alert("Anda menutup popup pembayaran.");
-                            }
-                        });
-                    });
-                }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const payBtn = document.getElementById("pay-button");
+        if (payBtn) {
+            payBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                window.snap.pay('{{ $snapToken }}', {
+                    onSuccess: function () {
+                        alert("Pembayaran berhasil!");
+                        location.reload();
+                    },
+                    onPending: function () {
+                        alert("Pembayaran tertunda.");
+                    },
+                    onError: function () {
+                        alert("Pembayaran gagal.");
+                    },
+                    onClose: function () {
+                        alert("Popup pembayaran ditutup.");
+                    }
+                });
             });
-        </script>
-    @endif
-</x-home-layout>
-
-
+        }
+    });
+</script>
+@endif
+@endsection

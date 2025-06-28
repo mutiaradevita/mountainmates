@@ -1,7 +1,9 @@
-<x-home-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="pt-[80px] pb-12">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 class="text-3xl font-bold text-pine text-center mb-10">Ulasan Saya</h1> {{-- Jarak dibesarin di sini --}}
+            <h1 class="text-3xl font-bold text-pine text-center mb-10">Ulasan Saya</h1> 
 
             @if ($ulasans->isEmpty())
                 <div class="text-center text-gray-600 py-10 bg-white rounded-xl shadow">
@@ -30,4 +32,4 @@
             @endif
         </div>
     </div>
-</x-home-layout>
+@endsection

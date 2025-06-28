@@ -9,15 +9,19 @@ class Trip extends Model
     protected $fillable = [
         'nama_trip',
         'deskripsi_trip',
-        'tanggal_trip',
-        'flyer',
-        'waktu',
         'lokasi',
-        'tipe_trip',
-        'jadwal_trip',
-        'itinerary',
+        'meeting_point',
         'kuota',
         'harga',
+        'paket',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'waktu',           
+        'durasi',
+        'sudah_termasuk',
+        'belum_termasuk',
+        'itinerary',
+        'flyer',
         'status',
         'created_by',
     ];
@@ -31,10 +35,12 @@ class Trip extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function ulasans()
     {
-        return $this->hasMany(Ulasan::class, 'user_id');
+        return $this->hasMany(Ulasan::class, 'id_user');
     }
+
     public function transaksis()
     {
         return $this->hasMany(Transaksi::class, 'id_trip');

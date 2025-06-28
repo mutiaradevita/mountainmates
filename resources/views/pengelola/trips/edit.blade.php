@@ -1,10 +1,18 @@
-@extends('layouts.app')
-
-@section('title', 'Edit Trip')
+@extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-6">Edit Trip</h1>
+<div class="pt-6 pb-10">
+    <h1 class="text-center text-3xl font-bold mb-6">Edit Trip</h1>
+
+    {{-- @if ($errors->any())
+        <div class="mb-4 text-red-600">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif  --}}
 
     <form action="{{ route('pengelola.trips.update', $trip->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -17,55 +25,30 @@
                 <input type="text" id="nama_trip" name="nama_trip" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->nama_trip }}" required>
             </div>
 
-            {{-- Deskripsi --}}
-            <div class="mb-4">
-                <label for="deskripsi_trip" class="block text-gray-700">Deskripsi</label>
-                <textarea id="deskripsi_trip" name="deskripsi_trip" class="w-full px-4 py-2 border rounded-md" required>{{ $trip->deskripsi_trip }}</textarea>
-            </div>
-
-            {{-- Jadwal --}}
-            <div class="mb-4 md:col-span-2">
-                <label for="jadwal" class="block text-gray-700">Jadwal</label>
-                <input type="text" id="jadwal_trip" name="jadwal_trip" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->jadwal_trip }}" required>
-            </div>
-
-            {{-- Itinerary --}}
-            <div class="mb-4 md:col-span-2">
-                <label for="itinerary" class="block text-gray-700">Itinerary</label>
-                <textarea id="itinerary" name="itinerary" class="w-full px-4 py-2 border rounded-md" rows="5" required>{{ $trip->itinerary }}</textarea>
-            </div>
-
-            {{-- Tanggal --}}
-            <div class="mb-4">
-                <label for="tanggal_trip" class="block text-gray-700">Tanggal Trip</label>
-                <input type="date" name="tanggal" value="{{ old('tanggal', \Carbon\Carbon::parse($trip->tanggal)->format('Y-m-d')) }}" class="w-full border border-gray-300 rounded-md p-2" required>
-            </div>
-
-            {{-- Tipe Trip --}}
-            <div class="mb-4">
-                <label for="tipe_trip" class="block text-gray-700">Tipe Trip</label>
-                <select id="tipe_trip" name="tipe_trip" class="w-full px-4 py-2 border rounded-md" required>
-                    <option value="open" {{ $trip->tipe_trip === 'open' ? 'selected' : '' }}>Open Trip</option>
-                    <option value="private" {{ $trip->tipe_trip === 'private' ? 'selected' : '' }}>Private Trip</option>
-                </select>
-            </div>
-
-            {{-- Waktu --}}
-            <div class="mb-4">
-                <label for="waktu" class="block text-gray-700">Waktu Mulai</label>
-                <input type="time" id="waktu" name="waktu" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->waktu }}" required>
-            </div>
-
-            {{-- Lokasi --}}
-            <div class="mb-4">
-                <label for="lokasi" class="block text-gray-700">Lokasi</label>
-                <input type="text" id="lokasi" name="lokasi" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->lokasi }}" required>
-            </div>
-
-            {{-- Kuota --}}
+             {{-- Kuota --}}
             <div class="mb-4">
                 <label for="kuota" class="block text-gray-700">Kuota Peserta</label>
                 <input type="number" id="kuota" name="kuota" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->kuota }}" required>
+            </div>
+
+            {{-- Deskripsi --}}
+            <div class="mb-4 md:col-span-2">
+                <label for="deskripsi_trip" class="block text-gray-700">Deskripsi Trip</label>
+                <textarea id="deskripsi_trip" name="deskripsi_trip" class="w-full px-4 py-2 border rounded-md" required>{{ $trip->deskripsi_trip }}</textarea>
+            </div>
+
+            {{-- Lokasi Pendakian --}}
+            <div class="mb-4">
+                <label for="lokasi" class="block text-gray-700">Lokasi Pendakian</label>
+                <input type="text" id="lokasi" name="lokasi" class="w-full px-4 py-2 border rounded-md" 
+                    value="{{ old('lokasi', $trip->lokasi ?? '') }}" required>
+            </div>
+
+            {{-- Meeting Point --}}
+            <div class="mb-4">
+                <label for="meeting_point" class="block text-gray-700">Meeting Point</label>
+                <input type="text" id="meeting_point" name="meeting_point" class="w-full px-4 py-2 border rounded-md" 
+                    value="{{ old('meeting_point', $trip->meeting_point ?? '') }}" required>
             </div>
 
             {{-- Harga --}}
@@ -74,24 +57,80 @@
                 <input type="number" id="harga" name="harga" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->harga }}" required>
             </div>
 
+            {{-- Waktu Mulai --}}
+            <div class="mb-4">
+                <label for="waktu" class="block text-gray-700">Waktu Mulai</label>
+                <input type="time" id="waktu" name="waktu" class="w-full px-4 py-2 border rounded-md" value="{{ old('waktu', \Carbon\Carbon::createFromFormat('H:i:s', $trip->waktu)->format('H:i')) }}" required>
+            </div>
+
+            {{-- Durasi --}}
+            <div class="mb-4">
+                <label for="durasi" class="block text-gray-700">Durasi</label>
+                <input type="text" id="durasi" name="durasi" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->durasi }}">
+            </div>
+
+            {{-- Paket Tersedia --}}
+            <div class="mb-4">
+                <label for="paket" class="block text-gray-700">Paket Tersedia <small>(pisahkan dengan koma: regular,vip)</small></label>
+                <input type="text" id="paket" name="paket" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->paket }}" required>
+            </div>
+
+            {{-- Sudah Termasuk --}}
+            <div class="mb-4 md:col-span-2">
+                <label for="sudah_termasuk" class="block text-gray-700">✅ Sudah Termasuk</label>
+                <textarea id="sudah_termasuk" name="sudah_termasuk" class="w-full px-4 py-2 border rounded-md" rows="4">{{ old('sudah_termasuk', $trip->sudah_termasuk) }}</textarea>
+            </div>
+
+            {{-- Belum Termasuk --}}
+            <div class="mb-4 md:col-span-2">
+                <label for="belum_termasuk" class="block text-gray-700">❌ Belum Termasuk</label>
+                <textarea id="belum_termasuk" name="belum_termasuk" class="w-full px-4 py-2 border rounded-md" rows="4">{{ old('belum_termasuk', $trip->belum_termasuk) }}</textarea>
+            </div>
+
+            {{-- Jadwal Trip --}}
+            <div class="mb-4 md:col-span-2">
+                <label class="block text-gray-700 mb-2">Jadwal Trip Tersedia</label>
+
+                <div class="flex items-center gap-4 mb-2">
+                    <input type="date" name="tanggal_mulai" class="px-2 py-1 border rounded w-full"
+                        value="{{ old('tanggal_mulai', $trip->tanggal_mulai) }}" required>
+
+                    <span class="text-gray-500">s/d</span>
+
+                    <input type="date" name="tanggal_selesai" class="px-2 py-1 border rounded w-full"
+                        value="{{ old('tanggal_selesai', $trip->tanggal_selesai) }}" required>
+                </div>
+            </div>
+
+            {{-- Itinerary --}}
+            <div class="mb-4 md:col-span-2">
+                <label for="itinerary" class="block text-gray-700">Itinerary</label>
+                <textarea id="itinerary" name="itinerary" class="w-full px-4 py-2 border rounded-md" rows="5" required>{{ $trip->itinerary }}</textarea>
+            </div>
+
             {{-- Flyer --}}
             <div class="mb-4">
-                <label for="flyer" class="block text-gray-700">Foto Trip / Flyer</label>
+                <label for="flyer" class="block text-gray-700">Foto Trip</label>
                 <input type="file" id="flyer" name="flyer" class="w-full px-4 py-2 border rounded-md">
                 <small class="text-sm text-gray-500">Biarkan kosong jika tidak ingin mengganti.</small>
             </div>
 
             {{-- Status --}}
             <div class="mb-4">
-                <label for="status" class="block text-gray-700">Status</label>
+                <label for="status" class="block text-gray-700">Status Trip</label>
                 <select name="status" id="status" class="w-full px-4 py-2 border rounded-md" required>
+                    <option value="" disabled {{ old('status', $trip->status) === null ? 'selected' : '' }}>-- Pilih Status --</option>
                     <option value="aktif" {{ $trip->status === 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ $trip->status === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                 </select>
             </div>
         </div>
 
-        <button type="submit" class="mt-6 py-2 px-6 bg-pine text-snow rounded-lg hover:bg-forest">Update Trip</button>
+        <div class="mt-6 flex justify-end">
+            <button type="submit" class="py-2 px-6 bg-pine text-snow rounded-lg hover:bg-forest">
+                Update Trip
+            </button>
+        </div>
     </form>
 </div>
 @endsection

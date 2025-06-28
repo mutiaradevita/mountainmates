@@ -116,7 +116,6 @@
         </div>
     </section>
 
-
     <!-- Footer CTA -->
     <section id="kontak" class="bg-pine py-12 text-center text-snow">
         <div class="max-w-xl mx-auto">

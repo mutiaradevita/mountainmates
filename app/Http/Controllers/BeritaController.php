@@ -69,9 +69,10 @@ class BeritaController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'cuplikan' => 'required|string',
+            'deskripsi' => 'required|string',
             'sumber' => 'required|string',
-            'url' => 'required|url'
+            'url' => 'required|url',
+            'gambar' => 'nullable|image|max:2048',
         ]);
 
         $berita->update($request->all());

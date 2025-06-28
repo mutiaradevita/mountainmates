@@ -1,23 +1,6 @@
 <x-guest-layout>
   <form method="POST" action="{{ route('register') }}">
     @csrf
-    <div class="mb-4">
-      <x-input-label for="email" :value="__('Email')" />
-      <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Email" />
-      <x-input-error :messages="$errors->get('email')" class="mt-2" />
-    </div>
-
-    <div class="mb-4">
-      <x-input-label for="phone" :value="__('Nomor Telepon')" />
-      <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required placeholder="Nomor Telepon" />
-      <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-    </div>
-
-    <div class="mb-4">
-      <x-input-label for="password" :value="__('Password')" />
-      <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" placeholder="Password" />
-      <x-input-error :messages="$errors->get('password')" class="mt-2" />
-    </div>
 
     <div class="mb-4">
       <x-input-label for="role" :value="__('Role')"  />
@@ -29,7 +12,7 @@
       <x-input-error :messages="$errors->get('role')" class="mt-2" />
     </div>
 
-    <!-- Fields for Peserta only -->
+     <!-- Fields for Peserta only -->
     <div id="peserta_fields" style="display: none;">
       <div class="mb-4">
         <x-input-label for="name" :value="__('Nama')" />
@@ -53,6 +36,24 @@
       </div>
     </div>
 
+    <div class="mb-4">
+      <x-input-label for="email" :value="__('Email')" />
+      <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="Email" />
+      <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    </div>
+
+    <div class="mb-4">
+      <x-input-label for="phone" :value="__('Nomor Telepon')" />
+      <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required placeholder="Nomor Telepon" />
+      <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+    </div>
+
+    <div class="mb-4">
+      <x-input-label for="password" :value="__('Password')" />
+      <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" placeholder="Password" />
+      <x-input-error :messages="$errors->get('password')" class="mt-2" />
+    </div>
+
     <div class="mb-6 text-right">
       <a href="{{ route('login') }}" class="text-sm text-forest hover:underline">Sudah punya akun? Masuk disini</a>
     </div>
@@ -62,26 +63,36 @@
 
   <p class="mt-8 text-xs text-center text-stone">Copyright © Mountain Mates {{ date('Y') }}</p>
 
-  <script>
-    // Menampilkan atau menyembunyikan fields 'company_name', 'pic_name', dan 'name' berdasarkan role
-    document.getElementById('role').addEventListener('change', function() {
-      var pengelolaFields = document.getElementById('pengelola_fields');
-      var pesertaFields = document.getElementById('peserta_fields');
-      var nameField = document.getElementById('name');
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var roleSelect = document.getElementById('role');
+    var pengelolaFields = document.getElementById('pengelola_fields');
+    var pesertaFields = document.getElementById('peserta_fields');
+    var nameField = document.getElementById('name');
 
-      // Jika role pengelola, tampilkan pengelola fields dan sembunyikan pendaki fields
-      if (this.value == 'pengelola') {
+    function toggleFields(role) {
+      if (role === 'pengelola') {
         pengelolaFields.style.display = 'block';
         pesertaFields.style.display = 'none';
-        nameField.required = false; 
-      } else if (this.value == 'peserta') {
+        if (nameField) nameField.required = false;
+      } else if (role === 'peserta') {
         pengelolaFields.style.display = 'none';
         pesertaFields.style.display = 'block';
-        nameField.required = true; 
+        if (nameField) nameField.required = true;
       } else {
         pengelolaFields.style.display = 'none';
         pesertaFields.style.display = 'none';
+        if (nameField) nameField.required = false;
       }
+    }
+
+    // Jalankan saat halaman pertama kali dimuat (untuk menangani old value)
+    toggleFields(roleSelect.value);
+
+    // Jalankan setiap kali user mengubah pilihan
+    roleSelect.addEventListener('change', function () {
+      toggleFields(this.value);
     });
-  </script>
+  });
+</script>
 </x-guest-layout>

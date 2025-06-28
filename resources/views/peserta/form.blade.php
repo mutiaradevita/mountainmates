@@ -1,158 +1,139 @@
-<x-home-layout>
-    <section class="pt-[80px] pb-16 bg-snow">
-         <!-- Kolom 2: Form -->
-                <div class="self-start">
-                    <div class="bg-white p-6 rounded-2xl shadow-md w-full">
-                        <h2 class="text-xl font-semibold text-center text-pine mb-4">Form Pemesanan</h2>
-                        <p class="text-xl font-bold text-gray-800 mb-4">Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
+@extends('layouts.app')
 
-                        @auth
-                        <form action="{{ route('transaksi.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id_trip" value="{{ $trip->id }}">
+@section('content')
+<section class="pt-[80px] pb-16 bg-snow">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Nama Pemesan</label>
-                                <input type="text" name="nama" class="w-full border border-gray-300 rounded-md p-2" placeholder="Nama lengkap Anda" required>
-                            </div>
+            <!-- Kolom 1: Info Trip -->
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <img src="{{ asset('storage/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}"
+                    class="w-full h-64 object-cover rounded-lg mb-4">
+                <h1 class="text-2xl font-bold text-pine mb-2">{{ $trip->nama_trip }}</h1>
+                <p class="text-gray-700 mb-2">{{ $trip->deskripsi_trip }}</p>
+                <p class="text-sm text-gray-500">Lokasi: {{ $trip->lokasi }}</p>
+                <p class="text-sm text-gray-500">Tanggal Trip: {{ \Carbon\Carbon::parse($trip->tanggal_trip)->translatedFormat('d F Y') }}</p>
+                <p class="text-sm text-gray-500">Waktu: {{ \Carbon\Carbon::createFromFormat('H:i:s', $trip->waktu)->format('H:i') }}</p>
+            </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Nomor Telepon</label>
-                                <input type="tel" name="nomor_telepon" class="w-full border border-gray-300 rounded-md p-2" placeholder="Nomor telepon yang dapat dihubungi" required>
-                            </div>
+            <!-- Kolom 2: Form -->
+            <div class="self-start">
+                <div class="bg-white p-6 rounded-2xl shadow-md w-full">
+                    <h2 class="text-xl font-semibold text-center text-pine mb-4">Form Pemesanan</h2>
+                    <p class="text-xl font-bold text-gray-800 mb-4">Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Email</label>
-                                <input type="email" name="email" class="w-full border border-gray-300 rounded-md p-2" placeholder="Email Anda" required>
-                            </div>
+                    @auth
+                    <form action="{{ route('transaksi.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id_trip" value="{{ $trip->id }}">
 
-                            <div class="mb-4">
-                                <button type="button" id="copyPemesanToPeserta" class="text-sm text-blue-600 underline hover:text-blue-800">
-                                    Samakan dengan data pemesan
-                                </button>
-                            </div>
+                        {{-- Data Pemesan --}}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Nama Pemesan</label>
+                            <input type="text" name="nama" class="w-full border border-gray-300 rounded-md p-2" placeholder="Nama lengkap Anda" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Nomor Telepon</label>
+                            <input type="tel" name="nomor_telepon" class="w-full border border-gray-300 rounded-md p-2" placeholder="Nomor telepon aktif" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" name="email" class="w-full border border-gray-300 rounded-md p-2" placeholder="Email aktif" required>
+                        </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Jumlah Peserta</label>
-                                <input type="number" id="jumlahPeserta" name="jumlah_peserta" class="w-full border border-gray-300 rounded-md p-2" placeholder="Jumlah peserta" min="1" required>
-                            </div>
+                        <div class="mb-4">
+                            <button type="button" id="copyPemesanToPeserta" class="text-sm text-blue-600 underline hover:text-blue-800">Samakan dengan data pemesan</button>
+                        </div>
 
-                            <div id="pesertaFields" class="space-y-4 mt-4"></div>
+                        {{-- Jumlah & Data Peserta --}}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Jumlah Peserta</label>
+                            <input type="number" id="jumlahPeserta" name="jumlah_peserta" class="w-full border border-gray-300 rounded-md p-2" min="1" required>
+                        </div>
+                        <div id="pesertaFields" class="space-y-4 mt-4"></div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Pilih Paket</label>
-                                <select name="paket" class="w-full border border-gray-300 rounded-md p-2">
-                                    <option value="regular">Paket Reguler</option>
-                                    <option value="vip">Paket VIP</option>
-                                </select>
-                            </div>
+                        {{-- Paket --}}
+                        @if($trip->paket)
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Pilih Paket</label>
+                            <select name="paket" class="w-full border border-gray-300 rounded-md p-2" required>
+                                @foreach (explode(',', $trip->paket) as $paket)
+                                <option value="{{ trim($paket) }}">{{ ucfirst(trim($paket)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Bulan</label>
-                                <select name="bulan" class="w-full border border-gray-300 rounded-md p-2">
-                                    <option>Pilih Bulan</option>
-                                    <option>Juli</option>
-                                    <option>Agustus</option>
-                                </select>
-                            </div>
+                        {{-- Catatan Khusus --}}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Catatan Khusus</label>
+                            <textarea name="catatan_khusus" class="w-full border border-gray-300 rounded-md p-2" rows="4" placeholder="Tulis jika ada permintaan khusus..."></textarea>
+                        </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Pilih Jadwal</label>
-                                <select name="jadwal" class="w-full border border-gray-300 rounded-md p-2" required>
-                                    <option value="">Pilih salah satu</option>
-                                    <option>1-3</option>
-                                    <option>7-9</option>
-                                </select>
-                            </div>
+                        {{-- Checkbox persetujuan --}}
+                        <div class="mb-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox" required>
+                                <span class="ml-2 text-sm">Saya setuju dengan <a href="#" class="text-blue-500">syarat & ketentuan</a>.</span>
+                            </label>
+                        </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Catatan Khusus</label>
-                                <textarea name="catatan_khusus" class="w-full border border-gray-300 rounded-md p-2" placeholder="Catatan khusus untuk trip" rows="4"></textarea>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Metode Pembayaran</label>
-                                <select name="metode_pembayaran" class="w-full border border-gray-300 rounded-md p-2">
-                                    <option value="bank_transfer">Transfer Bank</option>
-                                    <option value="e_wallet">Qris</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="inline-flex items-center">
-                                    <input type="checkbox" class="form-checkbox" required>
-                                    <span class="ml-2 text-sm">Saya setuju dengan <a href="#" class="text-blue-500">syarat dan ketentuan</a>.</span>
-                                </label>
-                            </div>
-
-                            <button type="submit" class="bg-forest text-white px-4 py-2 rounded-md w-full hover:bg-pine transition">
-                                Pesan Sekarang
-                            </button>
-                        </form>
-                        @else
-                            <p class="text-center text-red-500 font-semibold mt-4">Login dulu ya sebelum memesan. <a href="{{ route('login') }}" class="text-blue-500 underline">Klik di sini untuk login</a>.</p>
-                        @endauth
-                    </div>
+                        <button type="submit" class="bg-forest text-white px-4 py-2 rounded-md w-full hover:bg-pine transition">Pesan Sekarang</button>
+                    </form>
+                    @else
+                    <p class="text-center text-red-500 font-semibold mt-4">Login dulu ya sebelum memesan. <a href="{{ route('login') }}" class="text-blue-500 underline">Klik di sini untuk login</a>.</p>
+                    @endauth
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
-        const jumlahPesertaInput = document.querySelector('input[name="jumlah_peserta"]');
+        const jumlahPesertaInput = document.getElementById('jumlahPeserta');
         const pesertaFieldsContainer = document.getElementById('pesertaFields');
-        const btnCopyPemesan = document.getElementById('copyPemesanToPeserta');
+        const btnCopy = document.getElementById('copyPemesanToPeserta');
 
-        if (jumlahPesertaInput) {
-            jumlahPesertaInput.addEventListener('input', generatePesertaFields);
-        }
-
-        if (btnCopyPemesan) {
-            btnCopyPemesan.addEventListener('click', function () {
-                const nama = document.querySelector('input[name="nama"]').value;
-                const telepon = document.querySelector('input[name="nomor_telepon"]').value;
-                const email = document.querySelector('input[name="email"]').value;
-
-                const peserta1 = pesertaFieldsContainer.querySelector('div.border');
-
-                if (peserta1) {
-                    peserta1.querySelector(`input[name="peserta[1][nama]"]`).value = nama;
-                    peserta1.querySelector(`input[name="peserta[1][telepon]"]`).value = telepon;
-                    peserta1.querySelector(`input[name="peserta[1][email]"]`).value = email;
-                } else {
-                    alert('Form peserta belum tersedia. Masukkan jumlah peserta dulu.');
-                }
-            });
-        }
-
-        function generatePesertaFields() {
-            const jumlah = parseInt(jumlahPesertaInput.value);
+        jumlahPesertaInput.addEventListener('input', function () {
+            const jumlah = parseInt(this.value);
             pesertaFieldsContainer.innerHTML = '';
-
-            if (!isNaN(jumlah) && jumlah > 0 && jumlah <= 100) {
+            if (!isNaN(jumlah) && jumlah > 0) {
                 for (let i = 1; i <= jumlah; i++) {
-                    const fieldHTML = `
+                    pesertaFieldsContainer.insertAdjacentHTML('beforeend', `
                         <div class="border p-4 rounded-md bg-mist">
                             <h3 class="font-semibold mb-2 text-forest">Data Peserta ${i}</h3>
                             <div class="mb-2">
                                 <label class="block text-sm font-medium mb-1">Nama</label>
-                                <input type="text" name="peserta[${i}][nama]" required class="w-full border border-gray-300 rounded-md p-2" placeholder="Nama Peserta ${i}">
+                                <input type="text" name="peserta[${i}][nama]" required class="w-full border border-gray-300 rounded-md p-2">
                             </div>
                             <div class="mb-2">
                                 <label class="block text-sm font-medium mb-1">Nomor Telepon</label>
-                                <input type="tel" name="peserta[${i}][telepon]" required class="w-full border border-gray-300 rounded-md p-2" placeholder="Nomor Telepon Peserta ${i}">
+                                <input type="tel" name="peserta[${i}][telepon]" required class="w-full border border-gray-300 rounded-md p-2">
                             </div>
                             <div class="mb-2">
                                 <label class="block text-sm font-medium mb-1">Email</label>
-                                <input type="email" name="peserta[${i}][email]" required class="w-full border border-gray-300 rounded-md p-2" placeholder="Email Peserta ${i}">
+                                <input type="email" name="peserta[${i}][email]" required class="w-full border border-gray-300 rounded-md p-2">
                             </div>
                         </div>
-                    `;
-                    pesertaFieldsContainer.insertAdjacentHTML('beforeend', fieldHTML);
+                    `);
                 }
             }
-        }
+        });
+
+        btnCopy?.addEventListener('click', function () {
+            const nama = document.querySelector('input[name="nama"]').value;
+            const telp = document.querySelector('input[name="nomor_telepon"]').value;
+            const email = document.querySelector('input[name="email"]').value;
+            const peserta1 = pesertaFieldsContainer.querySelector('div.border');
+            if (peserta1) {
+                peserta1.querySelector(`input[name="peserta[1][nama]"]`).value = nama;
+                peserta1.querySelector(`input[name="peserta[1][telepon]"]`).value = telp;
+                peserta1.querySelector(`input[name="peserta[1][email]"]`).value = email;
+            } else {
+                alert('Masukkan jumlah peserta terlebih dahulu!');
+            }
+        });
     });
-    </script>
-</x-home-layout>
+</script>
+@endsection

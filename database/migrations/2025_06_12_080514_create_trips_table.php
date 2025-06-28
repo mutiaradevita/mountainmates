@@ -13,18 +13,22 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_trip',50);
-            $table->string('deskripsi_trip',100);
-            $table->enum('tipe_trip', ['open', 'private'])->default('open');
-            $table->date('tanggal_trip');
-            $table->string('flyer');
-            $table->text('jadwal_trip')->nullable();
+            $table->string('nama_trip', 255);
+            $table->string('lokasi', 255);
+            $table->string('meeting_point',255);
+            $table->text('deskripsi_trip');
+            $table->integer('kuota');
+            $table->decimal('harga', 10, 2);
+            $table->text('paket')->nullable();
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+            $table->time('waktu');
+            $table->string('durasi', 255);
+            $table->text('sudah_termasuk')->nullable();
+            $table->text('belum_termasuk')->nullable();
             $table->text('itinerary')->nullable();
-            $table->time('waktu')->default('00:00');
-            $table->string('lokasi',100);
-            $table->string('status', 20); 
-            $table->integer('kuota')->nullable();
-            $table->decimal('harga', 10, 2)->nullable();
+            $table->string('flyer');
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
