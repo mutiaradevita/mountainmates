@@ -28,7 +28,7 @@ class CreateSnapTokenService
         $transaksi = Transaksi::where('payment_order_id', $this->request->order_id)->first();
 
         $itemDetails = [];
-        foreach ($request->items ?? [] as $item) {
+        foreach ($this->request->items ?? [] as $item) {
             $itemDetails[] = [
                 'id' => $item['id'],
                 'name' => $item['name'],

@@ -13,7 +13,7 @@ class UlasanController extends Controller
     public function index()
     {
         $userId = Auth::id(); 
-        $ulasans = Ulasan::where('user_id', $userId)->with('trip')->get();
+        $ulasans = Ulasan::where('id_user', $userId)->with('trip')->get();
 
         return view('peserta.ulasan',compact('ulasans'));
     }

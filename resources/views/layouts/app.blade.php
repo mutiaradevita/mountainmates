@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title', 'Dashboard')</title>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-  {{-- Midtrans Script --}}
-  <script type="text/javascript" src="{{ config('midtrans.snap_url') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
 </head>
 <body 
   class="bg-snow text-gray-800 min-h-screen flex"

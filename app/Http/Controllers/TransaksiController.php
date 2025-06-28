@@ -85,7 +85,7 @@ class TransaksiController extends Controller
                 'order_id' => 'ORDER-' . $transaksi->id,
                 'gross_amount' => (float) $transaksi->total ?: 10000,
                 'first_name' => $transaksi->nama,
-                'email' => $transaksi->email,
+                'email' => filter_var($transaksi->email, FILTER_VALIDATE_EMAIL) ? $transaksi->email : 'backup@email.com',
                 'phone' => $transaksi->nomor_telepon ?? '081234567890',
                 'items' => [
                     [

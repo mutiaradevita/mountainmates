@@ -42,13 +42,12 @@
                     </div>
                 @endif
 
-                 @if ($transaksi->status === 'menunggu' || $transaksi->status === 'belum bayar')
-                    <div class="mt-4 text-right">
-                        <button id="pay-button"
-                            class="bg-forest text-white px-4 py-2 rounded hover:bg-pine transition">
-                            Bayar Sekarang
-                        </button>
-                    </div>
+                  {{-- Tombol Midtrans --}}
+                @if(isset($snapToken) && $transaksi->status !== 'selesai')
+                    <button id="pay-button"
+                        class="inline-block bg-forest text-white px-4 py-2 rounded hover:bg-pine transition">
+                        Bayar Sekarang
+                    </button>
                 @endif
 
             @if ($transaksi->status === 'selesai')
@@ -76,36 +75,38 @@
             </a>
         </div>
     </div>
+
+    {{-- Midtrans Script di bagian luar layout utama --}}
+    @if(isset($snapToken) && $transaksi->status !== 'selesai')
+        <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
+            data-client-key="{{ config('midtrans.client_key') }}"></script>
+
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                const payBtn = document.getElementById("pay-button");
+                if (payBtn) {
+                    payBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        window.snap.pay('{{ $snapToken }}', {
+                            onSuccess: function (result) {
+                                alert("Pembayaran berhasil!");
+                                location.reload();
+                            },
+                            onPending: function (result) {
+                                alert("Pembayaran tertunda.");
+                            },
+                            onError: function (result) {
+                                alert("Pembayaran gagal.");
+                            },
+                            onClose: function () {
+                                alert("Anda menutup popup pembayaran.");
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
+    @endif
 </x-home-layout>
 
-@if(isset($snapToken) && ($transaksi->status === 'menunggu' || $transaksi->status === 'belum bayar'))
-    {{-- Midtrans Script --}}
-    <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
-        data-client-key="{{ config('midtrans.client_key') }}"></script>
 
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            const payBtn = document.getElementById("pay-button");
-            if (payBtn) {
-                payBtn.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    window.snap.pay('{{ $snapToken }}', {
-                        onSuccess: function (result) {
-                            alert("Pembayaran berhasil!");
-                            location.reload();
-                        },
-                        onPending: function (result) {
-                            alert("Pembayaran tertunda.");
-                        },
-                        onError: function (result) {
-                            alert("Pembayaran gagal.");
-                        },
-                        onClose: function () {
-                            alert("Anda menutup popup pembayaran.");
-                        }
-                    });
-                });
-            }
-        });
-    </script>
-@endif
