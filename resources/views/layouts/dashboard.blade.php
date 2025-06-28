@@ -1,326 +1,150 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ sidebarOpen: false }" x-init="$watch('sidebarOpen', val => document.body.classList.toggle('overflow-hidden', val))">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title', 'Dashboard')</title>
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body
-  class="bg-snow text-gray-800 min-h-screen flex"
-  x-data="{ sidebarOpen: true }"
+<html lang="id"
+  x-data="{ sidebarOpen: true, sidebarCollapsed: false }"
   x-init="
     sidebarOpen = JSON.parse(localStorage.getItem('sidebarOpen')) ?? true;
-    $watch('sidebarOpen', value => localStorage.setItem('sidebarOpen', JSON.stringify(value)))
+    sidebarCollapsed = JSON.parse(localStorage.getItem('sidebarCollapsed')) ?? false;
+    $watch('sidebarOpen', val => localStorage.setItem('sidebarOpen', JSON.stringify(val)));
+    $watch('sidebarCollapsed', val => localStorage.setItem('sidebarCollapsed', JSON.stringify(val)));
   "
 >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>@yield('title', 'Dashboard')</title>
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
 
-  {{-- Sidebar --}}
-    <aside
-        x-show="sidebarOpen"
-        x-cloak
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed z-40 inset-y-0 left-0 w-64 bg-pine text-snow transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static"
-        @click.away="sidebarOpen = false"
-    >
+<body class="bg-snow text-gray-800 min-h-screen flex">
 
-    <div class="flex items-center gap-3 text-xl font-bold p-6 border-b border-moss">
-      <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain" />
-      Mountain Mates
-    </div>
+  {{-- SIDEBAR --}}
+  <aside
+    :class="sidebarCollapsed ? 'w-20' : 'w-64'"
+    class="bg-pine text-snow h-screen transition-all duration-300 ease-in-out flex flex-col"
+  >
+    <div class="flex items-center justify-between px-4 py-4 border-b border-moss">
+      <div class="flex items-center gap-3">
+        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain" />
+        <span x-show="!sidebarCollapsed" class="text-xl font-bold">Mountain Mates</span>
+      </div>
+      <button @click="sidebarCollapsed = !sidebarCollapsed" class="hidden lg:block"></button>
+    </div> 
 
-    <nav class="p-4 space-y-2 text-sm">
+    <nav class="p-4 text-sm space-y-2">
       @if(Auth::user()?->role === 'admin')
-        <x-nav-link route="admin.dashboard" label="Dashboard" />
-        <x-nav-link route="admin.berita.index" label="Berita" />
-        <x-nav-link route="admin.user.index" label="Kelola User" />
-        <x-nav-link route="admin.trip.index" label="Data Trip" />
-        <x-nav-link route="admin.transaksi.index" label="Data Transaksi" />
+        <x-nav-link route="admin.dashboard" label="Dashboard" icon="dashboard" />
+        <x-nav-link route="admin.berita.index" label="Berita" icon="newspaper" />
+        <x-nav-link route="admin.user.index" label="Kelola User" icon="users" />
+        <x-nav-link route="admin.trip.index" label="Data Trip" icon="mountains" />
+        <x-nav-link route="admin.transaksi.index" label="Data Transaksi" icon="wallet" />
       @elseif(Auth::user()?->role === 'pengelola')
-        <x-nav-link route="pengelola.dashboard" label="Dashboard" />
-        <x-nav-link route="pengelola.trips.index" label="Kelola Trip" />
-        <x-nav-link route="pengelola.trips.history" label="Riwayat" />
-        <x-nav-link route="pengelola.trips.create" label="Tambah Trip" />
-        <x-nav-link route="pengelola.transaksi.index" label="Data Transaksi" />
+        <x-nav-link route="pengelola.dashboard" label="Dashboard" icon="dashboard" />
+        <x-nav-link route="pengelola.trips.index" label="Kelola Trip" icon="mountains" />
+        <x-nav-link route="pengelola.trips.history" label="Riwayat" icon="newspaper" />
+        <x-nav-link route="pengelola.trips.create" label="Tambah Trip" icon="plus" />
+        <x-nav-link route="pengelola.transaksi.index" label="Data Transaksi" icon="wallet" />
       @endif
     </nav>
   </aside>
 
-  {{-- Overlay mobile --}}
-  <div
-    x-show="sidebarOpen && window.innerWidth < 1024"
-    x-transition.opacity
-    class="fixed inset-0 bg-black bg-opacity-50 z-30"
-    @click="sidebarOpen = false"
-    x-cloak
-  ></div>
+  {{-- MAIN CONTENT --}}
+  <div class="flex-1 flex flex-col h-screen overflow-hidden">
 
-  {{-- Main Content --}}
-  <div class="flex-1 flex flex-col min-h-screen">
+    {{-- TOPBAR --}}
+<header class="bg-white shadow px-6 py-4 flex justify-between items-center">
+  <div class="flex items-center gap-4">
+    {{-- Hamburger --}}
+    <button @click="sidebarCollapsed = !sidebarCollapsed" class="focus:outline-none">
+      <svg class="w-6 h-6 text-pine" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
 
-    {{-- Topbar --}}
-    <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
-      <<div class="navbar-header">
-    <div class="row align-items-center justify-content-between">
-        <div class="col-auto">
-            <div class="d-flex flex-wrap align-items-center gap-4">
-                <button type="button" class="sidebar-toggle">
-                    <iconify-icon icon="heroicons:bars-3-solid" class="icon text-2xl non-active"></iconify-icon>
-                    <iconify-icon icon="iconoir:arrow-right" class="icon text-2xl active"></iconify-icon>
-                </button>
-                <button type="button" class="sidebar-mobile-toggle">
-                    <iconify-icon icon="heroicons:bars-3-solid" class="icon"></iconify-icon>
-                </button>
-                <form class="navbar-search">
-                    <input type="text" name="search" placeholder="Search">
-                    <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
-                </form>
-            </div>
-        </div>
-        <div class="col-auto">
-            
+    {{-- Judul / Breadcrumb --}}
+    <h1 class="text-lg font-semibold text-pine">@yield('title', 'Dashboard Admin')</h1>
+  </div>
 
-                <div class="dropdown">
-                    <button class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown">
-                        <iconify-icon icon="mage:email" class="text-primary-light text-xl"></iconify-icon>
-                    </button>
-                    <div class="dropdown-menu to-top dropdown-menu-lg p-0">
-                        <div class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-                            <div>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-0">Message</h6>
-                            </div>
-                            <span class="text-primary-600 fw-semibold text-lg w-40-px h-40-px rounded-circle bg-base d-flex justify-content-center align-items-center">05</span>
-                        </div>
+    {{-- Action Icons --}}
+  <div class="flex items-center gap-4">
 
-                        <div class="max-h-400-px overflow-y-auto scroll-sm pe-4">
+ <div class="relative" x-data="{ open: false }">
+  <button @click="open = !open" class="w-10 h-10 bg-stone-100 rounded-full flex justify-center items-center hover:bg-mist transition">
+    <i class="fas fa-calendar-alt text-pine text-lg"></i>
+  </button>
+  <div x-show="open" @click.outside="open = false" x-transition
+       class="absolute right-0 mt-2 bg-white rounded shadow p-2 z-50 w-60">
+    <input type="text" id="datepicker" class="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-pine">
+     <div id="trip-info" class="hidden mt-3 p-3 rounded-lg text-sm font-medium border transition-all duration-300"></div>
 
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-40-px h-40-px rounded-circle flex-shrink-0 position-relative">
-                                        <img src="{{ asset('assets/images/notification/profile-3.png') }}" alt="">
-                                        <span class="w-8-px h-8-px bg-success-main rounded-circle position-absolute end-0 bottom-0"></span>
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Kathryn Murphy</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-100-px">hey! there i’m...</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <span class="text-sm text-secondary-light flex-shrink-0">12:30 PM</span>
-                                    <span class="mt-4 text-xs text-base w-16-px h-16-px d-flex justify-content-center align-items-center bg-warning-main rounded-circle">8</span>
-                                </div>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-40-px h-40-px rounded-circle flex-shrink-0 position-relative">
-                                        <img src="{{ asset('assets/images/notification/profile-4.png') }}" alt="">
-                                        <span class="w-8-px h-8-px  bg-neutral-300 rounded-circle position-absolute end-0 bottom-0"></span>
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Kathryn Murphy</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-100-px">hey! there i’m...</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <span class="text-sm text-secondary-light flex-shrink-0">12:30 PM</span>
-                                    <span class="mt-4 text-xs text-base w-16-px h-16-px d-flex justify-content-center align-items-center bg-warning-main rounded-circle">2</span>
-                                </div>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-40-px h-40-px rounded-circle flex-shrink-0 position-relative">
-                                        <img src="{{ asset('assets/images/notification/profile-5.png') }}" alt="">
-                                        <span class="w-8-px h-8-px bg-success-main rounded-circle position-absolute end-0 bottom-0"></span>
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Kathryn Murphy</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-100-px">hey! there i’m...</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <span class="text-sm text-secondary-light flex-shrink-0">12:30 PM</span>
-                                    <span class="mt-4 text-xs text-base w-16-px h-16-px d-flex justify-content-center align-items-center bg-neutral-400 rounded-circle">0</span>
-                                </div>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-40-px h-40-px rounded-circle flex-shrink-0 position-relative">
-                                        <img src="{{ asset('assets/images/notification/profile-6.png') }}" alt="">
-                                        <span class="w-8-px h-8-px bg-neutral-300 rounded-circle position-absolute end-0 bottom-0"></span>
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Kathryn Murphy</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-100-px">hey! there i’m...</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <span class="text-sm text-secondary-light flex-shrink-0">12:30 PM</span>
-                                    <span class="mt-4 text-xs text-base w-16-px h-16-px d-flex justify-content-center align-items-center bg-neutral-400 rounded-circle">0</span>
-                                </div>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-40-px h-40-px rounded-circle flex-shrink-0 position-relative">
-                                        <img src="{{ asset('assets/images/notification/profile-7.png') }}" alt="">
-                                        <span class="w-8-px h-8-px bg-success-main rounded-circle position-absolute end-0 bottom-0"></span>
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Kathryn Murphy</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-100-px">hey! there i’m...</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <span class="text-sm text-secondary-light flex-shrink-0">12:30 PM</span>
-                                    <span class="mt-4 text-xs text-base w-16-px h-16-px d-flex justify-content-center align-items-center bg-warning-main rounded-circle">8</span>
-                                </div>
-                            </a>
-
-                        </div>
-                        <div class="text-center py-12 px-16">
-                            <a href="javascript:void(0)" class="text-primary-600 fw-semibold text-md">See All Message</a>
-                        </div>
-                    </div>
-                </div><!-- Message dropdown end -->
-
-                <div class="dropdown">
-                    <button class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown">
-                        <iconify-icon icon="iconoir:bell" class="text-primary-light text-xl"></iconify-icon>
-                    </button>
-                    <div class="dropdown-menu to-top dropdown-menu-lg p-0">
-                        <div class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-                            <div>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-0">Notifications</h6>
-                            </div>
-                            <span class="text-primary-600 fw-semibold text-lg w-40-px h-40-px rounded-circle bg-base d-flex justify-content-center align-items-center">05</span>
-                        </div>
-
-                        <div class="max-h-400-px overflow-y-auto scroll-sm pe-4">
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                        <iconify-icon icon="bitcoin-icons:verify-outline" class="icon text-xxl"></iconify-icon>
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Congratulations</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-200-px">Your profile has been Verified. Your profile has been Verified</p>
-                                    </div>
-                                </div>
-                                <span class="text-sm text-secondary-light flex-shrink-0">23 Mins ago</span>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                        <img src="{{ asset('assets/images/notification/profile-1.png') }}" alt="">
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Ronald Richards</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-200-px">You can stitch between artboards</p>
-                                    </div>
-                                </div>
-                                <span class="text-sm text-secondary-light flex-shrink-0">23 Mins ago</span>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-44-px h-44-px bg-info-subtle text-info-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                        AM
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Arlene McCoy</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-200-px">Invite you to prototyping</p>
-                                    </div>
-                                </div>
-                                <span class="text-sm text-secondary-light flex-shrink-0">23 Mins ago</span>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                        <img src="{{ asset('assets/images/notification/profile-2.png') }}" alt="">
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Annette Black</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-200-px">Invite you to prototyping</p>
-                                    </div>
-                                </div>
-                                <span class="text-sm text-secondary-light flex-shrink-0">23 Mins ago</span>
-                            </a>
-
-                            <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                    <span class="w-44-px h-44-px bg-info-subtle text-info-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                        DR
-                                    </span>
-                                    <div>
-                                        <h6 class="text-md fw-semibold mb-4">Darlene Robertson</h6>
-                                        <p class="mb-0 text-sm text-secondary-light text-w-200-px">Invite you to prototyping</p>
-                                    </div>
-                                </div>
-                                <span class="text-sm text-secondary-light flex-shrink-0">23 Mins ago</span>
-                            </a>
-                        </div>
-
-                        <div class="text-center py-12 px-16">
-                            <a href="javascript:void(0)" class="text-primary-600 fw-semibold text-md">See All Notification</a>
-                        </div>
-
-                    </div>
-                </div><!-- Notification dropdown end -->
-
-                <div class="dropdown">
-                    <button class="d-flex justify-content-center align-items-center rounded-circle" type="button" data-bs-toggle="dropdown">
-                        <img src="{{ asset('assets/images/user.png') }}" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">
-                    </button>
-                    <div class="dropdown-menu to-top dropdown-menu-sm">
-                        <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-                            <div>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-2">Shaidul Islam</h6>
-                                <span class="text-secondary-light fw-medium text-sm">Admin</span>
-                            </div>
-                            <button type="button" class="hover-text-danger">
-                                <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
-                            </button>
-                        </div>
-                        <ul class="to-top-list">
-                            <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="{{ route('') }}">
-                                    <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> My Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="{{ route('email') }}">
-                                    <iconify-icon icon="tabler:message-check" class="icon text-xl"></iconify-icon> Inbox
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="{{ route('company') }}">
-                                    <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon> Setting
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3" href="javascript:void(0)">
-                                    <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> Log Out
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div><!-- Profile dropdown end -->
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
-    </header>
 
-    {{-- Page Content --}}
+    {{-- Notification Dropdown --}}
+    <div class="relative" x-data="{ open: false }">
+      <button @click="open = !open" class="relative w-10 h-10 bg-stone-100 rounded-full flex justify-center items-center">
+        <i class="fas fa-bell text-pine"></i>
+        <span class="absolute top-0 right-0 text-xs text-pine rounded-full px-1.5">3</span>
+      </button>
+      <div x-show="open" @click.outside="open = false" x-transition
+           class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
+        <div class="p-4 border-b">
+          <h6 class="font-semibold text-pine">Notifikasi</h6>
+        </div>
+        <div class="max-h-60 overflow-y-auto divide-y">
+          <a href="#" class="block px-4 py-3 hover:bg-mist">
+            <p class="text-sm font-medium text-gray-800">Akun kamu sudah diverifikasi</p>
+            <p class="text-xs text-gray-500">5 menit lalu</p>
+          </a>
+          <!-- Tambahkan lainnya di sini -->
+        </div>
+        <div class="text-center p-2">
+          <a href="#" class="text-sm text-pine hover:underline">Lihat semua</a>
+        </div>
+      </div>
+    </div>
+
+    {{-- Profile Dropdown --}}
+    <div class="relative" x-data="{ open: false }">
+      <button @click="open = !open" class="w-10 h-10 rounded-full overflow-hidden">
+        <img src="{{ asset('img/user.png') }}" alt="Profile" class="w-full h-full object-cover" />
+      </button>
+      <div x-show="open" @click.outside="open = false" x-transition
+           class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
+        <div class="p-4 border-b">
+          <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
+          <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
+        </div>
+        <ul class="text-sm">
+          <li><a href="#" class="block px-4 py-2 hover:bg-mist">Profil</a></li>
+          <li><a href="#" class="block px-4 py-2 hover:bg-mist">Pengaturan</a></li>
+          <li>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600">Logout</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+
+
+    {{-- PAGE CONTENT --}}
     <main class="flex-1 p-6 overflow-y-auto">
       @yield('content')
     </main>
+    @stack('scripts')
   </div>
-
 </body>
 </html>
+
+@push('scripts')
+<script>
+    window.tripEvents = @json($tripEvents ?? []);
+</script>
+@endpush

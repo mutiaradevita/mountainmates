@@ -17,6 +17,7 @@ class DashboardController extends Controller
         $totalTrip = Trip::count();
         $orderPending = Transaksi::where('status', 'menunggu')->count();
         $orderSelesai = Transaksi::where('status', 'selesai')->count();
+        
 
         return view('admin.dashboard', [
             'orderPending' => Transaksi::where('status', 'menunggu')->count(),
@@ -39,6 +40,17 @@ class DashboardController extends Controller
         ->latest()
         ->get();
 
+        $tripEvents = Trip::where('created_by', $userId)
+    ->get(['nama_trip', 'tanggal_mulai', 'tanggal_selesai'])
+    ->map(function ($trip) {
+        return [
+            'name' => $trip->nama_trip, // sesuaikan ke JS
+            'start' => \Carbon\Carbon::parse($trip->tanggal_mulai)->toIso8601String(),
+            'end' => \Carbon\Carbon::parse($trip->tanggal_selesai)->endOfDay()->toIso8601String(),
+        ];
+    });
+
+
         return view('pengelola.dashboard', [
             'ulasanDiterima' => $ulasanDiterima,
             'pesertaAktif' => Transaksi::where('status', 'confirmed')
@@ -46,6 +58,7 @@ class DashboardController extends Controller
             'belumVerifikasi' => Transaksi::where('status', 'pending')
                 ->whereHas('trip', fn($q) => $q->where('created_by', $userId))->count(),
             'transaksiTripSaya' => $transaksiTripSaya,
+            'tripEvents' => $tripEvents,
         ]);
     }
 }
