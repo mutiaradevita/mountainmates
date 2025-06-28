@@ -88,7 +88,7 @@ class CallbackService extends Midtrans
 
         $this->notification = $notification;
         $this->orderId = $orderId;
-        $this->grossAmount = (int) $order->payment_amount;
+        $this->grossAmount = (int) $order->total;
         $this->type = 'order';
         $this->paymentMethod = $notification->payment_type;
     }

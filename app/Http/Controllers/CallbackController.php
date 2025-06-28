@@ -57,14 +57,6 @@ class CallbackController extends Controller
                 }
             }
 
-            if ($callback->getPaymentMethod()) {
-                if ($order) {
-                    Transaksi::where('id', $order->id)->update([
-                        'payment_method' => $callback->getPaymentMethod(),
-                    ]);
-                }
-            }
-
             return response()
                 ->json([
                     'success' => true,
