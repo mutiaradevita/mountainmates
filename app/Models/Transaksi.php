@@ -18,10 +18,7 @@ class Transaksi extends Model
         'nama',
         'nomor_telepon',
         'email',
-        'bulan',
-        'jadwal',
         'catatan_khusus',
-        'metode_pembayaran',
         'paket',
     ];
 

@@ -30,9 +30,6 @@ class TransaksiController extends Controller
             'jumlah_peserta' => 'required|integer|min:1',
             'paket' => 'required|string',
             'id_trip' => 'required|exists:trips,id', 
-            'bulan' => 'required|string',
-            'jadwal' => 'required|string',
-            'metode_pembayaran' => 'required|string',
         ]);
 
         $trip = Trip::findOrFail($request->id_trip);
@@ -46,10 +43,7 @@ class TransaksiController extends Controller
             $transaksi->email = $request->email;
             $transaksi->jumlah_peserta = $request->jumlah_peserta;
             $transaksi->paket = $request->paket;
-            $transaksi->bulan = $request->bulan;
-            $transaksi->jadwal = $request->jadwal;
             $transaksi->catatan_khusus = $request->catatan_khusus;
-            $transaksi->metode_pembayaran = $request->metode_pembayaran;
             $transaksi->total = $total;
             $transaksi->status = 'menunggu';
 

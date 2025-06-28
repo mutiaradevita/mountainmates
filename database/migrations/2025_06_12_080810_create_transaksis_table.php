@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('nomor_telepon', 20);
             $table->string('email');
             $table->integer('jumlah_peserta')->default(1);
-            $table->string('paket')->nullable(); // masih dipakai
+            $table->string('paket')->nullable(); 
             $table->text('catatan_khusus')->nullable();
             $table->decimal('total', 10, 2)->default(0);
             $table->string('status')->default('menunggu');
