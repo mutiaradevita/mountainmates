@@ -8,6 +8,7 @@ use App\Models\PesertaTransaksi;
 use App\Models\Trip;
 use App\Services\Midtrans\CreateSnapTokenService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class TransaksiController extends Controller
 {
@@ -76,7 +77,7 @@ class TransaksiController extends Controller
         if (!$transaksi->payment_token || $transaksi->status === 'expired') {
 
             $requestData = (object)[
-                'order_id' => 'ORDER-' . $transaksi->id,
+                'order_id' => (string) Str::ulid(), 
                 'gross_amount' => (float) $transaksi->total ?: 10000,
                 'first_name' => $transaksi->nama,
                 'email' => filter_var($transaksi->email, FILTER_VALIDATE_EMAIL) ? $transaksi->email : 'backup@email.com',

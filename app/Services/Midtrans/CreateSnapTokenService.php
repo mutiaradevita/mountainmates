@@ -3,22 +3,18 @@
 namespace App\Services\Midtrans;
 
 use Midtrans\Snap;
-use Midtrans\Config;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Log;
 
-class CreateSnapTokenService
+class CreateSnapTokenService extends Midtrans
 {
     protected $request;
 
     public function __construct($request)
     {
-        $this->request = $request;
+        parent::__construct();
 
-        Config::$serverKey    = config('midtrans.serverKey');
-        Config::$isProduction = config('midtrans.isProduction');
-        Config::$isSanitized  = config('midtrans.isSanitized');
-        Config::$is3ds        = config('midtrans.is3ds');
+        $this->request = $request;
     }
 
     public function getSnapToken()

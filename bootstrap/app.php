@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => Authenticate::class,
             'role' => RoleMiddleware::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'webhook/*',
+            'webhook/midtrans',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

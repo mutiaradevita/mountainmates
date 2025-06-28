@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DataController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Pengelola\TransaksiController as PengelolaTransaksiController;
-use App\Http\Controllers\Midtrans\CallbackController;
+use App\Http\Controllers\CallbackController;
 
 
 // ======================== GUEST ========================
@@ -76,6 +76,6 @@ Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->name('pengel
 });
 
 // ======================== MIDTRANS WEBHOOK ========================
-Route::post('/midtrans/callback', [CallbackController::class, 'handle']);
+Route::post('/webhook/midtrans', [CallbackController::class, 'handle']);
 
 require __DIR__.'/auth.php';

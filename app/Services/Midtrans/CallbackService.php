@@ -2,7 +2,7 @@
 
 namespace App\Services\Midtrans;
 
-use App\Models\Order;
+use App\Models\Transaksi;
 use Midtrans\Notification;
 use App\Services\Midtrans\Midtrans;
 
@@ -84,7 +84,7 @@ class CallbackService extends Midtrans
         $notification = new Notification();
         $orderId = $notification->order_id;
 
-        $order = Order::where('payment_order_id', $orderId)->first();
+        $order = Transaksi::where('payment_order_id', $orderId)->first();
 
         $this->notification = $notification;
         $this->orderId = $orderId;
