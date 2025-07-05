@@ -14,12 +14,20 @@
                     <p class="mb-2"><span class="font-semibold text-gray-600">Trip:</span> {{ $transaksi->trip->nama_trip ?? '-' }}</p>
                     <p class="mb-2"><span class="font-semibold text-gray-600">Jumlah Peserta:</span> {{ $transaksi->jumlah_peserta }}</p>
                     <p class="mb-2"><span class="font-semibold text-gray-600">Total:</span> <span class="text-lg font-bold text-forest">Rp {{ number_format($transaksi->total, 0, ',', '.') }}</span></p>
+                    <p class="text-sm text-gray-700">DP yang harus dibayar: {{ $transaksi->trip->dp_persen }}% dari total</p>
                 </div>
                 <div>
                     <p class="mb-2"><span class="font-semibold text-gray-600">Status:</span>
                         <span class="inline-block text-xs font-medium px-3 py-1 rounded-full 
                             {{ $transaksi->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ($transaksi->status === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700') }}">
                             {{ ucfirst($transaksi->status) }}
+                        </span>
+                    </p>
+                    <p class="mb-2">
+                        <span class="font-semibold text-gray-600">Status Pembayaran:</span>
+                        <span class="inline-block text-xs font-medium px-3 py-1 rounded-full 
+                            {{ $transaksi->status_pembayaran === 'dp' ? 'bg-yellow-100 text-yellow-700' : ($transaksi->status_pembayaran === 'lunas' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600') }}">
+                            {{ ucfirst($transaksi->status_pembayaran) }}
                         </span>
                     </p>
                     <p class="mb-2"><span class="font-semibold text-gray-600">Tanggal Pesan:</span> 
@@ -49,11 +57,19 @@
 
             {{-- Tombol Aksi --}}
             <div class="border-t pt-6 space-y-4">
-                @if(isset($snapToken) && $transaksi->status !== 'selesai')
+                @if(isset($snapToken) && $transaksi->status_pembayaran !== 'menunggu dp')
                 <button id="pay-button"
                     class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold">
                     💳 Bayar Sekarang
                 </button>
+
+                @if ($transaksi->status_pembayaran === 'dp')
+                    <a href="{{ route('peserta.transaksi.bayar-pelunasan', $transaksi->id) }}"
+                        class="w-full bg-sunset text-white px-5 py-3 rounded-lg hover:bg-forest transition font-semibold block text-center">
+                        🔁 Bayar Pelunasan
+                    </a>
+                @endif
+
                 <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
                 @endif
 
@@ -67,6 +83,9 @@
                         <div class="bg-mist text-gray-700 p-4 rounded-lg">
                             <h3 class="font-semibold text-pine mb-2">💬 Ulasan Kamu:</h3>
                             <p class="italic">"{{ $transaksi->ulasan->komentar }}"</p>
+                            @for ($i = 1; $i <= 5; $i++)
+                                <span class="text-xl {{ $i <= $transaksi->ulasan->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
+                            @endfor
                         </div>
                     @endif
                 @endif

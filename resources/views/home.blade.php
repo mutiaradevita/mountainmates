@@ -52,12 +52,12 @@
 <!-- Testimoni Section -->
     <section id="ulasan" class="bg-pine py-12 min-h-screen flex items-center">
         <div class="max-w-screen-xl mx-auto px-4">
-            <h2 class="text-center text-xl font-bold text-snow mb-4">Testimoni Peserta</h2>
+            <h2 class="text-center text-xl font-bold text-snow mb-4">Ulasan Peserta</h2>
             <div class="flex space-x-4 gap-4 overflow-x-auto pb-2 scroll-smooth">
                 @forelse ($ulasans as $ulasan)
                     <div class="bg-snow rounded-xl p-6 shadow-md w-64">
                         <p class="text-stone text-base mb-4">"{{ $ulasan->komentar }}"</p>
-                        <h4 class="font-semibold text-pine">{{ $ulasan->peserta->user->name }}</h4>
+                        <h4 class="font-semibold text-pine">{{ $ulasan->user->name ?? 'Peserta tidak ditemukan' }}</h4>
                         <p class="text-sm text-stone">Trip oleh: {{ $ulasan->trip->pengelola->name ?? '-' }}</p>
                     </div>
                 @empty
@@ -99,7 +99,7 @@
         <div class="max-w-screen-xl mx-auto px-4">
             <h2 class="text-center text-xl font-bold text-pine mb-6">Berita Pendakian</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                @foreach ($berita as $berita)
+                @foreach ($berita as $beritas)
                     <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
                         @if ($berita->gambar)
                             <img src="{{ asset('storage/' . $berita->gambar) }}" class="w-full h-48 object-cover" alt="{{ $berita->judul }}">

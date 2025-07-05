@@ -24,9 +24,15 @@ return new class extends Migration
             $table->string('paket')->nullable(); 
             $table->text('catatan_khusus')->nullable();
             $table->decimal('total', 10, 2)->default(0);
+            $table->decimal('total_dp', 10, 2);
+            $table->decimal('total_keseluruhan', 10, 2)->default(0);
             $table->string('status')->default('menunggu');
+            $table->enum('status_pembayaran', ['menunggu dp', 'dp', 'lunas', 'gagal', 'batal'])->default('menunggu dp');
             $table->string('payment_order_id')->nullable();
+            $table->string('pelunasan_order_id')->nullable();
             $table->string('payment_token')->nullable();
+            $table->string('pelunasan_token')->nullable();
+            $table->decimal('total_pelunasan', 10, 2)->nullable();
             $table->timestamps();
         });
     }

@@ -53,9 +53,9 @@ class DashboardController extends Controller
 
         return view('pengelola.dashboard', [
             'ulasanDiterima' => $ulasanDiterima,
-            'pesertaAktif' => Transaksi::where('status', 'confirmed')
+            'pesertaAktif' => Transaksi::where('status_pembayaran', 'confirmed')
                 ->whereHas('trip', fn($q) => $q->where('created_by', $userId))->count(),
-            'belumVerifikasi' => Transaksi::where('status', 'pending')
+            'belumVerifikasi' => Transaksi::where('status_pembayaran', 'pending')
                 ->whereHas('trip', fn($q) => $q->where('created_by', $userId))->count(),
             'transaksiTripSaya' => $transaksiTripSaya,
             'tripEvents' => $tripEvents,

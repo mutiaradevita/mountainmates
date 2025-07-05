@@ -84,11 +84,21 @@ class CallbackService extends Midtrans
         $notification = new Notification();
         $orderId = $notification->order_id;
 
-        $order = Transaksi::where('payment_order_id', $orderId)->first();
+        // Cek transaksi untuk order biasa atau pelunasan
+        $order = Transaksi::where('payment_order_id', $orderId)
+            ->orWhere('pelunasan_order_id', $orderId)
+            ->first();
 
         $this->notification = $notification;
         $this->orderId = $orderId;
-        $this->grossAmount = (int) $order->total;
+
+        // Atur jumlah sesuai jenis transaksi
+        if (str_contains($orderId, 'pelunasan')) {
+            $this->grossAmount = (int) ($order?->total_pelunasan ?? 0);
+        } else {
+            $this->grossAmount = (int) ($order?->total_dp ?? 0);
+        }
+
         $this->type = 'order';
         $this->paymentMethod = $notification->payment_type;
     }

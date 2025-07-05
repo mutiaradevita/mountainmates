@@ -65,12 +65,13 @@
 
 
     <!-- Trip Cards -->
-    <section id="trip" class="bg-snow py-12 mb-24">
-        <div class="max-w-screen-xl mx-auto px-4">
-            <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
-            
+    <section id="trip" class="bg-snow {{ $trips->count() ? 'py-12 mb-24' : 'py-8' }}">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
+
+        @if ($trips->count())
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                @forelse ($trips as $trip)
+                @foreach ($trips as $trip)
                     <a href="{{ route('jelajah.detail', $trip->id) }}" 
                       class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                         
@@ -99,10 +100,14 @@
                             </p>
                         </div>
                     </a>
-                @empty
-                    <p class="text-sm text-stone">Belum ada trip tersedia.</p>
-                @endforelse
+                 @endforeach
             </div>
-        </div>
-    </section>
+        @else
+            <div class="text-center text-stone py-8">
+                <img src="{{ asset('img/no-trip.png') }}" class="mx-auto h-28 mb-4" alt="No Trip">
+                <p class="text-base">Belum ada trip tersedia.</p>
+            </div>
+        @endif
+    </div>
+</section>
 </x-home-layout>

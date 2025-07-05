@@ -57,6 +57,12 @@
                 <input type="number" id="harga" name="harga" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->harga }}" required>
             </div>
 
+            <div class="mb-4">
+                <label for="dp_persen" class="block font-semibold mb-1">Persentase DP (%)</label>
+                <input type="number" name="dp_persen" id="dp_persen" min="0" max="100" class="w-full border rounded p-2"
+                    value="{{ old('dp_persen', $trip->dp_persen ?? 30) }}">
+            </div>
+
             {{-- Waktu Mulai --}}
             <div class="mb-4">
                 <label for="waktu" class="block text-gray-700">Waktu Mulai</label>

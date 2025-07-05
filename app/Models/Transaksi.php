@@ -9,17 +9,20 @@ class Transaksi extends Model
 {
      use HasFactory;
 
-        protected $fillable = [
-        'id_user',
-        'id_trip',
-        'jumlah_peserta',
-        'total',
-        'status',
-        'nama',
-        'nomor_telepon',
-        'email',
-        'catatan_khusus',
-        'paket',
+    protected $fillable = [
+            'id_user',
+            'id_trip',
+            'jumlah_peserta',
+            'total',
+            'total_dp',
+            'total_pelunasan',
+            'status',
+            'status_pembayaran',
+            'nama',
+            'nomor_telepon',
+            'email',
+            'catatan_khusus',
+            'paket',
     ];
 
     public function user()

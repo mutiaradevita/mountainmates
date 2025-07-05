@@ -13,7 +13,7 @@ class HomeController extends Controller
     public function landing()
     {
         $trips = Trip::all();
-        $ulasans = Ulasan::latest()->with(['peserta.user', 'trip.pengelola'])->take(5)->get();
+        $ulasans = Ulasan::latest()->with(['user', 'trip.pengelola'])->take(5)->get();
         $berita = Berita::latest()->take(5)->get();
 
         return view('home', ['user' => null, 'trips' => $trips, 'ulasans' => $ulasans, 'berita' => $berita,]);

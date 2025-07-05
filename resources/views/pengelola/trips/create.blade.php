@@ -54,6 +54,11 @@
                 <input type="number" id="harga" name="harga" class="w-full px-4 py-2 border rounded-md" required>
             </div>
 
+            <div class="mb-4">
+                <label for="dp_persen" class="block text-sm font-medium text-gray-700">Persentase DP (%)</label>
+                <input type="number" name="dp_persen" id="dp_persen" min="0" max="100" class="mt-1 block w-full" value="{{ old('dp_persen', 30) }}">
+            </div>
+
             {{-- Waktu Mulai --}}
             <div class="mb-4">
                 <label for="waktu" class="block text-gray-700">Waktu Mulai</label>

@@ -16,58 +16,75 @@ class CallbackController extends Controller
 
         if ($callback->isSignatureKeyVerified()) {
             $type = $callback->getType();
+            $orderId = $callback->getNotification()->order_id;
             $order = null;
+            $isPelunasan = false;
 
-            switch ($type) {
+
+                switch ($type) {
                 case 'order':
-                    $order = Transaksi::where('payment_order_id', $callback->getNotification()->order_id)->first();
+                    if (Transaksi::where('pelunasan_order_id', $orderId)->exists()) {
+                        $order = Transaksi::where('pelunasan_order_id', $orderId)->first();
+                        $isPelunasan = true;
+                    } else {
+                        $order = Transaksi::where('payment_order_id', $orderId)->first();
+                    }
                     break;
             }
 
+            if (!$order) {
+                Log::error('Order tidak ditemukan', ['order_id' => $orderId]);
+                return response()->json(['error' => true, 'message' => 'Order not found'], 404);
+            }
+
+            // SUCCESS
             if ($callback->isSuccess()) {
-                if ($order) {
-                    Transaksi::where('id', $order->id)->update([
-                        'status' => 'selesai',
-                    ]);
+                if ($isPelunasan) {
+                    $order->status_pembayaran = 'lunas';
+                    $order->status = 'menunggu'; // Trip belum dimulai
+                } else {
+                    $order->status_pembayaran = 'dp';
                 }
-            }
 
-            if ($callback->isPending()) {
-                if ($order) {
-                    Transaksi::where('id', $order->id)->update([
-                        'status' => 'pending',
-                    ]);
-                }
-            }
+                $order->save();
 
-            if ($callback->isExpire()) {
-                if ($order) {
-                    Transaksi::where('id', $order->id)->update([
-                        'status' => 'gagal',
-                    ]);
-                }
-            }
-
-            if ($callback->isCancelled()) {
-                if ($order) {
-                    Transaksi::where('id', $order->id)->update([
-                        'status' => 'gagal',
-                    ]);
-
-                }
-            }
-
-            return response()
-                ->json([
-                    'success' => true,
-                    'message' => 'Notification successfully processed',
+                Log::info('Pembayaran berhasil diproses', [
+                    'order_id' => $orderId,
+                    'status_pembayaran' => $order->status_pembayaran,
                 ]);
-        } else {
-            return response()
-                ->json([
-                    'error' => true,
-                    'message' => 'Signature key not verified',
-                ], 403);
+            }
+
+            // PENDING
+            elseif ($callback->isPending()) {
+                $order->status_pembayaran = 'menunggu dp';
+                $order->save();
+
+                Log::info('Pembayaran pending', ['order_id' => $orderId]);
+            }
+
+            // EXPIRE
+            elseif ($callback->isExpire()) {
+                $order->status_pembayaran = 'gagal';
+                $order->status = 'gagal';
+                $order->save();
+
+                Log::info('Pembayaran expired', ['order_id' => $orderId]);
+            }
+
+            // CANCELLED
+            elseif ($callback->isCancelled()) {
+                $order->status_pembayaran = 'gagal';
+                $order->status = 'batal';
+                $order->save();
+
+                Log::info('Pembayaran dibatalkan', ['order_id' => $orderId]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notification successfully processed',
+            ]);
         }
     }
 }
+

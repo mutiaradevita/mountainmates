@@ -5,13 +5,25 @@
 
             @forelse ($testimonis as $testimoni)
                 <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <p class="text-stone mb-3">"{{ $testimoni->isi }}"</p>
 
+                    {{-- ⭐ Rating --}}
+                    <div class="text-sm text-yellow-500 mb-2">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <span>{{ $i <= $testimoni->rating ? '★' : '☆' }}</span>
+                        @endfor
+                    </div>
+
+                    {{-- Komentar --}}
+                    <p class="text-stone mb-3">"{{ $testimoni->komentar }}"</p>
+
+                    {{-- Info Pengguna & Trip --}}
                     <div class="text-sm text-stone flex flex-col md:flex-row md:justify-between">
                         <div>
                             <span class="font-semibold text-pine">{{ $testimoni->user->name }}</span> 
                             untuk 
-                            <span class="font-semibold text-forest">{{ $testimoni->trip->nama_trip }}</span> 
+                            <span class="font-semibold text-forest">
+                                {{ $testimoni->trip->nama_trip ?? $testimoni->nama_trip ?? 'Trip Dihapus' }}
+                            </span> 
                             oleh 
                             <span class="text-moss">{{ $testimoni->trip->pengelola->name ?? 'Mountain Mates' }}</span>
                         </div>

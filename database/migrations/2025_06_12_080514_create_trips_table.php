@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('deskripsi_trip');
             $table->integer('kuota');
             $table->decimal('harga', 10, 2);
+            $table->unsignedTinyInteger('dp_persen')->default(30);
             $table->text('paket')->nullable();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');

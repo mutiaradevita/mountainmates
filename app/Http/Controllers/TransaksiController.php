@@ -33,8 +33,11 @@ class TransaksiController extends Controller
             'id_trip' => 'required|exists:trips,id', 
         ]);
 
-        $trip = Trip::findOrFail($request->id_trip);
-        $total = $trip->harga * $request->jumlah_peserta;
+            $trip = Trip::findOrFail($request->id_trip);
+            $total = $trip->harga * $request->jumlah_peserta;
+
+            $dpPersen = $trip->dp_persen ?? 30;
+            $dpAmount = round($total * ($dpPersen / 100), 2);
 
             $transaksi = new Transaksi();
             $transaksi->id_user = Auth::id();
@@ -46,7 +49,9 @@ class TransaksiController extends Controller
             $transaksi->paket = $request->paket;
             $transaksi->catatan_khusus = $request->catatan_khusus;
             $transaksi->total = $total;
+            $transaksi->total_dp = $dpAmount;
             $transaksi->status = 'menunggu';
+            $transaksi->status_pembayaran = 'menunggu dp';
 
             $transaksi->save();
 
@@ -78,7 +83,7 @@ class TransaksiController extends Controller
 
             $requestData = (object)[
                 'order_id' => (string) Str::ulid(), 
-                'gross_amount' => (float) $transaksi->total ?: 10000,
+                'gross_amount' => (float) $transaksi->total_dp ?: 10000,
                 'first_name' => $transaksi->nama,
                 'email' => filter_var($transaksi->email, FILTER_VALIDATE_EMAIL) ? $transaksi->email : 'backup@email.com',
                 'phone' => $transaksi->nomor_telepon ?? '081234567890',
@@ -86,7 +91,7 @@ class TransaksiController extends Controller
                     [
                         'id' => $transaksi->id,
                         'name' => $transaksi->trip->nama_trip ?? 'Trip',
-                        'price' => $transaksi->total,
+                        'price' => $transaksi->total_dp,
                         'quantity' => 1,
                     ]
                 ]
@@ -98,7 +103,7 @@ class TransaksiController extends Controller
             // Simpan token dan order ID ke database
             $transaksi->payment_order_id = $requestData->order_id;
             $transaksi->payment_token = $snapToken;
-            $transaksi->status = 'pending';
+            $transaksi->status = 'menunggu';
             $transaksi->save();
         } else {
             $snapToken = $transaksi->payment_token;
@@ -111,5 +116,43 @@ class TransaksiController extends Controller
         $trip = Trip::findOrFail($id);
 
         return view('peserta.form', compact('trip'));
+    }
+
+    public function bayarPelunasan($id)
+    {
+        $transaksi = Transaksi::with('trip')->where('id_user', Auth::id())->findOrFail($id);
+
+        if ($transaksi->status_pembayaran !== 'dp') {
+            return redirect()->route('peserta.transaksi.index')->with('error', 'Pelunasan tidak diperlukan.');
+        }
+
+        $sisa = $transaksi->total - $transaksi->total_dp;
+
+        $requestData = (object)[
+            'order_id' => 'pelunasan-' . (string) Str::ulid(),
+            'gross_amount' => (float) $sisa,
+            'first_name' => $transaksi->nama,
+            'email' => filter_var($transaksi->email, FILTER_VALIDATE_EMAIL) ? $transaksi->email : 'backup@email.com',
+            'phone' => $transaksi->nomor_telepon ?? '081234567890',
+            'items' => [
+                [
+                    'id' => $transaksi->id . '-pelunasan',
+                    'name' => 'Pelunasan ' . ($transaksi->trip->nama_trip ?? 'Trip'),
+                    'price' => $sisa,
+                    'quantity' => 1,
+                ]
+            ]
+        ];
+
+        $midtrans = new CreateSnapTokenService($requestData);
+        $snapToken = $midtrans->getSnapToken();
+
+        // Simpan token pelunasan
+        $transaksi->pelunasan_order_id = $requestData->order_id;
+        $transaksi->pelunasan_token = $snapToken;
+        $transaksi->total_pelunasan = $sisa;
+        $transaksi->save();
+
+        return view('transaksi.bayar-pelunasan', compact('transaksi', 'snapToken'));
     }
 }

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <section class="pt-6 pb-10 bg-snow">
@@ -30,9 +30,12 @@
                 <div class="text-center">
                     <p class="text-sm text-gray-500 mb-1">Harga mulai dari</p>
                     <p class="text-2xl font-bold text-pine">Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
+                    <p class="text-sm text-gray-700">
+                    <p class="text-sm text-gray-700">DP yang harus dibayar: {{ $trip->dp_persen }}% </p>
                 </div>
             </div>
         </div>
+
 
         {{-- Termasuk & Tidak Termasuk --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

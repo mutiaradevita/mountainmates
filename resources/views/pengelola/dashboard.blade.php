@@ -48,8 +48,24 @@
     </div>
 </div>
 
-        @foreach ($ulasanDiterima as $ulasan)
-            <p>{{ $ulasan->komentar }}</p>
-            <p>Dari: {{ $ulasan->pemberi->name ?? '-' }}</p>
-        @endforeach
+{{-- Daftar Ulasan --}}
+<div class="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
+    <h2 class="text-xl font-semibold text-pine mb-4">📝 Ulasan Peserta</h2>
+
+    @forelse ($ulasanDiterima as $ulasan)
+        <div class="mb-4 border-b border-gray-100 pb-4">
+            <div class="flex justify-between items-center mb-1">
+                <p class="text-stone font-medium">{{ $ulasan->user->name ?? 'Peserta Tidak Dikenal' }}</p>
+                <span class="text-yellow-400 text-sm">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <i class="fas fa-star {{ $i <= $ulasan->rating ? '' : 'text-gray-300' }}"></i>
+                    @endfor
+                </span>
+            </div>
+            <p class="text-gray-700 italic">"{{ $ulasan->komentar }}"</p>
+        </div>
+    @empty
+        <p class="text-gray-500 text-sm">Belum ada ulasan yang masuk.</p>
+    @endforelse
+</div>
 @endsection

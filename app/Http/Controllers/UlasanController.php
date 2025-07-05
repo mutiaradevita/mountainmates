@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trip;
 use App\Models\Ulasan;
+use App\Models\Transaksi;
 use Illuminate\Support\Facades\Auth;
 
 class UlasanController extends Controller
@@ -15,29 +16,42 @@ class UlasanController extends Controller
         $userId = Auth::id(); 
         $ulasans = Ulasan::where('id_user', $userId)->with('trip')->get();
 
-        return view('peserta.ulasan',compact('ulasans'));
+        return view('peserta.ulasan.index',compact('ulasans'));
     }
 
-    public function create($trip_id)
+    public function create($id_transaksi)
     {
-        $trip = Trip::findOrFail($trip_id);
-        return view('peserta.ulasan.create', compact('trip'));
+    $transaksi = Transaksi::where('id_user', Auth::id())->with('trip')->findOrFail($id_transaksi);
+
+    if ($transaksi->status !== 'selesai') {
+        return redirect()->route('peserta.transaksi.index')->with('error', 'Kamu hanya bisa memberikan ulasan setelah trip selesai.');
     }
 
-    public function store(Request $request, $trip_id)
+    if ($transaksi->ulasan) {
+        return redirect()->route('peserta.transaksi.index')->with('error', 'Ulasan sudah dibuat.');
+    }
+
+        return view('peserta.ulasan.create', compact('transaksi'));
+    }
+
+    public function store(Request $request, $id_transaksi)
     {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'required|string|max:1000',
-        ]);
+    $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'komentar' => 'required|string|max:1000',
+    ]);
 
-        Ulasan::create([
-            'trip_id' => $trip_id,
-            'peserta_id' => Auth::guard('peserta')->id(),
-            'rating' => $request->rating,
-            'komentar' => $request->komentar,
-        ]);
+    $transaksi = Transaksi::with('trip')->findOrFail($id_transaksi);
 
-        return redirect()->route('peserta.dashboard')->with('success', 'Ulasan berhasil dikirim!');
+    Ulasan::create([
+        'id_user' => Auth::id(),
+        'id_trip' => $transaksi->id_trip,
+        'id_transaksi' => $transaksi->id,
+        'nama_trip' => $transaksi->trip->nama_trip ?? 'Trip Dihapus',
+        'komentar' => $request->komentar,
+        'rating' => $request->rating,
+    ]);
+
+        return redirect()->route('peserta.transaksi.index')->with('success', 'Ulasan berhasil dikirim!');
     }
 }

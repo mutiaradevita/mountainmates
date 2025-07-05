@@ -12,7 +12,9 @@ class Ulasan extends Model
     protected $fillable = [
         'id_user',
         'id_trip',
+        'id_transaksi',
         'komentar',
+        'rating',
         'created_at',
         'updated_at',
     ];
@@ -22,14 +24,8 @@ class Ulasan extends Model
         return $this->belongsTo(Trip::class, 'id_trip');
     }
 
-    public function pemberi()
+    public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
-
-    public function pengelola()
-    {
-        return $this->belongsTo(User::class, 'id_pengelola');
-    }
-
 }

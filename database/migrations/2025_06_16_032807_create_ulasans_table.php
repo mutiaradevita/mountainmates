@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('id_transaksi')->constrained('transaksis')->onDelete('cascade');
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->foreignId('id_trip')->constrained('trips')->onDelete('cascade');
-            $table->text('komentar')->nullable();
+            $table->text('komentar');
+            $table->unsignedTinyInteger('rating')->default(5);
             $table->timestamps();
         });
     }

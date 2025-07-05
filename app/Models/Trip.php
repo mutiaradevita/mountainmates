@@ -13,6 +13,7 @@ class Trip extends Model
         'meeting_point',
         'kuota',
         'harga',
+        'dp_persen',
         'paket',
         'tanggal_mulai',
         'tanggal_selesai',

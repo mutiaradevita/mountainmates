@@ -35,9 +35,10 @@ Route::post('/transaksi', [TransaksiController::class, 'store'])->middleware('au
 Route::prefix('peserta')->middleware(['auth', 'role:peserta'])->name('peserta.')->group(function () {
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/transaksi/{id}/bayar-pelunasan', [TransaksiController::class, 'bayarPelunasan'])->name('transaksi.bayar-pelunasan');
     Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
-    // Route::get('/ulasan/{trip}/buat', [\App\Http\Controllers\Peserta\UlasanController::class, 'create'])->name('ulasan.create');
-    // Route::post('/ulasan/{trip}', [\App\Http\Controllers\Peserta\UlasanController::class, 'store'])->name('ulasan.store');
+    Route::get('/ulasan/{trip}/buat', [UlasanController::class, 'create'])->name('ulasan.create');
+    Route::post('/ulasan/{trip}', [UlasanController::class, 'store'])->name('ulasan.store');
     Route::get('/riwayat', [TransaksiController::class, 'index'])->name('peserta.transaksi.index');
     Route::get('/riwayat/{id}', [TransaksiController::class, 'show'])->name('peserta.transaksi.show');
     Route::get('/transaksi/{id}/bayar', [TransaksiController::class, 'bayar'])->name('transaksi.bayar');
