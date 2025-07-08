@@ -23,7 +23,7 @@
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white border border-gray-200 shadow-md rounded-xl">
-            <thead class="bg-moss text-white">
+            <thead class="bg-mist text-white">
                 <tr>
                     <th class="text-pine text-center px-6 py-3">Nama</th>
                     <th class="text-pine text-center px-6 py-3">Lokasi</th>
@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 @forelse ($trips as $trip)
-                    <tr class="border-t hover:bg-mist">
+                    <tr class="border-t hover:bg-snow">
                         <td class="px-6 py-4">{{ $trip->nama_trip }}</td>
                         <td class="px-6 py-4">{{ $trip->lokasi }}</td>
                         <td class="px-6 py-4">

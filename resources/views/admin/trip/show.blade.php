@@ -1,7 +1,5 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Detail Trip')
-
 @section('content')
 <section class="pt-6 pb-16 bg-snow">
     <div class="max-w-7xl mx-auto px-6 space-y-12">
@@ -29,6 +27,7 @@
                 class="w-full h-[360px] object-cover object-center"> 
             <div class="p-6 space-y-2">
                 <h2 class="text-2xl font-bold text-pine">{{ $trip->nama_trip }}</h2>
+                <p class="text-sm text-gray-700">{{ $trip->lokasi }}</p>
                 <p class="text-sm text-gray-700">{{ $trip->deskripsi_trip }}</p>
                 <p class="text-xs text-gray-400">Dibuat: {{ $trip->created_at->format('d M Y, H:i') }}</p>
                 <p class="text-xs text-gray-400">Terakhir Diedit: {{ $trip->updated_at->format('d M Y, H:i') }}</p>
@@ -38,16 +37,16 @@
         {{-- Informasi Trip --}}
         <div class="grid md:grid-cols-2 gap-6">
             <div class="bg-white rounded-xl p-6 shadow space-y-2 text-sm text-gray-800">
-                <p><strong>📍 Lokasi:</strong> {{ $trip->lokasi }}</p>
-                <p><strong>🗓️ Tanggal:</strong> {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('d F Y') }}</p>
+                <p><strong>📍 Meeting Point:</strong> {{ $trip->meeting_point }}</p>
+                <p><strong>🗓️ Tanggal Trip:</strong> {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('d F Y') }}</p>
                 <p><strong>🧑‍🤝‍🧑 Kuota:</strong> {{ $trip->kuota }} peserta</p>
-                <p><strong>⏱️ Waktu Mulai:</strong> {{ \Carbon\Carbon::parse($trip->waktu)->format('H:i') }}</p>
+                <p><strong>⏱️ Waktu Mulai:</strong> {{ \Carbon\Carbon::parse($trip->waktu)->format('H:i') }} WIB</p>
                 <p><strong>💰 Harga:</strong> Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
                 <p><strong>🗂️ Paket:</strong> {{ $trip->paket }}</p>
                 <p><strong>📦 Durasi:</strong> {{ $trip->durasi ?? '-' }} hari</p>
             </div>
             <div class="bg-white rounded-xl p-6 shadow space-y-2 text-sm text-gray-800">
-                <p><strong>👤 Pengelola:</strong> {{ $trip->pengelola->name ?? '-' }}</p>
+                <p><strong>👤 Pengelola:</strong> {{ $trip->pengelola_name ?? '-' }}</p>
                 <p><strong>📎 Status:</strong> 
                     <span class="inline-block px-2 py-1 rounded-full text-xs {{ $trip->status === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }}">
                         {{ ucfirst($trip->status) }}

@@ -1,10 +1,8 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Edit Berita')
-
 @section('content')
 <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
-    <h1 class="text-xl font-semibold mb-4 text-forest">Edit Berita</h1>
+    <h1 class="text-center text-xl font-semibold mb-4 text-forest">Edit Berita</h1>
 
     <form action="{{ route('admin.berita.update', $berita) }}" method="POST" enctype="multipart/form-data">
         @csrf

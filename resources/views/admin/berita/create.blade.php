@@ -1,7 +1,5 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Tambah Berita')
-
 @section('content')
     <form action="{{ route('admin.berita.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded shadow">
         @csrf
@@ -23,7 +21,10 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700">Deskripsi Singkat</label>
-            <textarea name="deskripsi" rows="4" class="w-full mt-1 border-gray-300 rounded shadow-sm"></textarea>
+            <textarea name="deskripsi" rows="4" class="w-full mt-1 border-gray-300 rounded shadow-sm" required></textarea>
+            @error('deskripsi')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="mb-4">

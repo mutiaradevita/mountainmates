@@ -22,7 +22,7 @@
    <!-- Tentang Kami & Keunggulan -->
 <section class="bg-mist py-12 min-h-screen flex items-center">
     <div class="max-w-screen-xl mx-auto px-4 text-center">
-        <h2 class="text-xl font-bold text-stone mb-4">Tentang Mountain Mates</h2>
+        <h2 class="text-xl font-bold text-pine mb-4">Tentang Mountain Mates</h2>
         <p class="text-stone text-base max-w-2xl mx-auto mb-8">
             Mountain Mates adalah platform yang menghubungkan pendaki dengan penyedia jasa open trip terpercaya di Indonesia. Nikmati pengalaman mendaki gunung secara aman, mudah, dan terorganisir.
         </p>
@@ -81,7 +81,7 @@
                                 <svg class="w-4 h-4 text-stone" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M6 2a2 2 0 00-2 2v1H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v1a2 2 0 002 2h8a2 2 0 002-2v-1h1a1 1 0 100-2h-1v-2h1a1 1 0 100-2h-1V7h1a1 1 0 100-2h-1V4a2 2 0 00-2-2H6z" />
                                 </svg>
-                                {{ \Carbon\Carbon::parse($trip->tanggal_trip)->format('d M Y') }} · {{ $trip->lokasi }}
+                                {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->format('d M Y') }} · {{ $trip->lokasi }}
                             </div>
                             <p class="text-earth font-bold mt-2">Rp {{ number_format($trip->harga, 0, ',', '.') }}</p>
                             <p class="text-sm text-moss mt-1">{{ $trip->pengelola->name ?? 'Mountain Mates' }}</p>
@@ -99,16 +99,16 @@
         <div class="max-w-screen-xl mx-auto px-4">
             <h2 class="text-center text-xl font-bold text-pine mb-6">Berita Pendakian</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                @foreach ($berita as $beritas)
-                    <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
-                        @if ($berita->gambar)
-                            <img src="{{ asset('storage/' . $berita->gambar) }}" class="w-full h-48 object-cover" alt="{{ $berita->judul }}">
+                @foreach ($berita as $item)
+                    <div class="bg-snow rounded-lg overflow-hidden shadow hover:shadow-lg transition">
+                        @if ($item->gambar)
+                            <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-40 object-cover">
                         @endif
                         <div class="p-4">
-                            <h3 class="text-lg font-bold text-pine">{{ $berita->judul }}</h3>
-                            <p class="text-sm text-stone mt-1">{{ Str::limit($berita->deskripsi, 100) }}</p>
-                            <a href="{{ $berita->url }}" target="_blank" class="inline-block mt-3 text-sm text-earth font-semibold hover:underline">Baca Selengkapnya →</a>
-                            <p class="text-xs text-moss mt-2">Sumber: {{ $berita->sumber }}</p>
+                            <h3 class="text-lg font-bold text-pine">{{ $item->judul }}</h3>
+                            <p class="text-sm text-stone mt-1">{{ \Illuminate\Support\Str::limit($item->deskripsi, 100) }}</p>
+                            <a href="{{ $item->url }}" target="_blank" class="inline-block mt-3 text-sm text-earth font-semibold hover:underline">Baca Selengkapnya →</a>
+                            <p class="text-xs text-moss mt-2">Sumber: {{ $item->sumber }}</p>
                         </div>
                     </div>
                 @endforeach

@@ -24,22 +24,40 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $role = $request->input('role');
+
+        $rules = [
             'role' => 'required|in:pengelola,peserta',
-            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
+            'phone' => 'required|string|max:20',
             'password' => 'required|min:6|confirmed',
+        ];
+
+        // Tambahkan validasi berdasarkan role
+        if ($role === 'pengelola') {
+            $rules['company_name'] = 'required|string|max:255';
+            $rules['pic_name'] = 'required|string|max:255';
+        } elseif ($role === 'peserta') {
+            $rules['name'] = 'required|string|max:255';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Simpan user
+        $user = User::create([
+            'role' => $validated['role'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'password' => Hash::make($validated['password']),
+            'name' => $role === 'peserta' ? $validated['name'] : $validated['company_name'],
+            'company_name' => $role === 'pengelola' ? $validated['company_name'] : null,
+            'pic_name'     => $role === 'pengelola' ? $validated['pic_name'] : null,
         ]);
 
-        User::create([
-            'role' => $validated['role'],
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+        // Kalau pengelola, simpan info tambahan ke tabel terpisah (kalau ada), atau pakai field JSON / kolom tambahan di tabel users
 
         return redirect()->route('admin.user.index')->with('success', 'User berhasil ditambahkan!');
-    }
+}
 
     public function edit(User $user)
     {
@@ -55,13 +73,13 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('superadmin.user.index')->with('success', 'User berhasil diperbarui.');
+        return redirect()->route('admin.user.index')->with('success', 'User berhasil diperbarui.');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
         
-        return redirect()->route('superadmin.user.index')->with('success', 'User dihapus.');
+        return redirect()->route('admin.user.index')->with('success', 'User dihapus.');
     }
 }

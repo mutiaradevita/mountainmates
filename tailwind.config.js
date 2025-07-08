@@ -35,7 +35,7 @@ export default {
   },
 
   plugins: [
-    forms,
+    forms({ strategy: 'class' }),
     require('flowbite/plugin'),
     require('daisyui'),
   ],

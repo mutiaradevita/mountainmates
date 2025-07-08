@@ -33,14 +33,13 @@ class RegisteredUserController extends Controller
             'name' => 'required_if:role,peserta|string|max:255|nullable',
             'email' => 'required|string|lowercase|email|max:255|unique:users',
             'phone' => 'required|string',
-            'password' => 'required',
+            'password' => 'required|min:8',
             'role' => 'required|in:peserta,pengelola',
             'company_name' => 'required_if:role,pengelola|nullable|string|max:255',
             'pic_name' => 'required_if:role,pengelola|nullable|string|max:255',
 
         ]);
 
-        // Menyimpan data user baru ke database
         $user = new User();
         $user->name = $request->role == 'peserta' ? $request->name : $request->company_name;
         $user->email = $request->email;

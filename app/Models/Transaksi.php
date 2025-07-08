@@ -9,6 +9,7 @@ class Transaksi extends Model
 {
      use HasFactory;
 
+ protected $appends = ['pengelola_nama'];
     protected $fillable = [
             'id_user',
             'id_trip',
@@ -43,5 +44,10 @@ class Transaksi extends Model
    public function peserta()
     {
         return $this->hasMany(PesertaTransaksi::class, 'id_transaksi');
+    }
+
+    public function getPengelolaNamaAttribute()
+    {
+        return optional($this->trip?->user)->company_name ?? '-';
     }
 }

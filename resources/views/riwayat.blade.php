@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-[80px] pb-20 bg-snow min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ status: 'all' }">
+<div class="bg-snow min-h-[calc(100vh-100px)] py-8 px-4">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6 x-data="{ status: 'all' }">
 
         <div class="bg-white rounded-xl shadow border overflow-hidden">
             <!-- Header -->
@@ -11,23 +11,28 @@
             </div>
 
             <!-- Filter -->
+            <div x-data="{ status: 'all' }">
             <div class="px-6 py-4 bg-snow border-b">
-                <div class="flex flex-wrap gap-3 justify-center sm:justify-start">
+                <div class="flex flex-wrap gap-3 justify-center">
                     <button @click="status = 'all'" :class="status === 'all' ? 'bg-forest text-white' : 'bg-white text-gray-700'"
-                        class="px-4 py-2 border rounded-lg text-sm hover:bg-mist transition">
+                        class="px-4 py-2 border rounded-lg text-sm hover:bg-forest transition">
                         Semua
                     </button>
-                    <button @click="status = 'pending'" :class="status === 'pending' ? 'bg-sunset text-white' : 'bg-white text-gray-700'"
-                        class="px-4 py-2 border rounded-lg text-sm hover:bg-mist transition">
-                        Pending
+                    <button @click="status = 'menunggu'" :class="status === 'menunggu' ? 'bg-yellow-100 text-yellow-700' : 'bg-white text-gray-700'"
+                        class="px-4 py-2 border rounded-lg text-sm hover:bg-yellow-100 transition">
+                        Menunggu
                     </button>
-                    <button @click="status = 'selesai'" :class="status === 'selesai' ? 'bg-forest text-white' : 'bg-white text-gray-700'"
-                        class="px-4 py-2 border rounded-lg text-sm hover:bg-mist transition">
+                    <button @click="status = 'selesai'" :class="status === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-white text-gray-700'"
+                        class="px-4 py-2 border rounded-lg text-sm hover:bg-green-100 transition">
                         Selesai
                     </button>
-                    <button @click="status = 'gagal'" :class="status === 'gagal' ? 'bg-error text-white' : 'bg-white text-gray-700'"
-                        class="px-4 py-2 border rounded-lg text-sm hover:bg-mist transition">
-                        Gagal
+                    <button @click="status = 'batal'" :class="status === 'batal' ? 'bg-red-100 text-red-700' : 'bg-white text-gray-700'"
+                        class="px-4 py-2 border rounded-lg text-sm hover:bg-red-100 transition">
+                        Batal
+                    </button>
+                    <button @click="status = 'berlangsung'" :class="status === 'berlangsung' ? 'bg-blue-100 text-blue-700' : 'bg-white text-gray-700'"
+                        class="px-4 py-2 border rounded-lg text-sm hover:bg-blue-100 transition">
+                        Berlangsung
                     </button>
                 </div>
             </div>
@@ -52,16 +57,17 @@
                                     <h3 class="text-base font-semibold text-gray-900">
                                         {{ $transaksi->trip->nama_trip ?? '-' }}
                                     </h3>
-                                    @php
+                                   @php
                                         $statusClass = match($transaksi->status) {
-                                            'pending' => 'bg-sunset text-white',
-                                            'selesai' => 'bg-forest text-white',
-                                            'batal'   => 'bg-error text-white',
-                                            default   => 'bg-gray-300 text-gray-800',
+                                            'menunggu' => 'bg-yellow-100 text-yellow-700',
+                                            'selesai' => 'bg-green-100 text-green-700',
+                                            'berlangsung' => 'bg-blue-100 text-blue-700',
+                                            'batal'   => 'bg-red-100 text-red-700',
+                                            default   => 'bg-gray-100 text-gray-600',
                                         };
                                     @endphp
-                                    <span class="text-xs inline-block mt-1 px-2 py-1 rounded-full text-white
-                                        {{ $transaksi->status === 'pending' ? 'bg-sunset' : ($transaksi->status === 'selesai' ? 'bg-forest' : 'bg-error') }}">
+
+                                    <span class="text-xs inline-block mt-1 px-3 py-1 rounded-full font-medium {{ $statusClass }}">
                                         {{ ucfirst($transaksi->status) }}
                                     </span>
                                 </div>

@@ -36,6 +36,9 @@ class TripPublicController extends Controller
     }
     public function form($id)
     {
+        if (!session()->has('_old_input')) {
+        session()->forget('_old_input');
+    }
         $trip = Trip::findOrFail($id);
         return view('peserta.form', compact('trip'));
     }

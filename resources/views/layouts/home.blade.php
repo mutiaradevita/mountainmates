@@ -27,10 +27,12 @@
     <!-- Navbar -->
     @include('components.navbar')
 
-  <main>
+    <main>
         {{ $slot }}
     </main>
 
     @include('components.footer')
+    
+    @stack('scripts')
 </body>
 </html>

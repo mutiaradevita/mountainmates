@@ -15,6 +15,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="..." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 
 <body class="bg-snow text-gray-800 min-h-screen flex">
@@ -26,7 +27,7 @@
   >
     <div class="flex items-center justify-between px-4 py-4 border-b border-moss">
       <div class="flex items-center gap-3">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain" />
+        <img src="{{ asset('img/logo2.png') }}" alt="Logo" class="w-8 h-8 object-contain rounded-full" />
         <span x-show="!sidebarCollapsed" class="text-xl font-bold">Mountain Mates</span>
       </div>
       <button @click="sidebarCollapsed = !sidebarCollapsed" class="hidden lg:block"></button>
@@ -63,62 +64,93 @@
     </button>
 
     {{-- Judul / Breadcrumb --}}
-    <h1 class="text-lg font-semibold text-pine">@yield('title', 'Dashboard Admin')</h1>
+    @php
+    $judulDashboard = match(Auth::user()->role) {
+        'admin' => 'Dashboard Admin',
+        'pengelola' => 'Dashboard Pengelola',
+        default => 'Dashboard'
+    };
+    @endphp
+
+    <h1 class="text-lg font-semibold text-pine">@yield('title', $judulDashboard)</h1>
   </div>
 
     {{-- Action Icons --}}
-  <div class="flex items-center gap-4">
-
- <div class="relative" x-data="{ open: false }">
-  <button @click="open = !open" class="w-10 h-10 bg-stone-100 rounded-full flex justify-center items-center hover:bg-mist transition">
-    <i class="fas fa-calendar-alt text-pine text-lg"></i>
-  </button>
-  <div x-show="open" @click.outside="open = false" x-transition
-       class="absolute right-0 mt-2 bg-white rounded shadow p-2 z-50 w-60">
-    <input type="text" id="datepicker" class="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-pine">
-     <div id="trip-info" class="hidden mt-3 p-3 rounded-lg text-sm font-medium border transition-all duration-300"></div>
-
-  </div>
-</div>
-
+    <div class="flex items-center gap-4">
     {{-- Notification Dropdown --}}
+    @if(Auth::user()?->role === 'admin')
     <div class="relative" x-data="{ open: false }">
-      <button @click="open = !open" class="relative w-10 h-10 bg-stone-100 rounded-full flex justify-center items-center">
+    <button @click="open = !open" class="relative w-10 h-10 bg-stone-100 rounded-full flex justify-center items-center">
         <i class="fas fa-bell text-pine"></i>
-        <span class="absolute top-0 right-0 text-xs text-pine rounded-full px-1.5">3</span>
-      </button>
-      <div x-show="open" @click.outside="open = false" x-transition
-           class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
+        <span class="absolute top-0 right-0 text-xs text-pine rounded-full px-1.5">{{ count($recentActivities ?? []) }}</span>
+    </button>
+    <div x-show="open" @click.outside="open = false" x-transition
+        class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
         <div class="p-4 border-b">
-          <h6 class="font-semibold text-pine">Notifikasi</h6>
+        <h6 class="font-semibold text-pine">Notifikasi</h6>
         </div>
         <div class="max-h-60 overflow-y-auto divide-y">
-          <a href="#" class="block px-4 py-3 hover:bg-mist">
-            <p class="text-sm font-medium text-gray-800">Akun kamu sudah diverifikasi</p>
-            <p class="text-xs text-gray-500">5 menit lalu</p>
-          </a>
-          <!-- Tambahkan lainnya di sini -->
+        @forelse($recentActivities ?? [] as $item)
+            <div class="px-4 py-3 hover:bg-mist">
+                <p class="text-sm font-medium text-gray-800">{{ $item['pesan'] }}</p>
+                <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($item['waktu'])->diffForHumans() }}</p>
+            </div>
+        @empty
+            <div class="px-4 py-3 text-sm text-gray-500">Belum ada aktivitas.</div>
+        @endforelse
         </div>
         <div class="text-center p-2">
-          <a href="#" class="text-sm text-pine hover:underline">Lihat semua</a>
+        <a href="{{ route('admin.aktivitas') }}" class="text-sm text-pine hover:underline">Lihat semua</a>
         </div>
-      </div>
     </div>
+    </div>
+    @endif
+
+    @if(Auth::user()?->role === 'pengelola')
+    <div class="relative" x-data="{ open: false }">
+    <button @click="open = !open" class="relative w-10 h-10 bg-stone-100 rounded-full flex justify-center items-center">
+        <i class="fas fa-bell text-pine"></i>
+        <span class="absolute top-0 right-0 text-xs text-pine rounded-full px-1.5">{{ count($recentNotifikasi ?? []) }}</span>
+    </button>
+    <div x-show="open" @click.outside="open = false" x-transition
+        class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
+        <div class="p-4 border-b">
+        <h6 class="font-semibold text-pine">Notifikasi</h6>
+        </div>
+        <div class="max-h-60 overflow-y-auto divide-y">
+        @forelse($recentNotifikasi ?? [] as $item)
+            <div class="px-4 py-3 hover:bg-mist">
+                <p class="text-sm font-medium text-gray-800">{{ $item['pesan'] }}</p>
+                <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($item['waktu'])->diffForHumans() }}</p>
+            </div>
+        @empty
+            <div class="px-4 py-3 text-sm text-gray-500">Belum ada notifikasi.</div>
+        @endforelse
+        </div>
+    </div>
+    </div>
+    @endif
 
     {{-- Profile Dropdown --}}
     <div class="relative" x-data="{ open: false }">
-      <button @click="open = !open" class="w-10 h-10 rounded-full overflow-hidden">
-        <img src="{{ asset('img/user.png') }}" alt="Profile" class="w-full h-full object-cover" />
-      </button>
-      <div x-show="open" @click.outside="open = false" x-transition
-           class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
-        <div class="p-4 border-b">
-          <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
-          <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
+        <button @click="open = !open" class="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+            @if(Auth::user()->photo)
+            <img src="{{ asset('storage/profile/' . Auth::user()->photo) }}" alt="Profile" class="w-full h-full object-cover" />
+            @else
+            <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A4 4 0 017 16h10a4 4 0 011.879.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            @endif
+        </button>
+
+        <div x-show="open" @click.outside="open = false" x-transition
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
+            <div class="p-4 border-b">
+            <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
+            <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
         </div>
         <ul class="text-sm">
-          <li><a href="#" class="block px-4 py-2 hover:bg-mist">Profil</a></li>
-          <li><a href="#" class="block px-4 py-2 hover:bg-mist">Pengaturan</a></li>
+          <li><a href="{{ route ('profile.edit') }}" class="block px-4 py-2 hover:bg-mist">Profil</a></li>
           <li>
             <form method="POST" action="{{ route('logout') }}">
               @csrf
@@ -128,7 +160,6 @@
         </ul>
       </div>
     </div>
-
   </div>
 </header>
 

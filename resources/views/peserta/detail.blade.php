@@ -1,15 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="pt-[80px] pb-16 bg-snow">
-    <div class="max-w-5xl mx-auto px-6 space-y-12">
+<section class="pt-6 pb-16 bg-snow">
+    <div class="max-w-6xl mx-auto px-6 space-y-12">
 
         {{-- Gambar + Nama + Deskripsi --}}
         <div class="bg-white rounded-xl shadow overflow-hidden">
             <img src="{{ asset('storage/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}"
-                class="w-full h-48 object-cover">
+                class="w-full h-[360px] object-cover object-center">
             <div class="p-6 space-y-2">
                 <h1 class="text-2xl font-bold text-pine">{{ $trip->nama_trip }}</h1>
+                <p class="text-gray-700 text-sm">{{ $trip->lokasi }}</p>
                 <p class="text-gray-700 text-sm">{{ $trip->deskripsi_trip }}</p>
             </div>
         </div>
@@ -19,7 +20,7 @@
             <div class="bg-mist p-4 rounded-lg shadow space-y-1">
                 <h2 class="text-lg font-semibold text-forest mb-2">Highlights</h2>
                 <ul class="text-sm text-gray-700 space-y-1">
-                    <li><strong>Meeting Point:</strong> {{ $trip->lokasi }}</li>
+                    <li><strong>Meeting Point:</strong> {{ $trip->meeting_point }}</li>
                     <li>
                         <strong>Tanggal Trip:</strong>
                         {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('d M Y') }} -

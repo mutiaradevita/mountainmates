@@ -15,6 +15,12 @@ use App\Http\Controllers\Pengelola\TransaksiController as PengelolaTransaksiCont
 use App\Http\Controllers\CallbackController;
 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
 // ======================== GUEST ========================
 Route::get('/', [HomeController::class, 'landing'])->middleware('guest')->name('landing');
 
@@ -36,13 +42,12 @@ Route::prefix('peserta')->middleware(['auth', 'role:peserta'])->name('peserta.')
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/transaksi/{id}/bayar-pelunasan', [TransaksiController::class, 'bayarPelunasan'])->name('transaksi.bayar-pelunasan');
+    Route::post('/transaksi/{id}/batalkan', [TransaksiController::class, 'batalkan'])->name('transaksi.batalkan');
     Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
     Route::get('/ulasan/{trip}/buat', [UlasanController::class, 'create'])->name('ulasan.create');
     Route::post('/ulasan/{trip}', [UlasanController::class, 'store'])->name('ulasan.store');
     Route::get('/riwayat', [TransaksiController::class, 'index'])->name('peserta.transaksi.index');
     Route::get('/riwayat/{id}', [TransaksiController::class, 'show'])->name('peserta.transaksi.show');
-    Route::get('/transaksi/{id}/bayar', [TransaksiController::class, 'bayar'])->name('transaksi.bayar');
-
 });
 
 // ======================== PROFILE ========================
@@ -55,6 +60,7 @@ Route::middleware('auth')->group(function () {
 // ========================== ADMIN ==========================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () { 
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+    Route::get('/aktivitas', [DashboardController::class, 'aktivitas'])->name('aktivitas');
     Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita']);
     Route::resource('user', UserController::class);
     Route::get('trip', [DataController::class, 'tripIndex'])->name('trip.index');

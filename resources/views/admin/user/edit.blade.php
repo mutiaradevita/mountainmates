@@ -1,7 +1,5 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Edit User')
-
 @section('content')
 <h1 class="text-2xl font-bold mb-6">Edit User</h1>
 

@@ -1,48 +1,66 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<section class="pt-6 pb-10 bg-snow">
-    <div class="max-w-5xl mx-auto px-6 space-y-12">
+<section class="pt-6 pb-16 bg-snow">
+    <div class="max-w-7xl mx-auto px-6 space-y-12">
 
-        {{-- Gambar + Nama + Deskripsi --}}
+        {{-- Header --}}
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-pine">📌 Detail Trip</h1>
+            <div class="space-x-2">
+                <a href="{{ route('pengelola.trips.edit', $trip->id) }}"
+                   class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm shadow">
+                    ✏️ Edit
+                </a>
+                <form action="{{ route('pengelola.trips.destroy', $trip->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus trip ini?')" class="inline-block">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm shadow">
+                        🗑️ Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {{-- Gambar + Deskripsi --}}
         <div class="bg-white rounded-xl shadow overflow-hidden">
             <img src="{{ asset('storage/' . $trip->flyer) }}" alt="{{ $trip->nama_trip }}"
-                class="w-full h-48 object-cover">
+                class="w-full h-[360px] object-cover object-center">
             <div class="p-6 space-y-2">
-                <h1 class="text-2xl font-bold text-pine">{{ $trip->nama_trip }}</h1>
-                <p class="text-gray-700 text-sm">{{ $trip->deskripsi_trip }}</p>
+                <h2 class="text-2xl font-bold text-pine">{{ $trip->nama_trip }}</h2>
+                <p class="text-sm text-gray-700">{{ $trip->lokasi }}</p>
+                <p class="text-sm text-gray-700">{{ $trip->deskripsi_trip }}</p>
+                <p class="text-xs text-gray-400">Dibuat: {{ $trip->created_at->format('d M Y, H:i') }}</p>
+                <p class="text-xs text-gray-400">Terakhir Diedit: {{ $trip->updated_at->format('d M Y, H:i') }}</p>
             </div>
         </div>
 
-        {{-- Highlights + Harga --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-mist p-4 rounded-lg shadow space-y-1">
-                <h2 class="text-lg font-semibold text-forest mb-2">Highlights</h2>
-                <ul class="text-sm text-gray-700 space-y-1">
-                    <li><strong>Meeting Point:</strong> {{ $trip->lokasi }}</li>
-                    <li><strong>Tanggal Trip:</strong> {{ \Carbon\Carbon::parse($trip->tanggal_trip)->translatedFormat('l, d M Y') }}</li>
-                    <li><strong>Waktu Mulai:</strong> {{ \Carbon\Carbon::parse($trip->waktu)->format('H:i') }}</li>
-                    <li><strong>Kuota:</strong> {{ $trip->kuota }} peserta</li>
-                    <li><strong>Durasi:</strong> {{ $trip->durasi ?? '-' }} hari</li>
-                </ul>
+        {{-- Info Detail Trip --}}
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow space-y-2 text-sm text-gray-800">
+                <p><strong>📍 Meeting Point:</strong> {{ $trip->meeting_point }}</p>
+                <p><strong>🗓️ Tanggal Trip:</strong> {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('d F Y') }}</p>
+                <p><strong>⏱️ Waktu Mulai:</strong> {{ \Carbon\Carbon::parse($trip->waktu)->format('H:i') }} WIB</p>
+                <p><strong>🧑‍🤝‍🧑 Kuota:</strong> {{ $trip->kuota }} peserta</p>
+                <p><strong>📦 Durasi:</strong> {{ $trip->durasi ?? '-' }}</p>
+                <p><strong>💰 Harga:</strong> Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
+                <p><strong>💸 DP Dibayar:</strong> {{ $trip->dp_persen }}%</p>
+                <p><strong>🗂️ Paket:</strong> {{ $trip->paket }}</p>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow flex items-center justify-center">
-                <div class="text-center">
-                    <p class="text-sm text-gray-500 mb-1">Harga mulai dari</p>
-                    <p class="text-2xl font-bold text-pine">Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
-                    <p class="text-sm text-gray-700">
-                    <p class="text-sm text-gray-700">DP yang harus dibayar: {{ $trip->dp_persen }}% </p>
-                </div>
+            <div class="bg-white p-6 rounded-xl shadow space-y-2 text-sm text-gray-800">
+                <p><strong>📎 Status:</strong> 
+                    <span class="inline-block px-2 py-1 rounded-full text-xs {{ $trip->status === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }}">
+                        {{ ucfirst($trip->status) }}
+                    </span>
+                </p>
+                <p><strong>🖼️ Nama Flyer:</strong> {{ $trip->flyer }}</p>
             </div>
         </div>
 
-
-        {{-- Termasuk & Tidak Termasuk --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- Sudah Termasuk --}}
+        {{-- Termasuk dan Tidak Termasuk --}}
+        <div class="grid md:grid-cols-2 gap-6">
             @if($trip->sudah_termasuk)
-            <div class="bg-white p-4 rounded-xl shadow">
-                <h3 class="text-forest font-semibold mb-2">✅ Sudah Termasuk</h3>
+            <div class="bg-white p-6 rounded-xl shadow space-y-2">
+                <h3 class="text-emerald-600 font-semibold text-lg">✅ Sudah Termasuk</h3>
                 <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
                     @foreach (explode("\n", $trip->sudah_termasuk) as $item)
                         @if(trim($item) !== '')
@@ -53,10 +71,9 @@
             </div>
             @endif
 
-            {{-- Belum Termasuk --}}
             @if($trip->belum_termasuk)
-            <div class="bg-white p-4 rounded-xl shadow">
-                <h3 class="text-forest font-semibold mb-2">❌ Belum Termasuk</h3>
+            <div class="bg-white p-6 rounded-xl shadow space-y-2">
+                <h3 class="text-red-600 font-semibold text-lg">❌ Belum Termasuk</h3>
                 <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
                     @foreach (explode("\n", $trip->belum_termasuk) as $item)
                         @if(trim($item) !== '')
@@ -69,36 +86,10 @@
         </div>
 
         {{-- Itinerary --}}
-        <div class="bg-mist p-6 rounded-xl shadow">
-            <h3 class="text-lg font-semibold text-forest mb-2">Itinerary</h3>
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h3 class="text-lg font-semibold text-pine mb-2">📋 Itinerary</h3>
             <p class="text-sm text-gray-800 whitespace-pre-line">{{ $trip->itinerary }}</p>
         </div>
-
-        <section class="bg-mist py-12 rounded-xl shadow">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-center text-pine mb-8">Ulasan dari Peserta</h2>
-
-            @if($trip->pengelola && $trip->pengelola->ulasanDiberikan->count())
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @foreach($trip->pengelola->ulasanDiberikan as $ulasan)
-                        <div class="bg-white p-6 rounded-xl shadow">
-                            <p class="text-gray-700 italic mb-3">“{{ $ulasan->komentar }}”</p>
-                            <div class="text-sm text-gray-600">
-                                <strong>{{ $ulasan->peserta->user->name ?? 'Anonim' }}</strong>
-                                <div class="text-yellow-500">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        {{ $i <= $ulasan->rating ? '★' : '☆' }}
-                                    @endfor
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-center text-gray-600 italic">Belum ada ulasan untuk pengelola ini.</p>
-            @endif
-        </div>
-    </section>
     </div>
 </section>
 @endsection

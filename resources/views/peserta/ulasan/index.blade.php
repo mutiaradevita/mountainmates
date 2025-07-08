@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-[80px] pb-16 bg-snow min-h-screen">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="bg-snow min-h-[calc(100vh-100px)] py-8 px-4">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h1 class="text-3xl font-bold text-pine text-center mb-10">📋 Ulasan Saya</h1>
 
         @if ($ulasans->isEmpty())

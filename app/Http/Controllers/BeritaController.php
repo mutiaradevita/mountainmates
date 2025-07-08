@@ -43,6 +43,7 @@ class BeritaController extends Controller
         }
 
         Berita::create($data);
+
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan.');
     }
 
@@ -75,7 +76,13 @@ class BeritaController extends Controller
             'gambar' => 'nullable|image|max:2048',
         ]);
 
-        $berita->update($request->all());
+            if ($request->hasFile('gambar')) {
+            // Simpan gambar ke disk 'public/berita'
+            $data['gambar'] = $request->file('gambar')->store('berita', 'public');
+        }
+
+        $berita->update($data);
+
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diperbarui.');
 
     }

@@ -14,6 +14,7 @@ class TripController extends Controller
         $status = $request->status;
 
         $trips = Trip::query()
+            ->where('created_by', Auth::id()) 
             ->when($status, function ($query) use ($status) {
                 $query->where('status', $status);
             })
@@ -39,7 +40,7 @@ class TripController extends Controller
             'kuota' => 'required|numeric|min:1',
             'harga' => 'required|numeric|min:0',
             'dp_persen' => 'required|integer|min:0|max:100',
-            'paket' => 'required|string',
+            'paket' => 'nullable|string',
             'itinerary' => 'required|string',
             'flyer' => 'required|image|mimes:jpg,jpeg,png',
             'status' => 'required|in:aktif,nonaktif',
@@ -79,7 +80,8 @@ class TripController extends Controller
 
     public function show($id)
     {
-        $trip = Trip::with('pengelola')->findOrFail($id);
+        $trip = Trip::findOrFail($id);
+
         return view('pengelola.trips.show', compact('trip'));
     }
 
@@ -99,7 +101,7 @@ class TripController extends Controller
             'kuota' => 'required|numeric|min:1',
             'harga' => 'required|numeric|min:0',
             'dp_persen' => 'required|integer|min:0|max:100',
-            'paket' => 'required|string',
+            'paket' => 'nullable|string',
             'itinerary' => 'required|string',
             'flyer' => 'nullable|image|mimes:jpg,jpeg,png',
             'status' => 'required|in:aktif,nonaktif',
@@ -178,13 +180,13 @@ class TripController extends Controller
 
     public function peserta($id)
     {
-        $trip = Trip::with('transaksis.user')->findOrFail($id);
+        $trip = Trip::with('transaksi.user')->findOrFail($id);
 
         if ((int) $trip->created_by !== (int) Auth::id()) {
             abort(403, 'Kamu tidak berhak melihat peserta trip ini.');
         }
 
-        $pesertas = $trip->transaksis()->with('user')->get();
+        $pesertas = $trip->transaksi()->with(['user', 'peserta'])->get();
 
         return view('pengelola.trips.peserta', compact('trip', 'pesertas'));
     }

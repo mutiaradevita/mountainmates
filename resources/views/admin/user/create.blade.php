@@ -1,7 +1,5 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Tambah User')
-
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
   <h1 class="text-2xl font-bold">Tambah User</h1>

@@ -15,9 +15,27 @@ class TransaksiController extends Controller
     public function index()
     {
         $transaksis = Transaksi::with('trip')
-        ->where('id_user', Auth::id())
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->where('id_user', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $today = now()->timezone('Asia/Jakarta')->toDateString();
+        foreach ($transaksis as $transaksi) {
+            $trip = $transaksi->trip;
+
+            if ($trip) {
+                if ($transaksi->status === 'menunggu' && $trip->tanggal_mulai <= $today && $trip->tanggal_selesai >= $today) {
+                    $transaksi->update(['status' => 'berlangsung']);
+                } elseif ($transaksi->status === 'berlangsung' && $trip->tanggal_selesai < $today) {
+                    $transaksi->update(['status' => 'selesai']);
+                }
+            }
+        }
+
+        $transaksis = Transaksi::with('trip')
+            ->where('id_user', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('riwayat', compact('transaksis'));
     }
@@ -29,7 +47,10 @@ class TransaksiController extends Controller
             'nomor_telepon' => 'required|string|max:15',
             'email' => 'required|email|max:255',
             'jumlah_peserta' => 'required|integer|min:1',
-            'paket' => 'required|string',
+            'paket' => 'nullable|string',
+            'peserta.*.nama' => 'required|string|max:255',
+            'peserta.*.telepon' => 'required|string|max:20',
+            'peserta.*.email' => 'required|email|max:255',
             'id_trip' => 'required|exists:trips,id', 
         ]);
 
@@ -72,45 +93,73 @@ class TransaksiController extends Controller
         return redirect()->route('peserta.transaksi.index')->with('success', 'Transaksi berhasil dilakukan');
     }
 
-    public function show($id)
-    {
-        $transaksi = Transaksi::with('trip', 'peserta', 'ulasan')
-            ->where('id_user', Auth::id())
-            ->findOrFail($id);
+public function show($id)
+{
+    $transaksi = Transaksi::with('trip', 'peserta', 'ulasan')
+        ->where('id_user', Auth::id())
+        ->findOrFail($id);
 
-        // Jika belum punya token atau token sudah expired, generate baru
-        if (!$transaksi->payment_token || $transaksi->status === 'expired') {
+    $showPelunasanButton = false;
 
-            $requestData = (object)[
-                'order_id' => (string) Str::ulid(), 
-                'gross_amount' => (float) $transaksi->total_dp ?: 10000,
-                'first_name' => $transaksi->nama,
-                'email' => filter_var($transaksi->email, FILTER_VALIDATE_EMAIL) ? $transaksi->email : 'backup@email.com',
-                'phone' => $transaksi->nomor_telepon ?? '081234567890',
-                'items' => [
-                    [
-                        'id' => $transaksi->id,
-                        'name' => $transaksi->trip->nama_trip ?? 'Trip',
-                        'price' => $transaksi->total_dp,
-                        'quantity' => 1,
-                    ]
-                ]
-            ];
+    if ($transaksi->status_pembayaran === 'dp' && $transaksi->trip && $transaksi->trip->tanggal_mulai) {
+        $tanggalTrip = \Carbon\Carbon::parse($transaksi->trip->tanggal_mulai)->startOfDay();
+        $hariIni = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->startOfDay();
 
-            $midtrans = new \App\Services\Midtrans\CreateSnapTokenService($requestData);
-            $snapToken = $midtrans->getSnapToken();
+        $selisihHari = $hariIni->diffInDays($tanggalTrip, false);
 
-            // Simpan token dan order ID ke database
-            $transaksi->payment_order_id = $requestData->order_id;
-            $transaksi->payment_token = $snapToken;
-            $transaksi->status = 'menunggu';
-            $transaksi->save();
-        } else {
-            $snapToken = $transaksi->payment_token;
+        if ($selisihHari <= 7 && $hariIni->lte($tanggalTrip)) {
+            $showPelunasanButton = true;
         }
-
-        return view('transaksi.detail-transaksi', compact('transaksi', 'snapToken'));
     }
+
+    // ✅ Tambahan: update status transaksi berdasarkan tanggal trip
+    $trip = $transaksi->trip;
+    $today = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->startOfDay();
+
+    if ($trip) {
+            if ($transaksi->status === 'menunggu' && $trip->tanggal_mulai <= $today && $trip->tanggal_selesai >= $today) {
+                $transaksi->update(['status' => 'berlangsung']);
+            } elseif ($transaksi->status === 'berlangsung' && $trip->tanggal_selesai < $today) {
+                $transaksi->update(['status' => 'selesai']);
+            }
+        }
+    
+
+    // Jika belum punya token atau status expired, generate baru
+    if (!$transaksi->payment_token || $transaksi->status === 'expired') {
+
+        $requestData = (object)[
+            'order_id' => (string) \Illuminate\Support\Str::ulid(),
+            'gross_amount' => (float) $transaksi->total_dp ?: 10000,
+            'first_name' => $transaksi->nama,
+            'email' => filter_var($transaksi->email, FILTER_VALIDATE_EMAIL) ? $transaksi->email : 'backup@email.com',
+            'phone' => $transaksi->nomor_telepon ?? '081234567890',
+            'items' => [
+                [
+                    'id' => $transaksi->id,
+                    'name' => $transaksi->trip->nama_trip ?? 'Trip',
+                    'price' => $transaksi->total_dp,
+                    'quantity' => 1,
+                ]
+            ]
+        ];
+
+        $midtrans = new \App\Services\Midtrans\CreateSnapTokenService($requestData);
+        $snapToken = $midtrans->getSnapToken();
+
+        // Simpan token dan order ID
+        $transaksi->payment_order_id = $requestData->order_id;
+        $transaksi->payment_token = $snapToken;
+        $transaksi->status = 'menunggu';
+        $transaksi->save();
+    } else {
+        $snapToken = $transaksi->payment_token;
+    }
+
+    return view('transaksi.detail-transaksi', compact('transaksi', 'snapToken', 'showPelunasanButton'));
+}
+
+
     public function form($id)
     {
         $trip = Trip::findOrFail($id);
@@ -155,4 +204,19 @@ class TransaksiController extends Controller
 
         return view('transaksi.bayar-pelunasan', compact('transaksi', 'snapToken'));
     }
+    public function batalkan($id)
+    {
+        $transaksi = Transaksi::where('id_user', Auth::id())->findOrFail($id);
+
+        if (!in_array($transaksi->status, ['menunggu', 'dp'])) {
+            return back()->with('error', 'Pesanan tidak bisa dibatalkan pada status ini.');
+        }
+
+        $transaksi->status = 'batal';
+        $transaksi->status_pembayaran = 'batal';
+        $transaksi->save();
+
+        return redirect()->route('peserta.transaksi.index')->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+    
 }

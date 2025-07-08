@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
 use App\Models\Transaksi;
-use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
@@ -23,14 +22,13 @@ class DataController extends Controller
 
     public function transaksiIndex()
     {
-        $transaksi = Transaksi::with(['user', 'trip'])->latest()->get();
+        $transaksi = Transaksi::with(['trip.user'])->latest()->get();
+
+        foreach ($transaksi as $t) {
+            $t->pengelola_nama = $t->trip->user->company_name ?? '-';
+        }
 
         return view('admin.transaksi.index', compact('transaksi'));
-    }
-
-    public function transaksiShow(Transaksi $transaksi)
-    {
-        return view('admin.transaksi.show', compact('transaksi'));
     }
 
     public function tripDestroy(Trip $trip)

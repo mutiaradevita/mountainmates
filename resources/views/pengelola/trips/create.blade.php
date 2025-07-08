@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="pt-6 pb-10">
-    <h1 class="text-3xl font-bold mb-6">Tambah Trip</h1>
+    <h1 class="text-center text-3xl font-bold mb-6">Tambah Trip</h1>
 
     {{-- @if ($errors->any())
         <div class="mb-4 text-red-600">
@@ -74,7 +74,7 @@
              {{-- Paket Tersedia --}}
             <div class="mb-4">
                 <label for="paket" class="block text-gray-700">Paket Tersedia <small>(pisahkan dengan koma: regular,vip)</small></label>
-                <input type="text" id="paket" name="paket" class="w-full px-4 py-2 border rounded-md" required>
+                <input type="text" id="paket" name="paket" value="{{ old('paket', $trip->paket ?? '') }}"class="w-full px-4 py-2 border rounded-md">
             </div>
 
             {{-- Sudah Termasuk --}}

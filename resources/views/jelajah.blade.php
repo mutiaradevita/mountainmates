@@ -65,7 +65,7 @@
 
 
     <!-- Trip Cards -->
-    <section id="trip" class="bg-snow {{ $trips->count() ? 'py-12 mb-24' : 'py-8' }}">
+    <section id="trip-terbaru" class="bg-snow {{ $trips->count() ? 'py-12 ' : 'py-8' }}">
     <div class="max-w-screen-xl mx-auto px-4">
         <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
 
@@ -88,7 +88,7 @@
                                 <svg class="w-4 h-4 text-stone" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M6 2a2 2 0 00-2 2v1H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v2H3a1 1 0 100 2h1v1a2 2 0 002 2h8a2 2 0 002-2v-1h1a1 1 0 100-2h-1v-2h1a1 1 0 100-2h-1V7h1a1 1 0 100-2h-1V4a2 2 0 00-2-2H6z" />
                                 </svg>
-                                {{ \Carbon\Carbon::parse($trip->tanggal_trip)->format('d M Y') }} · {{ $trip->lokasi }}
+                                {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->format('d M Y') }} · {{ $trip->lokasi }}
                             </div>
 
                             <p class="text-earth font-bold mt-2">
@@ -111,3 +111,20 @@
     </div>
 </section>
 </x-home-layout>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const hash = window.location.hash;
+        if (hash) {
+            const el = document.querySelector(hash);
+            if (el) {
+                setTimeout(() => {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
+        }
+    });
+</script>
+@endpush
+

@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-[90px] pb-20 bg-snow min-h-screen">
+
+<div class="bg-snow min-h-[calc(100vh-100px)] py-8 px-4">
     <div class="max-w-4xl mx-auto px-4 md:px-6">
         <div class="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 space-y-6">
 
@@ -17,18 +18,43 @@
                     <p class="text-sm text-gray-700">DP yang harus dibayar: {{ $transaksi->trip->dp_persen }}% dari total</p>
                 </div>
                 <div>
-                    <p class="mb-2"><span class="font-semibold text-gray-600">Status:</span>
-                        <span class="inline-block text-xs font-medium px-3 py-1 rounded-full 
-                            {{ $transaksi->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ($transaksi->status === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700') }}">
+                    @php
+                        $statusTripClass = match($transaksi->status) {
+                            'menunggu' => 'bg-yellow-100 text-yellow-700',
+                            'selesai' => 'bg-green-100 text-green-700',
+                            'berlangsung' => 'bg-blue-100 text-blue-700',
+                            'batal' => 'bg-red-100 text-red-700',
+                            default => 'bg-gray-100 text-gray-600'
+                        };
+                    @endphp
+
+                    <p class="mb-2">
+                        <span class="font-semibold text-gray-600">Status Trip:</span>
+                        <span class="inline-block text-xs font-medium px-3 py-1 rounded-full {{ $statusTripClass }}">
                             {{ ucfirst($transaksi->status) }}
                         </span>
                     </p>
+
+                    @php
+                        $statusPembayaranClass = match($transaksi->status_pembayaran) {
+                            'dp' => 'bg-yellow-100 text-yellow-700',
+                            'lunas' => 'bg-green-100 text-green-700',
+                            'batal' => 'bg-red-100 text-red-700',
+                            default => 'bg-gray-100 text-gray-600'
+                        };
+                    @endphp
+
                     <p class="mb-2">
                         <span class="font-semibold text-gray-600">Status Pembayaran:</span>
-                        <span class="inline-block text-xs font-medium px-3 py-1 rounded-full 
-                            {{ $transaksi->status_pembayaran === 'dp' ? 'bg-yellow-100 text-yellow-700' : ($transaksi->status_pembayaran === 'lunas' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600') }}">
+                        <span class="inline-block text-xs font-medium px-3 py-1 rounded-full {{ $statusPembayaranClass }}">
                             {{ ucfirst($transaksi->status_pembayaran) }}
                         </span>
+                    </p>
+
+                    <p class="mb-2"><span class="font-semibold text-gray-600">Tanggal Trip:</span> 
+                        {{ \Carbon\Carbon::parse($transaksi->trip->tanggal_mulai)->translatedFormat('D, d M Y') }} 
+                        s.d 
+                        {{ \Carbon\Carbon::parse($transaksi->trip->tanggal_selesai)->translatedFormat('D, d M Y') }}
                     </p>
                     <p class="mb-2"><span class="font-semibold text-gray-600">Tanggal Pesan:</span> 
                         {{ \Carbon\Carbon::parse($transaksi->created_at)->timezone('Asia/Jakarta')->translatedFormat('D, d M Y • H:i') }}
@@ -37,41 +63,53 @@
             </div>
 
            {{-- Daftar Peserta --}}
-            @if ($transaksi->peserta->count())
-            <div class="border-t pt-6">
-                <h3 class="font-semibold text-pine text-lg mb-3">👥 Daftar Peserta</h3>
+           @if ($transaksi->peserta->count())
+                <div class="border-t pt-6">
+                    <h3 class="font-semibold text-pine text-lg mb-3">👥 Daftar Peserta</h3>
 
-                <div class="max-h-60 overflow-y-auto pr-2">
-                    <ol class="list-decimal list-inside space-y-2 text-sm">
-                        @foreach ($transaksi->peserta as $p)
-                        <li>
-                            <div class="font-medium">{{ $p->nama }}</div>
-                            @if($p->nomor_telepon)<div class="text-gray-500 text-sm">📞 {{ $p->nomor_telepon }}</div>@endif
-                            @if($p->email)<div class="text-gray-500 text-sm">📧 {{ $p->email }}</div>@endif
-                        </li>
-                        @endforeach
-                    </ol>
+                    <div class="max-h-60 overflow-y-auto pr-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                            @foreach ($transaksi->peserta as $p)
+                                <div class="border p-3 rounded-md bg-white shadow-sm">
+                                    <div class="font-semibold text-pine">{{ $loop->iteration }}. {{ $p->nama }}</div>
+                                    @if($p->nomor_telepon)
+                                        <div class="text-gray-500 text-sm">📞 {{ $p->nomor_telepon }}</div>
+                                    @endif
+                                    @if($p->email)
+                                        <div class="text-gray-500 text-sm">📧 {{ $p->email }}</div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-            </div>
             @endif
 
             {{-- Tombol Aksi --}}
             <div class="border-t pt-6 space-y-4">
-                @if(isset($snapToken) && $transaksi->status_pembayaran !== 'menunggu dp')
-                <button id="pay-button"
-                    class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold">
+                @if(isset($snapToken) && $transaksi->status_pembayaran === 'menunggu dp')
+                <button id="pay-button" class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold">
                     💳 Bayar Sekarang
                 </button>
+                @endif
 
-                @if ($transaksi->status_pembayaran === 'dp')
+                @if ($transaksi->status_pembayaran === 'dp' && $showPelunasanButton)
                     <a href="{{ route('peserta.transaksi.bayar-pelunasan', $transaksi->id) }}"
-                        class="w-full bg-sunset text-white px-5 py-3 rounded-lg hover:bg-forest transition font-semibold block text-center">
+                        class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold block text-center">
                         🔁 Bayar Pelunasan
                     </a>
                 @endif
 
-                <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
+                @if (in_array($transaksi->status, ['menunggu', 'dp']))
+                    <form action="{{ route('peserta.transaksi.batalkan', $transaksi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
+                        @csrf
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg transition font-semibold">
+                            ❌ Batalkan Pesanan
+                        </button>
+                    </form>
                 @endif
+
+                <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
 
                 @if ($transaksi->status === 'selesai')
                     @if (!$transaksi->ulasan)

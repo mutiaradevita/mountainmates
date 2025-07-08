@@ -2,7 +2,7 @@
 
 @section('content')
 <section class="pt-6 pb-10 bg-snow">
-    <div class="max-w-6xl mx-auto px-4 md:px-6">
+     <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
         <h1 class="text-2xl font-bold text-center text-pine mb-8">Riwayat Trip</h1>
 
        <form method="GET" action="{{ route('pengelola.trips.history') }}" class="mb-4 flex items-center gap-2">

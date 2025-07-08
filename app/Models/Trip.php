@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
 {
+    protected $appends = ['pengelola_name'];
     protected $fillable = [
         'nama_trip',
         'deskripsi_trip',
@@ -29,11 +30,6 @@ class Trip extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function pengelola()
-    {
         return $this->belongsTo(User::class, 'created_by');
     }
 
@@ -42,8 +38,12 @@ class Trip extends Model
         return $this->hasMany(Ulasan::class, 'id_user');
     }
 
-    public function transaksis()
+    public function transaksi()
     {
         return $this->hasMany(Transaksi::class, 'id_trip');
+    }
+    public function getPengelolaNameAttribute()
+    {
+        return optional($this->user)->company_name ?? '-';
     }
 }

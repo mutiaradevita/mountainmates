@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-20 pb-16 bg-snow min-h-screen">
-    <div class="max-w-xl mx-auto bg-white shadow-xl p-8 rounded-xl border">
+<div class="bg-snow min-h-[calc(100vh-100px)] py-8 px-4">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-pine mb-4">📝 Beri Ulasan untuk Trip: {{ $transaksi->trip->nama_trip }}</h2>
 
         <form action="{{ route('peserta.ulasan.store', $transaksi->id) }}" method="POST">
             @csrf
 
             <label class="block mb-2 text-sm text-gray-700 font-medium">Rating:</label>
-            <label class="block mb-2 text-sm text-gray-700 font-medium">Rating:</label>
+            {{-- <label class="block mb-2 text-sm text-gray-700 font-medium">Rating:</label> --}}
 <div class="flex gap-1 mb-4" id="star-rating">
     @for ($i = 1; $i <= 5; $i++)
         <input type="radio" name="rating" value="{{ $i }}" id="rating-{{ $i }}" class="hidden">

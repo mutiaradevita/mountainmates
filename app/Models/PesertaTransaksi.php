@@ -23,5 +23,10 @@ class PesertaTransaksi extends Model
     {
         return $this->belongsTo(Trip::class, 'id_trip');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }
 
