@@ -11,6 +11,7 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DataController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Pengelola\TransaksiController as PengelolaTransaksiController;
 use App\Http\Controllers\CallbackController;
 
@@ -36,6 +37,7 @@ Route::get('/trip/{id}/pesan', [TransaksiController::class, 'form'])->name('pese
 
 // ======================== TRANSAKSI ========================
 Route::post('/transaksi', [TransaksiController::class, 'store'])->middleware('auth')->name('transaksi.store');
+Route::get('/invoice/{id}', [InvoiceController::class, 'generate'])->name('invoice.generate');
 
 // ======================== PESERTA ========================
 Route::prefix('peserta')->middleware(['auth', 'role:peserta'])->name('peserta.')->group(function () {
@@ -75,11 +77,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->name('pengelola.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'indexPengelola'])->name('dashboard');
     Route::get('/transaksi', [PengelolaTransaksiController::class, 'index'])->name('transaksi.index');
-    Route::post('/transaksi/{id}/konfirmasi', [PengelolaTransaksiController::class, 'konfirmasi'])->name('transaksi.konfirmasi');
     Route::resource('trips', TripController::class);
     Route::get('/trip-history', [TripController::class, 'history'])->name('trips.history');
     Route::get('/trip-detail/{id}', [TripController::class, 'show'])->name('trips.show');
     Route::get('/trips/{trip}/peserta', [TripController::class, 'peserta'])->name('trips.peserta');
+    Route::get('/invoice/{id}/cetak', [PengelolaTransaksiController::class, 'cetakInvoice'])->name('transaksi.invoice');
 });
 
 // ======================== MIDTRANS WEBHOOK ========================

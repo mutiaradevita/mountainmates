@@ -88,7 +88,7 @@ class DashboardController extends Controller
         return view('admin.aktivitas', compact('aktivitas'));
     }
     
-     public function indexPengelola()
+    public function indexPengelola()
     {
         $userId = Auth::id();
 
@@ -137,11 +137,11 @@ class DashboardController extends Controller
             ->whereDate('tanggal_selesai', '<', $today)
             ->count();
 
-        $pesertaBatal = Transaksi::where('status', 'batal')
-        ->whereHas('trip', function ($query) {
-            $query->where('id_user');
-        })
-        ->count();
+        $pesertaBatal = Transaksi::whereIn('status', ['batal', 'tidak ikut'])
+            ->whereHas('trip', function ($query) use ($userId) {
+                $query->where('created_by', $userId);
+            })
+            ->count();
 
         $totalPeserta = Transaksi::whereHas('trip', fn($q) => $q->where('created_by', $userId))
             ->sum('jumlah_peserta');

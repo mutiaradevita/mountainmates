@@ -65,13 +65,23 @@
                                     {{ $status_pembayaran }}
                                 </span>
                             </td>
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 space-y-1">
                                 <button 
                                     @click="selectedId = {{ $transaksi->id }}; showDetail = true"
-                                    class="bg-lake text-white px-3 py-1 rounded-lg hover:bg-sky transition"
+                                    class="bg-lake text-white px-3 py-1 rounded-lg hover:bg-sky transition w-full"
                                 >
                                     Detail
                                 </button>
+
+                                @if(in_array($transaksi->status_pembayaran, ['dp', 'lunas']))
+                                    <a 
+                                        href="{{ route('pengelola.transaksi.invoice', $transaksi->id) }}" 
+                                        target="_blank"
+                                        class="bg-forest text-white px-3 py-1 rounded-lg hover:bg-pine transition w-full inline-block text-center"
+                                    >
+                                        Invoice
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

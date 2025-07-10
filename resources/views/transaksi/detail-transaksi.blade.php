@@ -91,12 +91,21 @@
                 <button id="pay-button" class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold">
                     💳 Bayar Sekarang
                 </button>
+                 <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
                 @endif
 
                 @if ($transaksi->status_pembayaran === 'dp' && $showPelunasanButton)
                     <a href="{{ route('peserta.transaksi.bayar-pelunasan', $transaksi->id) }}"
                         class="w-full bg-forest text-white px-5 py-3 rounded-lg hover:bg-pine transition font-semibold block text-center">
                         🔁 Bayar Pelunasan
+                    </a>
+                     <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
+                @endif
+
+                @if(in_array($transaksi->status_pembayaran, ['dp', 'lunas']))
+                    <a href="{{ route('invoice.generate', $transaksi->id) }}" target="_blank"
+                        class="w-full bg-pine border border-pine text-white px-4 py-2 rounded-lg hover:bg-pine hover:text-white transition text-center font-semibold block">
+                        🧾 Download Invoice
                     </a>
                 @endif
 
@@ -108,8 +117,6 @@
                         </button>
                     </form>
                 @endif
-
-                <p class="text-xs text-gray-500 text-center">Lakukan pembayaran untuk menyelesaikan pemesananmu.</p>
 
                 @if ($transaksi->status === 'selesai')
                     @if (!$transaksi->ulasan)

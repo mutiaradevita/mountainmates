@@ -13,6 +13,7 @@ class CallbackController extends Controller
     public function handle(Request $request)
     {
         $callback = new CallbackService;
+        Log::info('Callback diterima', $request->all());
 
         if ($callback->isSignatureKeyVerified()) {
             $type = $callback->getType();

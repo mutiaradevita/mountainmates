@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pengelola;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
@@ -21,12 +22,11 @@ class TransaksiController extends Controller
         return view('pengelola.transaksi.index', compact('transaksis'));
     }
 
-    public function konfirmasi($id)
+    public function cetakInvoice($id)
     {
-        $transaksi = Transaksi::findOrFail($id);
-        $transaksi->status = 'confirmed';
-        $transaksi->save();
+        $transaksi = \App\Models\Transaksi::with('trip')->findOrFail($id);
 
-        return redirect()->back()->with('success', 'Transaksi berhasil dikonfirmasi.');
+        $pdf = PDF::loadView('pengelola.transaksi.invoice', compact('transaksi'));
+        return $pdf->download('invoice-trip-' . $transaksi->id . '.pdf');
     }
 }
