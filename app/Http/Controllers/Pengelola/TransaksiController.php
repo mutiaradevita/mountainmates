@@ -24,7 +24,7 @@ class TransaksiController extends Controller
 
     public function cetakInvoice($id)
     {
-        $transaksi = \App\Models\Transaksi::with('trip')->findOrFail($id);
+        $transaksi = Transaksi::with('trip')->findOrFail($id);
 
         $pdf = PDF::loadView('pengelola.transaksi.invoice', compact('transaksi'));
         return $pdf->download('invoice-trip-' . $transaksi->id . '.pdf');
