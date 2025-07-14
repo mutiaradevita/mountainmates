@@ -76,4 +76,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+    public function pengelola()
+    {
+        return $this->hasOne(User::class, 'id_user');
+    }
 }

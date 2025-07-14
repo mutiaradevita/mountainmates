@@ -46,4 +46,8 @@ class Trip extends Model
     {
         return optional($this->user)->company_name ?? '-';
     }
+    public function pengelola()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

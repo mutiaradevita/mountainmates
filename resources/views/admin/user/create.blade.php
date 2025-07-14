@@ -1,10 +1,8 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-6">
-  <h1 class="text-2xl font-bold">Tambah User</h1>
-
-  <form method="POST" action="{{ route('admin.user.store') }}" class="space-y-4">
+  <form method="POST" action="{{ route('admin.user.store') }}" class="space-y-6 bg-white p-6 rounded shadow">
+    <h1 class="text-center text-2xl font-bold">Tambah User</h1>
     @csrf
 
     {{-- Role --}}

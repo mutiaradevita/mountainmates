@@ -30,7 +30,7 @@
   <div class="h-[80px]"></div>
 
   {{-- Main Content --}}
-  <main class="flex-1 px-4 bg-snow">
+ <main class="flex-1 px-4 sm:px-6 md:px-8 lg:px-10 bg-snow">
     <div class="max-w-5xl mx-auto">
       @hasSection('title')
         <h1 class="text-2xl font-semibold text-pine mb-6">@yield('title')</h1>
