@@ -91,6 +91,11 @@
                     <p class="text-sm text-stone">Belum ada trip tersedia.</p>
                 @endforelse
             </div>
+            <div class="mt-6 text-center">
+                <a href="{{ route('login') }}" class="inline-block bg-pine text-white px-5 py-2 rounded hover:bg-forest transition">
+                    Lihat Semua Trip
+                </a>
+            </div>
         </div> 
     </section>
 

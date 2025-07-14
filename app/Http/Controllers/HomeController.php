@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function landing()
     {
-        $trips = Trip::orderBy('tanggal_mulai', 'desc')->get();
+        $trips = Trip::orderBy('tanggal_mulai', 'desc')->take(3)->get();
         $ulasans = Ulasan::latest()->with(['user', 'trip.pengelola'])->take(5)->get();
         $berita = Berita::latest()->take(5)->get();
 
