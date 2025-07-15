@@ -78,7 +78,7 @@
             {{-- Paket Tersedia --}}
             <div class="mb-4">
                 <label for="paket" class="block text-gray-700">Paket Tersedia <small>(pisahkan dengan koma: regular,vip)</small></label>
-                <input type="text" id="paket" name="paket" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->paket }}" required>
+                <input type="text" id="paket" name="paket" class="w-full px-4 py-2 border rounded-md" value="{{ $trip->paket }}">
             </div>
 
             {{-- Sudah Termasuk --}}
