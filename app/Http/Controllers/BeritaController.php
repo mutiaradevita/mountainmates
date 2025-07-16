@@ -76,6 +76,8 @@ class BeritaController extends Controller
             'gambar' => 'nullable|image|max:2048',
         ]);
 
+            $data = $request->only(['judul', 'isi', 'sumber', 'deskripsi', 'gambar']);
+
             if ($request->hasFile('gambar')) {
             // Simpan gambar ke disk 'public/berita'
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
