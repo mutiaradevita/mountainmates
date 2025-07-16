@@ -31,6 +31,12 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->jumlah_peserta && empty($request->peserta)) {
+            return back()->withInput()->withErrors([
+                'peserta' => 'Data peserta harus diisi sesuai jumlah.'
+            ]);
+        }
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'nomor_telepon' => 'required|string|max:15',

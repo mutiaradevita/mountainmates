@@ -16,8 +16,8 @@
             </div>
         @endif
         <div>
-            <p class="font-semibold capitalize">{{ Auth::user()->name }}</p>
-            <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
+            <p class="font-semibold capitalize text-gray-800">{{ Auth::user()->name }}</p>
+            <p class="text-xs text-gray-700 capitalize">{{ Auth::user()->role }}</p>
         </div>
     </div>
 
@@ -41,7 +41,7 @@
       @if(Auth::user()->role === 'pengelola')
       <div class="mb-4">
         <x-input-label for="company_name" value="Nama Perusahaan" />
-        <x-text-input id="company_name" name="company_name" type="text" class="block mt-1 w-full"
+        <x-text-input id="company_name" name="company_name" type="text" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800"
           value="{{ old('company_name', Auth::user()->company_name) }}" required />
         <x-input-error :messages="$errors->get('company_name')" class="mt-2" />
       </div>
@@ -51,7 +51,7 @@
       @if(Auth::user()->role === 'pengelola')
       <div class="mb-4">
         <x-input-label for="pic_name" value="Nama PIC" />
-        <x-text-input id="pic_name" name="pic_name" type="text" class="block mt-1 w-full"
+        <x-text-input id="pic_name" name="pic_name" type="text" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800"
           value="{{ old('pic_name', Auth::user()->pic_name) }}" required />
         <x-input-error :messages="$errors->get('pic_name')" class="mt-2" />
       </div>
@@ -61,7 +61,7 @@
       @if(Auth::user()->role !== 'pengelola')
       <div class="mb-4">
         <x-input-label for="name" value="Nama Lengkap" />
-        <x-text-input id="name" name="name" type="text" class="block mt-1 w-full"
+        <x-text-input id="name" name="name" type="text" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800"
           value="{{ old('name', Auth::user()->name) }}" required />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
       </div>
@@ -70,7 +70,7 @@
       {{-- Email --}}
       <div class="mb-4">
         <x-input-label for="email" value="Email" />
-        <x-text-input id="email" name="email" type="email" class="block mt-1 w-full"
+        <x-text-input id="email" name="email" type="email" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800"
           value="{{ old('email', Auth::user()->email) }}" required />
         <x-input-error :messages="$errors->get('email')" class="mt-2" />
       </div>
@@ -79,7 +79,7 @@
       @unless(Auth::user()->role === 'admin')
             <div class="mb-4">
                 <x-input-label for="phone" value="Nomor Telepon" />
-                <x-text-input id="phone" name="phone" type="text" class="block mt-1 w-full"
+                <x-text-input id="phone" name="phone" type="text" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800"
                 value="{{ old('phone', Auth::user()->phone) }}" />
                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
             </div>

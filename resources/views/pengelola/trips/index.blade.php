@@ -30,6 +30,7 @@
                     <th class="text-pine text-center px-6 py-3">Tanggal Mulai</th>
                     <th class="text-pine text-center px-6 py-3">Tanggal Selesai</th>
                     <th class="text-pine text-center px-6 py-3">Waktu</th>
+                    <th class="text-pine text-center px-6 py-3">Kuota Terisi / Kuota Tersedia</th>
                     <th class="text-pine text-center px-6 py-3">Status</th>
                     <th class="text-pine text-center px-6 py-3">Aksi</th>
                 </tr>
@@ -46,6 +47,7 @@
                             {{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('l, d M Y') }}
                         </td>
                         <td class="px-6 py-4">{{ \Carbon\Carbon::parse($trip->waktu)->format('H:i') }}</td>
+                        <td class="px-6 py-4 text-center">{{ $trip->transaksi()->where('status', '!=', 'batal')->sum('jumlah_peserta') }} / {{ $trip->kuota }}</td>
                         <td class="px-6 py-4 capitalize">{{ $trip->status }}</td>
                         <td class="px-6 py-4 flex space-x-2">
                             <a href="{{ route('pengelola.trips.show', $trip->id) }}"

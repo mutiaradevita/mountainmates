@@ -32,15 +32,21 @@ class TripPublicController extends Controller
     public function show($id)
     {
         $trip = Trip::where('status', 'aktif')->findOrFail($id);
-        return view('peserta.detail', compact('trip'));
+        $sisaKuota = $trip->kuota - $trip->transaksi()->where('status', '!=', 'batal')->sum('jumlah_peserta');
+
+        return view('peserta.detail', compact('trip', 'sisaKuota'));
     }
+
     public function form($id)
     {
         if (!session()->has('_old_input')) {
-        session()->forget('_old_input');
-    }
+            session()->forget('_old_input');
+        }
+
         $trip = Trip::findOrFail($id);
-        return view('peserta.form', compact('trip'));
+        $sisaKuota = $trip->kuota - $trip->transaksi()->where('status', '!=', 'batal')->sum('jumlah_peserta');
+
+        return view('peserta.form', compact('trip', 'sisaKuota'));
     }
 }
 

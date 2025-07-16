@@ -15,7 +15,7 @@
                 <a href="{{ route('landing') }}#beranda" class="hover:text-forest flex items-center gap-2">Beranda</a>
                 <a href="{{ route('landing') }}#trip-populer" class="hover:text-forest flex items-center gap-2">Trip</a>
                 <a href="{{ route('landing') }}#ulasan" class="hover:text-forest flex items-center gap-2">Ulasan</a>
-                <a href="{{ route('landing') }}#kontak" class="hover:text-forest flex items-center gap-2">Kontak</a>
+                <a href="{{ route('landing') }}#berita" class="hover:text-forest flex items-center gap-2">Berita</a>
             @endauth
 
             {{-- Login/Register atau Dropdown --}}

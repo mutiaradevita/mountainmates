@@ -48,8 +48,8 @@ class CreateSnapTokenService extends Midtrans
             // 'item_details' => $itemDetails,
             'expiry' => [
                 'start_time' => $startTime->format('Y-m-d H:i:s O'),
-                'unit' => 'day',
-                'duration' => 1,
+                'unit' => 'hours',
+                'duration' => 24,
             ],
         ];
 

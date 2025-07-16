@@ -100,7 +100,7 @@
     </section>
 
     <!-- Berita Terbaru -->
-    <section class="bg-mist py-12 min-h-screen flex items-center">
+    <section id="berita" class="bg-mist py-12 min-h-screen flex items-center">
         <div class="max-w-screen-xl mx-auto px-4">
             <h2 class="text-center text-xl font-bold text-pine mb-6">Berita Pendakian</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

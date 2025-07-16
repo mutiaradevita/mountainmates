@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer base {
+  label {
+    @apply text-gray-800 !important;
+    }
+
+  /* input,
+  textarea,
+  select {
+    @apply form-input w-full border border-gray-300 rounded-md p-2 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pine focus:border-pine dark:text-white dark:bg-white dark:placeholder-gray-400;
+  } */
+
+  .form-note {
+    @apply text-sm text-gray-800 dark:text-gray-300;
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #1f2937 !important; /* text-gray-800 */
+  background-color: white !important;
+}

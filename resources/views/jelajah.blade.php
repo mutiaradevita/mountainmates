@@ -63,7 +63,6 @@
   </div>
 </section>
 
-
     <!-- Trip Cards -->
     <section id="trip-terbaru" class="bg-snow {{ $trips->count() ? 'py-12 ' : 'py-8' }}">
     <div class="max-w-screen-xl mx-auto px-4">

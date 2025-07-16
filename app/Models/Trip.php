@@ -50,4 +50,12 @@ class Trip extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+    public function getSisaKuotaAttribute()
+    {
+        $terisi = $this->transaksi()
+            ->where('status', 'berlangsung') 
+            ->sum('jumlah_peserta');
+
+        return $this->kuota - $terisi;
+    }
 }

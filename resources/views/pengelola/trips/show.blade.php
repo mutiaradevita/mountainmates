@@ -35,7 +35,7 @@
         </div>
 
         {{-- Info Detail Trip --}}
-        <div class="grid md:grid-cols-2 gap-6">
+        {{-- <div class="grid md:grid-cols-2 gap-6"> --}}
             <div class="bg-white p-6 rounded-xl shadow space-y-2 text-sm text-gray-800">
                 <p><strong>📍 Meeting Point:</strong> {{ $trip->meeting_point }}</p>
                 <p><strong>🗓️ Tanggal Trip:</strong> {{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('d F Y') }}</p>
@@ -45,16 +45,13 @@
                 <p><strong>💰 Harga:</strong> Rp{{ number_format($trip->harga, 0, ',', '.') }}</p>
                 <p><strong>💸 DP Dibayar:</strong> {{ $trip->dp_persen }}%</p>
                 <p><strong>🗂️ Paket:</strong> {{ $trip->paket }}</p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow space-y-2 text-sm text-gray-800">
                 <p><strong>📎 Status:</strong> 
                     <span class="inline-block px-2 py-1 rounded-full text-xs {{ $trip->status === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }}">
                         {{ ucfirst($trip->status) }}
                     </span>
                 </p>
-                <p><strong>🖼️ Nama Flyer:</strong> {{ $trip->flyer }}</p>
             </div>
-        </div>
+        {{-- </div> --}}
 
         {{-- Termasuk dan Tidak Termasuk --}}
         <div class="grid md:grid-cols-2 gap-6">

@@ -3,17 +3,6 @@
 @section('content')
 <div class="pt-6 pb-10">
     <h1 class="text-center text-3xl font-bold mb-6">Edit Trip</h1>
-
-    {{-- @if ($errors->any())
-        <div class="mb-4 text-red-600">
-            <ul class="list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif  --}}
-
     <form action="{{ route('pengelola.trips.update', $trip->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -131,6 +120,16 @@
                 </select>
             </div>
         </div>
+
+         @if ($errors->any())
+            <div class="mb-4 text-red-600">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif 
 
         <div class="mt-6 flex justify-end">
             <button type="submit" class="py-2 px-6 bg-pine text-snow rounded-lg hover:bg-forest">

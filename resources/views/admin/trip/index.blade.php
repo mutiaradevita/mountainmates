@@ -10,6 +10,7 @@
       <th class="text-center px-4 py-2">Pengelola</th>
       <th class="text-center px-4 py-2">Tanggal Mulai</th>
       <th class="text-center px-4 py-2">Tanggal Selesai</th>
+      <th class="text-pine text-center px-6 py-3">Kuota Terisi / Kuota Tersedia</th>
       <th class="text-center px-4 py-2">Status Trip</th>
       <th class="text-center px-4 py-2">Aksi</th>
     </tr>
@@ -21,6 +22,7 @@
       <td class="text-center px-4 py-2">{{ $trip->pengelola_name ?? '-' }}</td>
       <td class="text-center px-4 py-2">{{ \Carbon\Carbon::parse($trip->tanggal_mulai)->translatedFormat('l, d M Y') }}</td>
       <td class="text-center px-4 py-2">{{ \Carbon\Carbon::parse($trip->tanggal_selesai)->translatedFormat('l, d M Y') }}</td>
+      <td class="px-6 py-4 text-center">{{ $trip->transaksi()->where('status', '!=', 'batal')->sum('jumlah_peserta') }} / {{ $trip->kuota }}</td>
       <td class="text-center px-4 py-2 capitalize">{{ $trip->status }}</td>
       <td class="px-6 py-4 flex space-x-2">
         <a href="{{ route('admin.trip.show', $trip->id) }}" class="bg-lake text-white px-3 py-1 rounded-lg hover:bg-sky transition">Detail</a>

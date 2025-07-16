@@ -52,7 +52,6 @@
                         {{ ucfirst($trip->status) }}
                     </span>
                 </p>
-                <p><strong>🖼️ Nama Flyer:</strong> {{ $trip->flyer }}</p>
             </div>
         </div>
 
