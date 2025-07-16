@@ -16,7 +16,7 @@
     <div id="peserta_fields" style="display: none;">
       <div class="mb-4">
         <x-input-label for="name" :value="__('Nama')" />
-        <x-text-input id="name" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800" type="text" name="name" :value="old('name')" placeholder="Nama Lengkap" />
+        <x-text-input id="name" spellcheck="false" class="block mt-1 w-full bg-white text-gray-800 placeholder-gray-500 dark:bg-white dark:text-gray-800" type="text" name="name" :value="old('name')" placeholder="Nama Lengkap" />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
       </div>
     </div>
