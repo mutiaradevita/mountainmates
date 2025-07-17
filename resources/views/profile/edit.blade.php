@@ -88,7 +88,7 @@
         {{-- Foto Profil --}}
         <div class="mb-6">
             <x-input-label for="photo" value="Foto Profil" />
-            <input id="photo" name="photo" type="file" class="block mt-1 w-full text-sm text-gray-500
+            <input id="photo" name="photo" type="file" class="w-full px-4 py-2 border rounded-md" required
             file:mr-4 file:py-2 file:px-4
             file:rounded-md file:border-0
             file:text-sm file:font-semibold
