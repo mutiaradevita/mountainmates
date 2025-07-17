@@ -96,12 +96,18 @@
         <td>Rp {{ number_format($transaksi->total_dp, 0, ',', '.') }}</td>
         <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->format('d M Y') }}</td>
       </tr>
+
       @if($transaksi->status_pembayaran === 'lunas')
-      <tr>
-        <td>Pelunasan</td>
-        <td>Rp {{ number_format($transaksi->total_pelunasan, 0, ',', '.') }}</td>
-        <td>{{ \Carbon\Carbon::parse($transaksi->updated_at)->format('d M Y') }}</td>
-      </tr>
+        <tr>
+          <td>Pelunasan</td>
+          <td>Rp {{ number_format($transaksi->total_pelunasan, 0, ',', '.') }}</td>
+          <td>{{ \Carbon\Carbon::parse($transaksi->updated_at)->format('d M Y') }}</td>
+        </tr>
+      @else
+        <tr>
+          <td><strong>Sisa yang Harus Dibayarkan</strong></td>
+          <td colspan="2"><strong>Rp {{ number_format($transaksi->total - $transaksi->total_dp, 0, ',', '.') }}</strong></td>
+        </tr>
       @endif
     </table>
 
