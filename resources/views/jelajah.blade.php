@@ -13,7 +13,7 @@
     {{-- Search Bar --}}
     <section class="bg-snow py-6">
       <div class="container mx-auto px-4">
-        <form action="{{ route('jelajah') }}" method="GET">
+        <form action="{{ route('peserta.jelajah') }}" method="GET">
           <div class="flex justify-center">
             <div class="relative w-full max-w-2xl">
               <input
@@ -39,7 +39,7 @@
     {{-- Filter dan Urutkan --}}
 <section class="bg-snow py-4">
   <div class="container mx-auto px-4 flex justify-end">
-    <form method="GET" action="{{ route('jelajah') }}" class="flex space-x-4 items-center">
+    <form method="GET" action="{{ route('peserta.jelajah') }}" class="flex space-x-4 items-center">
 
       {{-- Filter Tanggal --}}
       <input type="date" name="tanggal" value="{{ request('tanggal') }}"
@@ -55,7 +55,7 @@
       </button>
 
       {{-- Tombol Reset --}}
-      <a href="{{ route('jelajah') }}"
+      <a href="{{ route('peserta.jelajah') }}"
          class="text-sm text-forest underline hover:text-emerald-700">
         Reset Filter
       </a>
@@ -71,7 +71,7 @@
         @if ($trips->count())
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @foreach ($trips as $trip)
-                    <a href="{{ route('jelajah.detail', $trip->id) }}" 
+                    <a href="{{ route('peserta.jelajah.detail', $trip->id) }}" 
                       class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                         
                         <img src="{{ asset('storage/' . $trip->flyer) }}" 

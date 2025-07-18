@@ -79,7 +79,7 @@
 
         {{-- Tombol Pesan --}}
         <div class="text-center">
-            <a href="{{ route('peserta.form', $trip->id) }}" class="bg-forest text-white px-6 py-3 rounded-md inline-block hover:bg-pine transition font-semibold">
+            <a href="{{ route('peserta.peserta.form', $trip->id) }}" class="bg-forest text-white px-6 py-3 rounded-md inline-block hover:bg-pine transition font-semibold">
                 Pesan Sekarang
             </a>
         </div>

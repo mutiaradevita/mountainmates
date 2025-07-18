@@ -9,8 +9,8 @@
         <div class="hidden md:flex items-center space-x-6 text-stone font-medium">
             {{-- MENU --}}
             @auth
-                <a href="{{ route('jelajah') }}#trip-terbaru" class="hover:text-forest flex items-center gap-2">Trip</a>
-                <a href="{{ route('jelajah') }}#kontak" class="hover:text-forest flex items-center gap-2">Kontak</a>
+                <a href="{{ route('peserta.jelajah') }}#trip-terbaru" class="hover:text-forest flex items-center gap-2">Trip</a>
+                <a href="{{ route('peserta.jelajah') }}#kontak" class="hover:text-forest flex items-center gap-2">Kontak</a>
             @else
                 <a href="{{ route('landing') }}#beranda" class="hover:text-forest flex items-center gap-2">Beranda</a>
                 <a href="{{ route('landing') }}#trip-populer" class="hover:text-forest flex items-center gap-2">Trip</a>
@@ -108,7 +108,7 @@
              class="md:hidden absolute top-[80px] left-0 w-full bg-white shadow-md border-t border-gray-200 z-40">
             <div class="px-6 py-4 flex flex-col space-y-3">
                 @auth
-                    <a href="{{ route('jelajah') }}" class="text-pine hover:text-forest">Trip</a>
+                    <a href="{{ route('peserta.jelajah') }}" class="text-pine hover:text-forest">Trip</a>
                     <a href="{{ route('profile.edit') }}" class="text-pine hover:text-forest">Profile</a>
                     <a href="{{ route('peserta.transaksi.index') }}" class="text-pine hover:text-forest">Riwayat</a>
                     <a href="{{ route('peserta.ulasan') }}" class="text-pine hover:text-forest">Ulasan</a>

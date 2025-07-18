@@ -73,7 +73,7 @@
             <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @forelse ($trips as $trip)
-                    <a href="{{ route('jelajah.detail', $trip->id) }}" class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <a href="{{ route('peserta.jelajah.detail', $trip->id) }}" class="min-w-[250px] bg-snow rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                         <img src="{{ asset('storage/' . $trip->flyer) }}" alt="Trip {{ $trip->nama_trip }}" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <h3 class="text-pine text-base font-semibold">{{ strtoupper($trip->nama_trip) }}</h3>

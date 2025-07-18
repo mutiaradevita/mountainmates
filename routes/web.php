@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransaksiController;
@@ -14,7 +15,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Pengelola\TransaksiController as PengelolaTransaksiController;
 use App\Http\Controllers\CallbackController;
+use App\Http\Middleware\PreventBackHistory;
 
+Route::middleware([
+    'web',
+    PreventBackHistory::class,
+])->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,15 +31,16 @@ Route::middleware('auth')->group(function () {
 // ======================== GUEST ========================
 Route::get('/', [HomeController::class, 'landing'])->middleware('guest')->name('landing');
 
-// Redirect setelah login
-Route::get('/home', fn () => redirect()->route('jelajah'))->middleware('auth')->name('home');
+Route::get('/home', function () {
+    $user = Auth::user();
 
-// ======================== PUBLIK ========================
-Route::get('/jelajah', [TripPublicController::class, 'index'])->name('jelajah');
-// Route::get('/jelajah-trip', [TripPublicController::class, 'index'])->name('pendaki.index');
-Route::get('/jelajah/{id}', [TripPublicController::class, 'show'])->name('jelajah.detail');
-// Route::get('/trip/{id}/form', [TripPublicController::class, 'form'])->name('pemesanan.form');
-Route::get('/trip/{id}/pesan', [TransaksiController::class, 'form'])->name('peserta.form');
+    return match ($user->role) {
+        'admin' => redirect()->route('admin.dashboard'),
+        'pengelola' => redirect()->route('pengelola.dashboard'),
+        'peserta' => redirect()->route('peserta.jelajah'),
+        default => abort(403),
+    };
+})->middleware('auth')->name('home');
 
 // ======================== TRANSAKSI ========================
 Route::post('/transaksi', [TransaksiController::class, 'store'])->middleware('auth')->name('transaksi.store');
@@ -41,6 +48,9 @@ Route::get('/invoice/{id}', [InvoiceController::class, 'generate'])->name('invoi
 
 // ======================== PESERTA ========================
 Route::prefix('peserta')->middleware(['auth', 'role:peserta'])->name('peserta.')->group(function () {
+    Route::get('/jelajah', [TripPublicController::class, 'index'])->name('jelajah');
+    Route::get('/jelajah/{id}', [TripPublicController::class, 'show'])->name('jelajah.detail');
+    Route::get('/trip/{id}/pesan', [TransaksiController::class, 'form'])->name('peserta.form'); 
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/transaksi/{id}/bayar-pelunasan', [TransaksiController::class, 'bayarPelunasan'])->name('transaksi.bayar-pelunasan');
@@ -86,5 +96,6 @@ Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->name('pengel
 
 // ======================== MIDTRANS WEBHOOK ========================
 Route::post('/webhook/midtrans', [CallbackController::class, 'handle']);
+});
 
 require __DIR__.'/auth.php';
