@@ -12,6 +12,13 @@ export default {
     './node_modules/flowbite/**/*.js',
   ],
 
+  safelist: [
+    'peer-checked:text-yellow-400',
+    'text-yellow-400',
+    'hover:text-yellow-300',
+    'text-gray-300',
+  ],
+
   theme: {
     extend: {
       fontFamily: {
@@ -38,11 +45,6 @@ export default {
     forms(),
     // require('flowbite/plugin'),
     // require('daisyui'),
-  ],
-
-  safelist: [
-    'text-yellow-400',
-    'text-gray-300',
   ],
 
   daisyui: {
