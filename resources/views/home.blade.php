@@ -58,7 +58,7 @@
                     <div class="bg-snow rounded-xl p-6 shadow-md w-64">
                     <div class="flex mb-2">
                         @for ($i = 1; $i <= 5; $i++)
-                            <span class="text-yellow-400 text-lg {{ $i <= $ulasan->rating ? '' : 'text-gray-300' }}">★</span>
+                            <span class="{{ $i <= $ulasan->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
                         @endfor
                     </div>
                         <p class="text-stone text-base mb-4">"{{ $ulasan->komentar }}"</p>
