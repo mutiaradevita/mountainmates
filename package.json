@@ -23,6 +23,7 @@
         "daisyui": "^5.0.38",
         "flatpickr": "^4.6.13",
         "flowbite": "^3.1.2",
-        "lucide": "^0.525.0"
+        "lucide": "^0.525.0",
+        "tailwind": "^4.0.0"
     }
 }
