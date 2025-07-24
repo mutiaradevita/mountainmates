@@ -9,17 +9,14 @@
             @csrf
 
             <label class="block mb-2 text-sm text-gray-700 font-medium">Rating:</label>
-                <div class="flex flex-row-reverse justify-center gap-1">
-    @for ($i = 5; $i >= 1; $i--)
-        <div class="relative">
-            <input type="radio" name="rating" value="{{ $i }}" id="rating-{{ $i }}" class="sr-only peer" />
-            <label for="rating-{{ $i }}" class="text-3xl text-gray-300 cursor-pointer hover:text-yellow-300 peer-checked:text-yellow-400">
-                ★
-            </label>
-        </div>
+                <div class="flex gap-1 mb-4" id="star-rating">
+                     @for ($i = 5; $i >= 1; $i--)
+        <input type="radio" name="rating" value="{{ $i }}" id="rating-{{ $i }}" class="sr-only peer hidden">
+        <label for="rating-{{ $i }}" class="text-3xl cursor-pointer text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-300">
+            ★
+        </label>
     @endfor
-</div>
-
+                </div>
 
             <label class="block mb-2 text-sm text-gray-700 font-medium">Komentar:</label>
             <textarea name="komentar" rows="4" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-pine focus:border-pine">{{ old('komentar') }}</textarea>
