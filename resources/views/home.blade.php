@@ -56,6 +56,11 @@
             <div class="flex space-x-4 gap-4 overflow-x-auto pb-2 scroll-smooth">
                 @forelse ($ulasans as $ulasan)
                     <div class="bg-snow rounded-xl p-6 shadow-md w-64">
+                    <div class="flex mb-2">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <span class="text-yellow-400 text-lg {{ $i <= $ulasan->rating ? '' : 'text-gray-300' }}">★</span>
+                        @endfor
+                    </div>
                         <p class="text-stone text-base mb-4">"{{ $ulasan->komentar }}"</p>
                         <h4 class="font-semibold text-pine">{{ $ulasan->user->name ?? 'Peserta tidak ditemukan' }}</h4>
                         <p class="text-sm text-stone">Trip oleh: {{ $ulasan->trip->pengelola->name ?? '-' }}</p>
