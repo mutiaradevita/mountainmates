@@ -14,7 +14,8 @@ export default {
 
   safelist: [
   'text-yellow-400',
-  'text-gray-300'
+  'text-gray-300',
+  '!text-yellow-400',
 ],
 
   theme: {
