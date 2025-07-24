@@ -28,22 +28,30 @@
         const stars = document.querySelectorAll('#star-rating label');
         const inputs = document.querySelectorAll('#star-rating input');
 
-        stars.forEach((star, index) => {
-            star.addEventListener('click', function () {
-                // Atur semua warna bintang ke abu
-                stars.forEach(s => s.classList.remove('text-yellow-400'));
-                stars.forEach(s => s.classList.add('text-gray-300'));
-
-                // Warnai dari awal sampai bintang yang diklik
-                for (let i = 0; i <= index; i++) {
-                    stars[i].classList.remove('text-gray-300');
-                    stars[i].classList.add('!text-yellow-400');
+        function updateStarColor(value) {
+            stars.forEach((s, i) => {
+                s.classList.remove('!text-yellow-400');
+                s.classList.add('text-gray-300');
+                if (i < value) {
+                    s.classList.remove('text-gray-300');
+                    s.classList.add('!text-yellow-400');
                 }
+            });
+        }
 
-                // Set radio button sesuai nilai
-                inputs[index].checked = true;
+        // Update saat user klik/ubah pilihan rating
+        inputs.forEach((input) => {
+            input.addEventListener('change', function () {
+                const value = parseInt(this.value);
+                updateStarColor(value);
             });
         });
+
+        // Saat halaman load (jika rating sudah dipilih)
+        const checkedInput = document.querySelector('#star-rating input:checked');
+        if (checkedInput) {
+            updateStarColor(parseInt(checkedInput.value));
+        }
     });
 </script>
 
