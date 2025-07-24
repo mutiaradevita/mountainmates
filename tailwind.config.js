@@ -9,15 +9,13 @@ export default {
     './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     './storage/framework/views/*.php',
     './resources/views/**/*.blade.php',
-    './node_modules/flowbite/**/*.js',
+    //'./node_modules/flowbite/**/*.js',
   ],
 
   safelist: [
-    'peer-checked:text-yellow-400',
-    'text-yellow-400',
-    'hover:text-yellow-300',
-    'text-gray-300',
-  ],
+  'text-yellow-400',
+  'text-gray-300'
+],
 
   theme: {
     extend: {

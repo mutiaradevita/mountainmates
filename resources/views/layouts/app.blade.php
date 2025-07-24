@@ -43,9 +43,5 @@
   {{-- Footer --}}
   @include('components.footer')
 
-   <div class="hidden">
-        <span class="text-yellow-400">yellow</span>
-        <span class="text-gray-300">gray</span>
-    </div>
 </body>
 </html>
