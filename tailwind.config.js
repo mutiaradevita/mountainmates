@@ -34,6 +34,11 @@ export default {
     },
   },
 
+  safelist: [
+    'text-yellow-400',
+    'text-gray-300',
+  ],
+
   plugins: [
     forms(),
     // require('flowbite/plugin'),
