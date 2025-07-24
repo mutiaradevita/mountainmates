@@ -47,7 +47,6 @@
     });
 </script>
 <div class="hidden">
-    <span class="text-yellow-400"></span>
-    <span class="text-gray-300"></span>
+    <span class="text-yellow-400 text-gray-300"></span>
 </div>
 @endsection
