@@ -13,7 +13,7 @@
     {{-- Search Bar --}}
     <section class="bg-snow py-6">
       <div class="container mx-auto px-4">
-        <form action="{{ route('peserta.jelajah') }}" method="GET">
+        <form action="{{ route('peserta.jelajah') }}#trip-terbaru" method="GET">
           <div class="flex justify-center">
             <div class="relative w-full max-w-2xl">
               <input
@@ -39,26 +39,33 @@
     {{-- Filter dan Urutkan --}}
 <section class="bg-snow py-4">
   <div class="container mx-auto px-4 flex justify-end">
-    <form method="GET" action="{{ route('peserta.jelajah') }}" class="flex space-x-4 items-center">
+    <form method="GET" action="{{ route('peserta.jelajah') }}#trip-terbaru" class="flex flex-wrap gap-4 items-center">
 
-      {{-- Filter Tanggal --}}
-      <input type="date" name="tanggal" value="{{ request('tanggal') }}"
-             class="bg-white px-4 py-2 rounded-md border border-stone text-pine font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-forest"/>
+        <div class="flex gap-2">
+            {{-- Filter Tanggal --}}
+            <input type="date" name="tanggal" value="{{ request('tanggal') }}"
+                class="bg-white px-4 py-2 rounded-md border border-stone text-pine font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-forest"/>
 
-      {{-- Urutan --}}
-      <input type="hidden" name="urutkan" value="terbaru">
+            {{-- Select Urutan --}}
+            <select name="urutkan"
+                class="bg-white px-4 py-2 rounded-md border border-stone text-pine font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-forest">
+                <option value="terbaru" {{ request('urutkan') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                <option value="harga" {{ request('urutkan') == 'harga' ? 'selected' : '' }}>Harga Termurah</option>
+                <option value="rating" {{ request('urutkan') == 'rating' ? 'selected' : '' }}>Rating Tertinggi</option>
+            </select>
+        </div>
 
-      {{-- Tombol Submit --}}
-      <button type="submit"
-              class="bg-sunset text-white px-4 py-2 rounded-md shadow-sm hover:bg-forest transition">
-        Terapkan Filter
-      </button>
+        {{-- Tombol Submit --}}
+        <button type="submit"
+            class="bg-sunset text-white px-4 py-2 rounded-md shadow-sm hover:bg-forest transition">
+            Terapkan Filter
+        </button>
 
-      {{-- Tombol Reset --}}
-      <a href="{{ route('peserta.jelajah') }}"
-         class="text-sm text-forest underline hover:text-emerald-700">
-        Reset Filter
-      </a>
+        {{-- Tombol Reset --}}
+        <a href="{{ route('peserta.jelajah') }}"
+          class="text-sm text-forest underline hover:text-emerald-700">
+            Reset Filter
+        </a>
     </form>
   </div>
 </section>
@@ -66,7 +73,16 @@
     <!-- Trip Cards -->
     <section id="trip-terbaru" class="bg-snow {{ $trips->count() ? 'py-12 ' : 'py-8' }}">
     <div class="max-w-screen-xl mx-auto px-4">
-        <h2 class="text-pine text-xl font-bold mb-6">TRIP TERBARU</h2>
+      @php
+          $judulTrip = match(request('urutkan')) {
+              'rating' => 'Rating Tertinggi',
+              'harga' => 'Trip Termurah',
+              'terbaru' => 'Trip Terbaru',
+              default => 'Trip Terbaru',
+          };
+      @endphp
+
+      <h2 class="text-pine text-xl font-bold mb-6">{{ $judulTrip }}</h2>
 
         @if ($trips->count())
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -97,6 +113,12 @@
                             <p class="text-sm text-moss mt-1">
                                 {{ $trip->pengelola->name ?? 'Mountain Mates' }}
                             </p>
+                            @if ($trip->pengelola_rating > 0)
+                                <p class="text-xs text-stone mt-0.5">
+                                    ⭐ {{ number_format($trip->pengelola_rating, 1) }} / 5 
+                                    dari {{ $trip->pengelola_ulasan_count }} ulasan
+                                </p>
+                            @endif
                         </div>
                     </a>
                  @endforeach

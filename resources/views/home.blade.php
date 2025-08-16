@@ -105,9 +105,9 @@
     </section>
 
     <!-- Berita Terbaru -->
-    <section id="berita" class="bg-mist py-12 min-h-screen flex items-center">
+    <section id="berita" class="bg-pine py-12 min-h-screen flex items-center">
         <div class="max-w-screen-xl mx-auto px-4">
-            <h2 class="text-center text-xl font-bold text-pine mb-6">Berita Pendakian</h2>
+            <h2 class="text-center text-xl font-bold text-snow mb-6">Berita Pendakian</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @foreach ($berita as $item)
                     <div class="bg-snow rounded-lg overflow-hidden shadow hover:shadow-lg transition">
@@ -122,6 +122,39 @@
                         </div>
                     </div>
                 @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- Dokumentasi Trip Section -->
+    <section id="galeri" class="bg-mist py-12 min-h-screen">
+        <div class="max-w-screen-xl mx-auto px-4">
+            <h2 class="text-center text-2xl font-bold text-pine mb-10">Dokumentasi Pendakian</h2>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                @php
+                    $allDocs = $trips->flatMap->dokumentasi;
+                @endphp
+
+                @forelse ($allDocs as $doc)
+                    <div>
+                        <img src="{{ asset('storage/' . $doc->foto) }}" 
+                            alt="Dokumentasi oleh {{ $doc->trip->pengelola->name ?? 'Tidak diketahui' }}"
+                            class="w-full h-48 object-cover rounded-lg">
+
+                            @if($doc->keterangan)
+                                <p style="font-size: 14px; text-align: center; margin-top: 6px;">
+                                    {{ \Illuminate\Support\Str::limit($doc->keterangan, 80) }}
+                                </p>
+                            @endif
+
+                        <p style="text-align: center; font-size: 12px; margin-top: 4px;">
+                            Diunggah oleh: <strong>{{ $doc->trip->pengelola->name ?? 'Tidak diketahui' }}</strong><br>
+                        </p>
+                    </div>
+                @empty
+                    <p style="text-align: center; color: gray;">Belum ada dokumentasi trip.</p>
+                @endforelse
             </div>
         </div>
     </section>

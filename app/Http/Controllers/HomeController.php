@@ -15,6 +15,8 @@ class HomeController extends Controller
         $trips = Trip::orderBy('tanggal_mulai', 'desc')->take(6)->get();
         $ulasans = Ulasan::latest()->with(['user', 'trip.pengelola'])->take(5)->get();
         $berita = Berita::latest()->take(5)->get();
+        $trips = Trip::orderBy('tanggal_mulai', 'desc')->take(6)->get();
+        $trips = Trip::orderBy('tanggal_mulai', 'desc')->take(6)->get();
 
         return view('home', ['user' => null, 'trips' => $trips, 'ulasans' => $ulasans, 'berita' => $berita,]);
     }

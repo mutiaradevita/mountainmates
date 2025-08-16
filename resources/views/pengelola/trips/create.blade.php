@@ -26,9 +26,18 @@
             </div>
 
             {{-- Lokasi Gunung (daerah pendakian) --}}
+            <div class="mb-4 md:col-span-2">
+                <label for="lokasi_map" class="block text-gray-700">Lokasi Gunung</label>
+                <input type="text" id="lokasi" name="lokasi" value="{{ old('lokasi') }}" placeholder="Contoh: Malang" class="form-input w-full px-4 py-2 border rounded-md mb-3">
+                <div id="map" style="height: 300px; width: 100%; border-radius: 8px;"></div>
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+            </div>
+
+            {{-- Paket Tersedia --}}
             <div class="mb-4">
-                <label for="lokasi" class="block text-gray-700">Lokasi Pendakian</label>
-                <input type="text" id="lokasi" name="lokasi" class="form-input w-full px-4 py-2 border rounded-md placeholder-gray-200" value="{{ old('lokasi') }}" placeholder="Contoh: Malang">
+                <label for="paket" class="block text-gray-700">Paket Tersedia <small>(pisahkan dengan koma: regular,vip)</small></label>
+                <input type="text" id="paket" name="paket" value="{{ old('paket', $trip->paket ?? '') }}" class="form-input w-full px-4 py-2 border rounded-md">
             </div>
 
             {{-- Meeting Point --}}
@@ -58,12 +67,6 @@
             <div class="mb-4">
                 <label for="durasi" class="block text-gray-700">Durasi</label>
                 <input type="text" id="durasi" name="durasi" class="form-input w-full px-4 py-2 border rounded-md placeholder-gray-200" value="{{ old('durasi') }}" placeholder="Contoh: 2 Hari 1 Malam">
-            </div>
-
-            {{-- Paket Tersedia --}}
-            <div class="mb-4">
-                <label for="paket" class="block text-gray-700">Paket Tersedia <small>(pisahkan dengan koma: regular,vip)</small></label>
-                <input type="text" id="paket" name="paket" value="{{ old('paket', $trip->paket ?? '') }}" class="form-input w-full px-4 py-2 border rounded-md">
             </div>
 
             {{-- Sudah Termasuk --}}
@@ -97,7 +100,7 @@
             {{-- Flyer --}}
             <div class="mb-4">
                 <label for="flyer" class="block text-gray-700">Foto Trip</label>
-                <input type="file" id="flyer" name="flyer" class="w-full px-4 py-2 border rounded-md" required>
+                <input type="file" id="flyer" name="flyer" value="{{ old('flyer') }}" class="w-full px-4 py-2 border rounded-md" required>
             </div>
 
             {{-- Status --}}
@@ -128,4 +131,52 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var map = L.map('map').setView([-2.5489, 118.0149], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+
+    function setLatLng(lat, lng) {
+        document.getElementById('latitude').value = lat.toFixed(7);
+        document.getElementById('longitude').value = lng.toFixed(7);
+    }
+
+    // Default koordinat awal
+    setLatLng(-2.5489, 118.0149);
+
+    // // Coba ambil lokasi user
+    // if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition(function(position) {
+    //         const lat = position.coords.latitude;
+    //         const lng = position.coords.longitude;
+    //         setLatLng(lat, lng);
+    //         map.setView([lat, lng], 13);
+    //         marker = L.marker([lat, lng]).addTo(map);
+    //     });
+    // }
+
+    // Klik peta untuk pindahkan marker
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+
+        setLatLng(lat, lng);
+    });
+
+    setTimeout(() => map.invalidateSize(), 0);
+});
+</script>
+@endpush
 @endsection

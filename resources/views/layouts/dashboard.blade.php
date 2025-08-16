@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="..." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="//unpkg.com/alpinejs" defer></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> 
 </head>
 
 <body class="bg-snow text-gray-800 min-h-screen flex">
@@ -44,7 +46,7 @@
         <x-nav-link route="pengelola.dashboard" label="Dashboard" icon="dashboard" />
         <x-nav-link route="pengelola.trips.index" label="Kelola Trip" icon="mountains" />
         <x-nav-link route="pengelola.trips.history" label="Riwayat" icon="newspaper" />
-        <x-nav-link route="pengelola.trips.create" label="Tambah Trip" icon="plus" />
+        <x-nav-link route="pengelola.dokumentasi.index" label="Dokumentasi" icon="image" />
         <x-nav-link route="pengelola.transaksi.index" label="Data Transaksi" icon="wallet" />
       @endif
     </nav>

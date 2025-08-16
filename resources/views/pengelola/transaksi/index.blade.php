@@ -87,6 +87,27 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="flex justify-between items-center mt-4">
+                    <div>
+                        <p class="text-sm text-gray-700 font-semibold">
+                            Total Pemasukan: 
+                            <span class="text-green-700">
+                                Rp {{ number_format($transaksis->whereIn('status_pembayaran', ['dp', 'lunas'])->sum('total'), 0, ',', '.') }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="{{ route('pengelola.transaksi.laporan') }}" target="_blank"
+                            class="bg-pine text-white px-3 py-1 rounded hover:bg-rose-800 transition text-sm">
+                            Export PDF
+                        </a>
+                        <a href="{{ route('pengelola.transaksi.export.excel') }}" 
+                            class="bg-forest text-white px-3 py-1 rounded hover:bg-emerald-700 transition text-sm">
+                            Export Excel
+                        </a>
+                    </div>
+                </div>
             </div>
 
             {{-- Modal Detail --}}

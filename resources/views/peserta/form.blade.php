@@ -11,6 +11,10 @@
                     class="w-full h-64 object-cover rounded-lg mb-4">
                 <h1 class="text-2xl font-bold text-pine mb-2">{{ $trip->nama_trip }}</h1>
                 <p class="text-gray-700 mb-2">{{ $trip->deskripsi_trip }}</p>
+                <div class="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded mb-4">
+                    <strong>⚠️ Info Penting untuk Pendaki:</strong><br>
+                    Pastikan kondisi fisik prima, membawa perlengkapan pribadi lengkap, dan mengikuti instruksi dari pemandu selama perjalanan.
+                </div>
                 <p class="text-sm text-gray-700">Lokasi: {{ $trip->lokasi }}</p>
                 <p class="text-sm text-gray-700">Tanggal Trip: {{ \Carbon\Carbon::parse($trip->tanggal_trip)->translatedFormat('d F Y') }}</p>
                 <p class="text-sm text-gray-700">Waktu: {{ \Carbon\Carbon::createFromFormat('H:i:s', $trip->waktu)->format('H:i') }}</p>

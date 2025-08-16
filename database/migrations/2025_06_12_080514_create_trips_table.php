@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama_trip', 255);
             $table->string('lokasi', 255);
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
             $table->string('meeting_point',255);
             $table->text('deskripsi_trip');
             $table->integer('kuota');

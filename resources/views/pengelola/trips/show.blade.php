@@ -34,6 +34,13 @@
             </div>
         </div>
 
+        {{-- Lokasi Trip --}}
+        @if($trip->latitude && $trip->longitude)
+        <div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+            <div id="map" style="height: 350px; width: 100%; border-radius: 8px;"></div>
+        </div>
+        @endif
+
         {{-- Info Detail Trip --}}
         {{-- <div class="grid md:grid-cols-2 gap-6"> --}}
             <div class="bg-white p-6 rounded-xl shadow space-y-2 text-sm text-gray-800">
@@ -90,3 +97,25 @@
     </div>
 </section>
 @endsection
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    @if($trip->latitude && $trip->longitude)
+        var map = L.map('map').setView([{{ $trip->latitude }}, {{ $trip->longitude }}], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([{{ $trip->latitude }}, {{ $trip->longitude }}])
+            .addTo(map)
+            .bindPopup('{{ $trip->lokasi }}')
+            .openPopup();
+
+        // Pastikan peta menyesuaikan ukuran container
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 200);
+    @endif
+});
+</script>

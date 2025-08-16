@@ -16,6 +16,7 @@
                     <th class="text-center px-4 py-3">Email</th>
                     <th class="text-center px-4 py-3">Nomor Telepon</th>
                     <th class="text-center px-4 py-3">Jumlah Peserta</th>
+                    <th class="text-center px-4 py-3">Status Pembayaran</th>
                     <th class="text-center px-4 py-3">Aksi</th>
                 </tr>
             </thead>
@@ -27,6 +28,19 @@
                         <td class="text-center px-4 py-2">{{ $peserta->nomor_telepon }}</td>
                         <td class="text-center px-4 py-2">{{ $peserta->jumlah_peserta }}</td>
                         <td class="text-center px-4 py-2">
+                            <span class="inline-block px-2 py-1 rounded text-xs
+                                @if ($peserta->status_pembayaran == 'Lunas')
+                                    bg-green-100 text-green-800
+                                @elseif ($peserta->status_pembayaran == 'Dp')
+                                    bg-yellow-100 text-yellow-800
+                                @else
+                                    bg-red-100 text-red-800
+                                @endif
+                            ">
+                                {{ ucfirst($peserta->status_pembayaran) }}
+                            </span>
+                        </td>
+                        <td class="text-center px-4 py-2">
                             <button 
                                 onclick="document.getElementById('detail-{{ $peserta->id }}').classList.toggle('hidden')"
                                 class="bg-pine text-white px-3 py-1 rounded hover:bg-moss text-xs transition">
@@ -37,32 +51,32 @@
 
                     {{-- Detail Teman --}}
                     <tr id="detail-{{ $peserta->id }}" class="hidden bg-gray-50">
-                    <td colspan="5" class="px-6 py-4">
-                        <div class="font-semibold text-pine mb-2">Daftar Peserta:</div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white border border-slate-200 text-sm rounded-md">
-                                <thead class="bg-slate-100 text-gray-700">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">#</th>
-                                        <th class="px-4 py-2 text-left">Nama Peserta</th>
-                                        <th class="px-4 py-2 text-left">Email</th>
-                                        <th class="px-4 py-2 text-left">No Telepon</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-800">
-                                    @foreach ($peserta->peserta as $index => $teman)
+                        <td colspan="6" class="px-6 py-4">
+                            <div class="font-semibold text-pine mb-2">Daftar Peserta:</div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-slate-200 text-sm rounded-md">
+                                    <thead class="bg-slate-100 text-gray-700">
                                         <tr>
-                                            <td class="px-4 py-2">{{ $index + 1 }}</td>
-                                            <td class="px-4 py-2">{{ $teman->nama }}</td>
-                                            <td class="px-4 py-2">{{ $teman->email ?? '—' }}</td>
-                                            <td class="px-4 py-2">{{ $teman->nomor_telepon ?? '—' }}</td>
+                                            <th class="px-4 py-2 text-left">#</th>
+                                            <th class="px-4 py-2 text-left">Nama Peserta</th>
+                                            <th class="px-4 py-2 text-left">Email</th>
+                                            <th class="px-4 py-2 text-left">No Telepon</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                                    </thead>
+                                    <tbody class="text-gray-800">
+                                        @foreach ($peserta->peserta as $index => $teman)
+                                            <tr>
+                                                <td class="px-4 py-2">{{ $index + 1 }}</td>
+                                                <td class="px-4 py-2">{{ $teman->nama }}</td>
+                                                <td class="px-4 py-2">{{ $teman->email ?? '—' }}</td>
+                                                <td class="px-4 py-2">{{ $teman->nomor_telepon ?? '—' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

@@ -7,6 +7,8 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TransaksiExport;
 
 class TransaksiController extends Controller
 {
@@ -28,5 +30,24 @@ class TransaksiController extends Controller
 
         $pdf = PDF::loadView('pengelola.transaksi.invoice', compact('transaksi'));
         return $pdf->download('invoice-trip-' . $transaksi->id . '.pdf');
+    }
+    public function exportPdf()
+    {
+        $userId = Auth::id();
+
+        $transaksi = Transaksi::with('trip')->whereHas('trip', fn($q) => $q->where('created_by', $userId))
+        ->get();
+        $pdf = Pdf::loadView('pengelola.transaksi.laporan', compact('transaksi'));
+        return $pdf->download('laporan_transaksi.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $userId = Auth::id();
+        
+        $transaksi = Transaksi::with('trip')->whereHas('trip', fn($q) => $q->where('created_by', $userId))
+        ->get();
+
+        return Excel::download(new TransaksiExport, 'laporan_transaksi.xlsx');
     }
 }

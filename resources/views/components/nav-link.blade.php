@@ -34,9 +34,10 @@
         <circle cx="16" cy="12" r="1" fill="currentColor"/>
       </svg>
       @break
-    @case('plus')
+    @case('image')
       <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 7h4l2-3h6l2 3h4v13H3V7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="13" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       @break
   @endswitch

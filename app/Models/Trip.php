@@ -11,6 +11,8 @@ class Trip extends Model
         'nama_trip',
         'deskripsi_trip',
         'lokasi',
+        'latitude',
+        'longitude',
         'meeting_point',
         'kuota',
         'harga',
@@ -35,7 +37,7 @@ class Trip extends Model
 
     public function ulasans()
     {
-        return $this->hasMany(Ulasan::class, 'id_user');
+        return $this->hasMany(Ulasan::class, 'id_trip', 'id');
     }
 
     public function transaksi()
@@ -57,5 +59,9 @@ class Trip extends Model
             ->sum('jumlah_peserta');
 
         return $this->kuota - $terisi;
+    }
+    public function dokumentasi()
+    {
+        return $this->hasMany(Dokumentasi::class, 'id_trip', 'id');
     }
 }

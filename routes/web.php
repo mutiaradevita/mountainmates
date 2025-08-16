@@ -12,6 +12,7 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DataController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Pengelola\TransaksiController as PengelolaTransaksiController;
 use App\Http\Controllers\CallbackController;
@@ -92,6 +93,9 @@ Route::middleware(['auth', 'role:pengelola'])->prefix('pengelola')->name('pengel
     Route::get('/trip-detail/{id}', [TripController::class, 'show'])->name('trips.show');
     Route::get('/trips/{trip}/peserta', [TripController::class, 'peserta'])->name('trips.peserta');
     Route::get('/invoice/{id}/cetak', [PengelolaTransaksiController::class, 'cetakInvoice'])->name('transaksi.invoice');
+    Route::get('/transaksi/export/pdf', [PengelolaTransaksiController::class, 'exportPdf'])->name('transaksi.laporan');
+    Route::get('/transaksi/export/excel', [PengelolaTransaksiController::class, 'exportExcel'])->name('transaksi.export.excel');
+    Route::resource('dokumentasi', DokumentasiController::class);
 });
 
 // ======================== MIDTRANS WEBHOOK ========================

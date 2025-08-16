@@ -26,11 +26,13 @@
                 <textarea id="deskripsi_trip" name="deskripsi_trip" class="w-full px-4 py-2 border rounded-md" required>{{ $trip->deskripsi_trip }}</textarea>
             </div>
 
-            {{-- Lokasi Pendakian --}}
-            <div class="mb-4">
-                <label for="lokasi" class="block text-gray-700">Lokasi Pendakian</label>
-                <input type="text" id="lokasi" name="lokasi" class="w-full px-4 py-2 border rounded-md" 
-                    value="{{ old('lokasi', $trip->lokasi ?? '') }}" required>
+            {{-- Lokasi Gunung (daerah pendakian) --}}
+            <div class="mb-4 md:col-span-2">
+                <label for="lokasi_map" class="block text-gray-700">Lokasi Gunung</label>
+                <input type="text" id="lokasi" name="lokasi" value="{{ old('lokasi', $trip->lokasi ?? '') }}" required placeholder="Contoh: Malang" class="form-input w-full px-4 py-2 border rounded-md mb-3">
+                <div id="map" style="height: 300px; width: 100%; border-radius: 8px;"></div>
+                <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude', $trip->latitude ?? '') }}">
+                <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude', $trip->longitude ?? '') }}">
             </div>
 
             {{-- Meeting Point --}}
@@ -139,3 +141,43 @@
     </form>
 </div>
 @endsection
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var map = L.map('map').setView([-2.5489, 118.0149], 5); 
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+    var latInput = document.getElementById('latitude');
+    var lngInput = document.getElementById('longitude');
+
+    // Kalau sudah ada koordinat sebelumnya, langsung tampilkan marker
+    if (latInput.value && lngInput.value) {
+        var lat = parseFloat(latInput.value);
+        var lng = parseFloat(lngInput.value);
+        map.setView([lat, lng], 13);
+        marker = L.marker([lat, lng]).addTo(map);
+    }
+
+    // Event klik peta
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker([lat, lng]).addTo(map);
+        }
+
+        latInput.value = lat.toFixed(7);
+        lngInput.value = lng.toFixed(7);
+    });
+
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 0);
+});
+</script>
